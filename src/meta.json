@@ -1,0 +1,50 @@
+{
+  "name": "DropHere",
+  "plugins": [
+    {
+      "name": "Chakra UI",
+      "description": "Chakra UI is a simple, modular and accessible component library that gives you the building blocks you need to build your React applications.",
+      "url": "https://chakra-ui.com/docs/getting-started"
+    },
+    {
+      "name": "CSS / styled-jsx",
+      "description": "CRA comes with built-in support for CSS and CSS Modules.",
+      "url": "https://create-react-app.dev/docs/adding-a-stylesheets"
+    },
+    {
+      "name": "Axios",
+      "description": "Promise based HTTP client for the browser and node.js.",
+      "url": "https://github.com/axios/axios"
+    },
+    {
+      "name": "react-use",
+      "description": "A Collection of useful React hooks.",
+      "url": "https://github.com/streamich/react-use"
+    },
+    {
+      "name": "MobX",
+      "description": "MobX is unopinionated and allows you to manage your application state outside of any UI framework.",
+      "url": "https://mobx.js.org/README.html"
+    },
+    {
+      "name": "MobX State Tree",
+      "description": "MobX-State-Tree (also known as MST) is a state container system built on MobX, a functional reactive state library.",
+      "url": "https://mobx-state-tree.js.org/intro/welcome"
+    },
+    {
+      "name": "eslint",
+      "description": "",
+      "url": ""
+    },
+    {
+      "name": "jest",
+      "description": "",
+      "url": ""
+    },
+    {
+      "name": "Github Actions",
+      "description": "GitHub Actions makes it easy to automate all your software workflows, now with world-class CI/CD. Build, test, and deploy your code right from GitHub.",
+      "url": "https://docs.github.com/en/actions"
+    }
+  ]
+}
