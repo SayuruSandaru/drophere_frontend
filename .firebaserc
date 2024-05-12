@@ -1,5 +1,18 @@
 {
   "projects": {
     "default": "drophere-iit-10"
-  }
+  },
+  "targets": {
+    "drophere-iit-10": {
+      "hosting": {
+        "drophere-staging": [
+          "drophere-staging"
+        ],
+        "drophere-live": [
+          "drophere-live"
+        ]
+      }
+    }
+  },
+  "etags": {}
 }
