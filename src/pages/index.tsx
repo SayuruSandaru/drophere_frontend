@@ -1,17 +1,15 @@
 import { Box, Flex, Spacer, Image, Stack, useTheme, Text } from "@chakra-ui/react";
 import { Link } from 'react-router-dom';
 import React from "react";
-
-import { Cards, Footer, Header, Main } from "components";
 import { Login } from "./login/login";
 import { colors } from "theme/colors";
 import { useNavigate } from 'react-router-dom';
 
 const Home: React.FC = () => {
   const navigate = useNavigate();
-  const handleLoginClick = () => {
+  const handleLogin = () => {
     console.log('Login clicked');
-    navigate('/next-page'); // Navigate to the next page after login
+    navigate('/register'); // Navigate to the next page after login
   };
   return (
     <Flex direction="row" minH="100vh">
@@ -24,7 +22,7 @@ const Home: React.FC = () => {
           </Text>
         </Stack>
       </Box>
-      <Login onLogin={handleLoginClick} />
+      <Login onLogin={handleLogin} />
     </Flex>
   );
 };
