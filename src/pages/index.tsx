@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router-dom';
 
 const Home: React.FC = () => {
   const navigate = useNavigate();
-  const handleLoginClick = () => {
+  const handleLogin = () => {
     console.log('Login clicked');
     navigate('/register'); // Navigate to the next page after login
   };
@@ -22,7 +22,7 @@ const Home: React.FC = () => {
           </Text>
         </Stack>
       </Box>
-      <Login onLogin={handleLoginClick} />
+      <Login onLogin={handleLogin} />
     </Flex>
   );
 };
