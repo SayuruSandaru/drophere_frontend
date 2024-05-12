@@ -1,11 +1,10 @@
-import { Box, Flex, Spacer, Image, Stack, useTheme, Text } from "@chakra-ui/react";
-import { Link } from 'react-router-dom';
+import { Box, Flex, Image, Stack, Text } from "@chakra-ui/react";
 import React from "react";
-import { Login } from "./login/login";
+import { LoginForm } from "./login_form";
 import { colors } from "theme/colors";
 import { useNavigate } from 'react-router-dom';
 
-const Home: React.FC = () => {
+const Login: React.FC = () => {
   const navigate = useNavigate();
   const handleLogin = () => {
     console.log('Login clicked');
@@ -22,9 +21,9 @@ const Home: React.FC = () => {
           </Text>
         </Stack>
       </Box>
-      <Login onLogin={handleLogin} />
+      <LoginForm onLogin={handleLogin} />
     </Flex>
   );
 };
 
-export default Home;
+export default Login;
