@@ -3,7 +3,6 @@ import {
     Button,
     Checkbox,
     Container,
-    Divider,
     FormControl,
     FormLabel,
     Heading,
@@ -14,14 +13,13 @@ import {
     Text,
 } from '@chakra-ui/react'
 import { Logo } from './components/logo'
-import { OAuthButtonGroup } from './components/authButtonGroup'
 import { PasswordField } from './components/passwordField'
 
 interface LoginProps {
     onLogin: () => void
 }
 
-export const Login: React.FC<LoginProps> = ({ onLogin }) => (
+export const LoginForm: React.FC<LoginProps> = ({ onLogin }) => (
     <Container maxW="lg" py={{ base: '12', md: '24 ' }} px={{ base: '0', sm: '8' }}>
         <Stack spacing="8">
             <Stack spacing="6">
