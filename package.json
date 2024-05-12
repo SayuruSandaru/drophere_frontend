@@ -7,7 +7,7 @@
     "@chakra-ui/react": "^1.1.4",
     "@emotion/react": "^11.1.4",
     "@emotion/styled": "^11.0.0",
-    "@types/node": "^12.20.10",
+    "@types/node": "^18.15.0",
     "@types/react": "^17.0.4",
     "@types/react-dom": "^17.0.3",
     "axios": "^0.21.1",
