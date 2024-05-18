@@ -4,13 +4,14 @@ import { colors } from "theme/colors";
 import { LoginForm } from "../login/login_form";
 import { useNavigate } from 'react-router-dom';
 import { Sing_Up } from "./Sign_Up";
+import { RouterPaths } from "router/routerConfig";
 
 const Register: React.FC = () => {
     const navigate = useNavigate();
 
     const handleLogin = () => {
         console.log('Login clicked');
-        navigate('/'); // Navigate to the index page in components
+        navigate(RouterPaths.LOGIN); // Navigate to the index page in components
     };
 
     const isLargeScreen = useBreakpointValue({ base: false, lg: true });
@@ -26,7 +27,7 @@ const Register: React.FC = () => {
                 {isLargeScreen && (
                     <Box w={["100%", "100%", "50%"]} bg="#2bb07b">
                         <Stack direction={"column"} align="center" justify="center" h="100%" spacing={4}>
-                         
+
                             <Text fontSize="4xl" fontWeight="400" color={"white"}>Join Us Today</Text>
                             <Text fontSize="14px" fontWeight="300" color={"white"} maxW="50%" textAlign="center">
                                 Become a part of our community and start exploring all the amazing features we have to offer. Sign up now to get started!
