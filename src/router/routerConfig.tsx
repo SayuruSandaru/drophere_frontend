@@ -1,6 +1,8 @@
 import Login from 'pages/login/index';
 import { Routes, Route } from 'react-router-dom';
 import Register from '../pages/register/index';
+
+
 export default function RouterConfig() {
     return (
         <Routes>
