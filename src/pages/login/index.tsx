@@ -3,32 +3,47 @@ import React from "react";
 import { LoginForm } from "./login_form";
 import { colors } from "theme/colors";
 import { useNavigate } from 'react-router-dom';
-
+import { RouterPaths } from "router/routerConfig";
+// import logo from "../../assets/White_T.png";
+// import logo from "../";
 const Login: React.FC = () => {
   const navigate = useNavigate();
   const handleLogin = () => {
     console.log('Login clicked');
-    navigate('/register'); // Navigate to the next page after login
+    navigate(RouterPaths.REGISTER); // Navigate to the next page after login
   };
 
   const isLargeScreen = useBreakpointValue({ base: false, lg: true });
 
   return (
-    <Flex direction="column" minH="100vh">
+    <Flex direction="column" h="100vh">
       {!isLargeScreen && (
-        <Flex direction="row" bg={colors.primary[100]} p="5">
-          <Heading m={"auto"}>Drop Here</Heading>
+        <Flex direction="row" bg={colors.primary[500]} p="5">
+          <Heading m={"auto"} color={"white"}>Drop Here</Heading>
         </Flex>
       )}
-      <Flex direction="row" flexGrow={1}>
+
+      <Flex direction="row" h="100vh">
         {isLargeScreen && (
-          <Box w="50%" bgColor={colors.primary[100]}>
-            <Stack direction={"column"} align="center" justify="center" h="100%" spacing={4}>
-              <Image src="/images/L01.svg" w={300} />
-              <Text fontSize="4xl" fontWeight="400" color={"black"}>Drop Here</Text>
-              <Text fontSize="14px" fontWeight="300" color={"gray.600"} maxW="50%" textAlign="center">
-                Lorem ipsum dolor sit consecteturis amet, consecteturis dolor sit amet
-              </Text>
+          <Box w="50%" bg={colors.primary[500]}>
+            <Stack direction={"column"} p="50" h="100%" spacing={4}>
+              {/* <Image src="/images/L01.svg" w={300} /> */}
+
+              <Flex alignItems="center">
+                <Image src="/images/White_T.png" w={100} />
+                <Text fontSize="30px" fontWeight="800" color={"white"} ml={-2}>Drop Here</Text>
+              </Flex>
+
+              <Text fontSize="40px" fontWeight="600" color={"white"} pt="20%" lineHeight="shorter">
+                Join the Journey, <br />
+                <Text as='em'><Text as='u'>Share</Text></Text> the Road </Text>
+
+              <Text w={500} color={"white"}>Lorem ipsum dolor sit amet consectetur adipisicing elit. Impedit sapiente perferendis numquam sit</Text>
+
+
+              <Text fontWeight={300} color={"white"} pt="250">© 2021 Drop Here. All rights reserved</Text>
+
+
             </Stack>
           </Box>
         )}

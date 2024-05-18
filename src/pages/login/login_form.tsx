@@ -12,10 +12,13 @@ import {
   Stack,
   Text,
   Flex,
+  Image,
   Center
 } from "@chakra-ui/react";
-import { Logo } from "./components/logo";
+// import { Logo } from "./components/logo";
 import { PasswordField } from "./components/passwordField";
+
+const Signupindex = "/register";
 
 interface LoginProps {
   onLogin: () => void;
@@ -31,12 +34,13 @@ export const LoginForm: React.FC<LoginProps> = ({ onLogin }) => (
   >
     {" "}
     <Stack spacing="8">
-      <Stack spacing="6">
-        <Logo />
+      <Stack>
+        {/* <Logo /> */}
+        <Image src="/images/Black_T.png" w={"24"}  m="auto" />
         <Stack spacing={{ base: "2", md: "3" }} textAlign="center">
           <Heading size="xs">Log in to your account</Heading>
           <Text color="fg.muted">
-            Don't have an account? <Link href="#">Sign up</Link>
+            Don't have an account? <Link href={Signupindex}>Sign up</Link>
           </Text>
         </Stack>
       </Stack>
