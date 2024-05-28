@@ -5,7 +5,8 @@ import Register from '../pages/register/index';
 
 export enum RouterPaths {
     LOGIN = "/",
-    REGISTER = "/register"
+    REGISTER = "/register",
+    HOME = "/home"
 }
 
 const RouterConfig: React.FC = () => {
