@@ -10,6 +10,7 @@ const Register: React.FC = () => {
     const navigate = useNavigate();
 
     const handleLogin = () => {
+        
         console.log('Login clicked');
         navigate(RouterPaths.LOGIN); // Navigate to the index page in components
     };
