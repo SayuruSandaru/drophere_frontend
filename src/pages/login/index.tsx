@@ -38,7 +38,8 @@ const Login: React.FC = () => {
               </Text>
 
               <Text minW={400} color="white">
-              Turn your empty seats into new friendships. Join us and share the journey              </Text>
+              Turn your empty seats into new friendships. Join us and share the journey.  
+              </Text>
 
               <Box display="flex" flexDirection="column" justifyContent="flex-end" height="100vh">
                 <Text fontWeight={300} color="white">© {new Date().getFullYear()} Drop Here. All rights reserved</Text>
