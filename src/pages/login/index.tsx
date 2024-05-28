@@ -23,9 +23,9 @@ const Login: React.FC = () => {
         </Flex>
       )}
 
-      <Flex direction="row" h="100vh">
+      <Flex direction="row" >
         {isLargeScreen && (
-          <Box w="50%" bg={colors.primary[500]}>
+          <Box w="50%" bg={colors.primary[500]} >
             <Stack direction="column" p="50" h="100vh" spacing={4}>
               <Flex alignItems="center">
                 <Image src="/images/White_T.png" w={"14"} />
@@ -37,12 +37,11 @@ const Login: React.FC = () => {
                 <Text as='em'><Text as='u'>Share</Text></Text> the Road
               </Text>
 
-              <Text w={500} color="white">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Impedit sapiente perferendis numquam sit
-              </Text>
+              <Text minW={400} color="white">
+              Turn your empty seats into new friendships. Join us and share the journey              </Text>
 
               <Box display="flex" flexDirection="column" justifyContent="flex-end" height="100vh">
-                <Text fontWeight={300} color="white">© 2021 Drop Here. All rights reserved</Text>
+                <Text fontWeight={300} color="white">© {new Date().getFullYear()} Drop Here. All rights reserved</Text>
               </Box>
             </Stack>
           </Box>
