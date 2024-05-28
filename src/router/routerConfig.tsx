@@ -1,23 +1,21 @@
-import Login from 'pages/login/index';
+import React from 'react';
 import { Routes, Route } from 'react-router-dom';
+import Login from 'pages/login/index';
 import Register from '../pages/register/index';
-
-
-export default function RouterConfig() {
-    return (
-        <Routes>
-            <Route path={RouterPaths.LOGIN} element={<Login />} />
-            <Route path={RouterPaths.REGISTER} element={<Register />} />
-            {/* <Route path="/about" element={<About />} />
-      <Route path="/dashboard" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
-      <Route path="*" element={<NotFound />} /> */}
-        </Routes>
-    );
-}
 
 export enum RouterPaths {
     LOGIN = "/",
     REGISTER = "/register"
 }
 
+const RouterConfig: React.FC = () => {
+    return (
+        <Routes>
+            <Route path={RouterPaths.LOGIN} element={<Login />} />
+            <Route path={RouterPaths.REGISTER} element={<Register />} />
+            {/* Additional routes can be added here */}
+        </Routes>
+    );
+}
 
+export default RouterConfig;
