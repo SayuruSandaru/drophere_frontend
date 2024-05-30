@@ -22,7 +22,7 @@ const Register: React.FC = () => {
     navigate(RouterPaths.LOGIN); // Navigate to the index page in components
   };
 
-  const isLargeScreen = useBreakpointValue({ base: false, lg: true });
+  const isLargeScreen = useBreakpointValue({ base: 'lg', lg: true });
 
   return (
     <Flex direction="column" h="100vh">
@@ -43,12 +43,12 @@ const Register: React.FC = () => {
                   Drop Here
                 </Text>
               </Flex>
-              
+
               <Text fontSize="40px" fontWeight="600" color="white" pt="20%" lineHeight="shorter">
 
                 Be Part of Something Bigger!
               </Text>
-              <Text minW={400}color="white">
+              <Text minW={400} color="white">
 
                 Connect, share, and explore with our community. Sign up today
                 and start sharing your space.
