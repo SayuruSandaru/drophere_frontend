@@ -13,7 +13,7 @@ const Login: React.FC = () => {
     navigate(RouterPaths.REGISTER); // Navigate to the next page after login
   };
 
-  const isLargeScreen = useBreakpointValue({ base: false, lg: true });
+  const isLargeScreen = useBreakpointValue({ base: 'lg', lg: true });
 
   return (
     <Flex direction="column" h="100vh">
