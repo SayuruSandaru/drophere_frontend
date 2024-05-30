@@ -6,6 +6,7 @@ import {
   Text,
   useBreakpointValue,
   Heading,
+  useMediaQuery,
 } from "@chakra-ui/react";
 import React from "react";
 import { colors } from "theme/colors";
@@ -22,7 +23,8 @@ const Register: React.FC = () => {
     navigate(RouterPaths.LOGIN); // Navigate to the index page in components
   };
 
-  const isLargeScreen = useBreakpointValue({ base: 'lg', lg: true });
+  const [isLargeScreen] = useMediaQuery('(min-width: 992px)');
+
 
   return (
     <Flex direction="column" h="100vh">

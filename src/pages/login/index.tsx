@@ -1,4 +1,4 @@
-import { Box, Flex, Image, Stack, Text, useBreakpointValue, Heading } from "@chakra-ui/react";
+import { Box, Flex, Image, Stack, Text, useBreakpointValue, Heading, useMediaQuery } from "@chakra-ui/react";
 import React from "react";
 import { LoginForm } from "./login_form";
 import { colors } from "theme/colors";
@@ -13,8 +13,7 @@ const Login: React.FC = () => {
     navigate(RouterPaths.REGISTER); // Navigate to the next page after login
   };
 
-  const isLargeScreen = useBreakpointValue({ base: 'lg', lg: true });
-
+  const [isLargeScreen] = useMediaQuery('(min-width: 992px)');
   return (
     <Flex direction="column" h="100vh">
       {!isLargeScreen && (
