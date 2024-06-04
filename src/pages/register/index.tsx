@@ -6,6 +6,7 @@ import {
   Text,
   useBreakpointValue,
   Heading,
+  useMediaQuery,
 } from "@chakra-ui/react";
 import React from "react";
 import { colors } from "theme/colors";
@@ -19,10 +20,11 @@ const Register: React.FC = () => {
 
   const handleLogin = () => {
     console.log("Login clicked");
-    navigate(RouterPaths.LOGIN);
+    navigate(RouterPaths.LOGIN); // Navigate to the index page in components
   };
 
-  const isLargeScreen = useBreakpointValue({ base: false, lg: true });
+  const [isLargeScreen] = useMediaQuery('(min-width: 992px)');
+
 
   return (
     <Flex direction="column" h="100vh">
@@ -43,12 +45,12 @@ const Register: React.FC = () => {
                   Drop Here
                 </Text>
               </Flex>
-              
+
               <Text fontSize="40px" fontWeight="600" color="white" pt="20%" lineHeight="shorter">
 
                 Be Part of Something Bigger!
               </Text>
-              <Text minW={400}color="white">
+              <Text minW={400} color="white">
 
                 Connect, share, and explore with our community. Sign up today
                 and start sharing your space.
