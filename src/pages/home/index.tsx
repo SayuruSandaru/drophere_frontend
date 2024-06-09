@@ -1,11 +1,15 @@
 import { useState } from "react";
-import { Box, Flex, Text, Badge, Divider, Icon, Button, Spacer, useDisclosure, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, ModalFooter, Stack, Image } from "@chakra-ui/react";
+import { Box, Flex, Text, Badge, Divider, Icon, Button, Spacer, useDisclosure, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, ModalFooter, Stack, Image, IconButton, HStack, Tag, TagLabel, TagCloseButton } from "@chakra-ui/react";
 import { FaLocationArrow, FaUser } from 'react-icons/fa';
 import { FaLocationDot, FaCalendarDays } from "react-icons/fa6";
 import PlaceAutocompleteModal from "./components/placeModalbox";
 import CalendarComponent from "./components/calenderComponents";
 import CounterComponent from "./components/counterComponent";
 import CarInfo from "./components/resultCard";
+import { FaFilter } from "react-icons/fa";
+import { GoogleMap } from "@react-google-maps/api";
+import MapContainer from "./components/googleMap";
+import FilterDrawer from "./components/filterDrawer";
 
 
 
@@ -14,6 +18,7 @@ const Home = () => {
     const { isOpen: isDestinationPlaceOpen, onOpen: onDestinationPlaceOpen, onClose: onDestinationPlaceClose } = useDisclosure();
     const { isOpen: isCalendarOpen, onOpen: onCalendarOpen, onClose: onCalendarClose } = useDisclosure();
     const { isOpen: isPassangerOpen, onOpen: onPassangerOpen, onClose: onPassangerClose } = useDisclosure();
+    const [isDrawerOpen, setIsDrawerOpen] = useState(false);
     const [selectedItem, setSelectedItem] = useState("");
     const [selectedDate, setSelectedDate] = useState(new Date());
     const [selectedPickupLocation, setSelectedPickupLocation] = useState("");
@@ -80,6 +85,7 @@ const Home = () => {
                         <Text ml={2} fontSize="md" fontWeight={"medium"}>{`${selectedPassangerCount} Passenger`}</Text>
                     </Flex>
                     <Spacer />
+
                     <Button
                         bg="#2b8ab0"
                         color="white"
@@ -91,13 +97,44 @@ const Home = () => {
                     >
                         Search
                     </Button>
+                    <IconButton
+                        icon={<Icon as={FaFilter} w={6} h={4} color={"gray.500"} />}
+                        aria-label="Filter"
+                        onClick={() => setIsDrawerOpen(true)}
+                        borderRadius="md"
+                        _hover={{ bg: "gray.200" }}
+                        height="40px"
+                        width="40px"
+                        ml={4}
+                    />
                 </Flex>
+                <FilterDrawer isOpen={isDrawerOpen} onClose={() => setIsDrawerOpen(false)} />
             </Box>
+            <HStack spacing={4} mb={5}>
 
+                <Tag
+                    size="md"
+                    borderRadius='full'
+                    variant='solid'
+                    bg={'gray.200'}
+                >
+                    <TagLabel color={"gray.600"}>Available only</TagLabel>
+                    <TagCloseButton color={"black"} />
+                </Tag>
+                <Tag
+                    size="md"
+                    borderRadius='full'
+                    variant='solid'
+                    bg={'gray.200'}
+                >
+                    <TagLabel color={"gray.600"}>Car</TagLabel>
+                    <TagCloseButton color={"black"} />
+                </Tag>
+            </HStack>
             <Flex flex={1}>
                 <Box flex={1} bg="white" borderRadius="md" boxShadow="sm" mr={4} p={4}>
                     {/* Left box */}
-                    <Box bg="gray.300" h="100%" />
+                    <MapContainer />
                 </Box>
 
                 <Box flex={1.5} bg="white" borderRadius="md" boxShadow="sm" p={4}>
