@@ -1,18 +1,24 @@
 import { useState } from "react";
-import { Box, Flex, Text, Divider, Icon, Button, Spacer, useDisclosure, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, ModalFooter, Stack } from "@chakra-ui/react";
+import { Box, Flex, Text, Badge, Divider, Icon, Button, Spacer, useDisclosure, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, ModalFooter, Stack, Image } from "@chakra-ui/react";
 import { FaLocationArrow, FaUser } from 'react-icons/fa';
 import { FaLocationDot, FaCalendarDays } from "react-icons/fa6";
 import PlaceAutocompleteModal from "./components/placeModalbox";
 import CalendarComponent from "./components/calenderComponents";
+import CounterComponent from "./components/counterComponent";
+import CarInfo from "./components/resultCard";
+
+
 
 const Home = () => {
     const { isOpen: isPickupPlaceOpen, onOpen: onPickupPlaceOpen, onClose: onPickupPlaceClose } = useDisclosure();
     const { isOpen: isDestinationPlaceOpen, onOpen: onDestinationPlaceOpen, onClose: onDestinationPlaceClose } = useDisclosure();
     const { isOpen: isCalendarOpen, onOpen: onCalendarOpen, onClose: onCalendarClose } = useDisclosure();
+    const { isOpen: isPassangerOpen, onOpen: onPassangerOpen, onClose: onPassangerClose } = useDisclosure();
     const [selectedItem, setSelectedItem] = useState("");
     const [selectedDate, setSelectedDate] = useState(new Date());
     const [selectedPickupLocation, setSelectedPickupLocation] = useState("");
     const [selectedDestinationLocation, setSelectedDestinationLocation] = useState("");
+    const [selectedPassangerCount, setPassangerCount] = useState("");
 
     const handleItemClick = (item) => {
         setSelectedItem(item);
@@ -20,8 +26,10 @@ const Home = () => {
             onCalendarOpen();
         } else if (item === "Pickup") {
             onPickupPlaceOpen();
-        } else {
+        } else if (item === "Destination") {
             onDestinationPlaceOpen();
+        } else {
+
         }
     };
 
@@ -32,13 +40,16 @@ const Home = () => {
 
     const handleDestiantionSelect = (place) => {
         setSelectedDestinationLocation(place);
-        console.log(`Selected place: ${place}`);
     };
 
     const handlePickupLocationSelect = (place) => {
         setSelectedPickupLocation(place);
-        console.log(`Selected place: ${place}`);
-    }
+    };
+
+    const handleCountChange = (count) => {
+        setPassangerCount(count);
+        onCalendarClose();
+    };
 
     const formatDateWithoutYear = (date) => {
         const options = { month: 'short', day: 'numeric' };
@@ -66,7 +77,7 @@ const Home = () => {
                     <Divider orientation="vertical" height="24px" mx={4} borderColor={'gray.400'} />
                     <Flex flex={1} align="center" onClick={() => handleItemClick("Passenger")} cursor="pointer">
                         <Icon as={FaUser} w={6} h={4} color={"gray.500"} />
-                        <Text ml={2} fontSize="md" fontWeight={"medium"} >1 passenger</Text>
+                        <Text ml={2} fontSize="md" fontWeight={"medium"}>{`${selectedPassangerCount} Passenger`}</Text>
                     </Flex>
                     <Spacer />
                     <Button
@@ -92,16 +103,43 @@ const Home = () => {
                 <Box flex={1.5} bg="white" borderRadius="md" boxShadow="sm" p={4}>
                     {/* Right stack of boxes */}
                     <Stack spacing={4}>
-                        <Box bg="gray.200" h="60px" borderRadius="md" />
-                        <Box bg="gray.200" h="60px" borderRadius="md" />
-                        <Box bg="gray.200" h="60px" borderRadius="md" />
-                        <Box bg="gray.200" h="60px" borderRadius="md" />
-                        <Box bg="gray.200" h="60px" borderRadius="md" />
-                        <Box bg="gray.200" h="60px" borderRadius="md" />
-                        <Box bg="gray.200" h="60px" borderRadius="md" />
+                        <CarInfo
+                            imageUrl="https://images.pexels.com/photos/909907/pexels-photo-909907.jpeg?auto=compress&cs=tinysrgb&w=960&h=750&dpr=1"
+                            altText="Kia Motors Subcompact car"
+                            carName="Car"
+                            date="2nd May 2024"
+                            from="Colombo"
+                            to="Badulla"
+                            availability="Available"
+                            seatsLeft="2"
+                            price="$382.25"
+                        />
+                        <CarInfo
+                            imageUrl="https://images.pexels.com/photos/909907/pexels-photo-909907.jpeg?auto=compress&cs=tinysrgb&w=960&h=750&dpr=1"
+                            altText="Kia Motors Subcompact car"
+                            carName="Car"
+                            date="2nd May 2024"
+                            from="Colombo"
+                            to="Badulla"
+                            availability="Available"
+                            seatsLeft="2"
+                            price="$382.25"
+                        />
+                        <CarInfo
+                            imageUrl="https://images.pexels.com/photos/909907/pexels-photo-909907.jpeg?auto=compress&cs=tinysrgb&w=960&h=750&dpr=1"
+                            altText="Kia Motors Subcompact car"
+                            carName="Car"
+                            date="2nd May 2024"
+                            from="Colombo"
+                            to="Badulla"
+                            availability="Available"
+                            seatsLeft="2"
+                            price="$382.25"
+                        />
+
                     </Stack>
                 </Box>
-            </Flex>
+            </Flex >
 
             <PlaceAutocompleteModal isOpen={isPickupPlaceOpen} onClose={onPickupPlaceClose} onPlaceSelect={handlePickupLocationSelect} />
             <PlaceAutocompleteModal isOpen={isDestinationPlaceOpen} onClose={onDestinationPlaceClose} onPlaceSelect={handleDestiantionSelect} />
@@ -111,7 +149,8 @@ const Home = () => {
                 selectedDate={selectedDate}
                 handleDateChange={handleDateChange}
             />
-        </Flex>
+            <CounterComponent isOpen={selectedItem === "Passenger"} onClose={() => setSelectedItem("")} handleCountChange={handleCountChange} />
+        </Flex >
     );
 };
 
