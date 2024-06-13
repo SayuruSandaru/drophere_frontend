@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Box, Flex, Text, Badge, Divider, Icon, Button, Spacer, useDisclosure, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, ModalFooter, Stack, Image, IconButton, HStack, Tag, TagLabel, TagCloseButton } from "@chakra-ui/react";
 import { FaLocationArrow, FaUser } from 'react-icons/fa';
 import { FaLocationDot, FaCalendarDays } from "react-icons/fa6";
-import PlaceAutocompleteModal from "./components/placeModalbox";
+import PlaceAutocompleteModal from "../components/placeModalbox";
 import CalendarComponent from "./components/calenderComponents";
 import CounterComponent from "./components/counterComponent";
 import CarInfo from "./components/resultCard";
