@@ -2,14 +2,15 @@ import { useState } from "react";
 import { Box, Flex, Text, Badge, Divider, Icon, Button, Spacer, useDisclosure, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, ModalFooter, Stack, Image, IconButton, HStack, Tag, TagLabel, TagCloseButton } from "@chakra-ui/react";
 import { FaLocationArrow, FaUser } from 'react-icons/fa';
 import { FaLocationDot, FaCalendarDays } from "react-icons/fa6";
-import PlaceAutocompleteModal from "./components/placeModalbox";
+import PlaceAutocompleteModal from "../components/placeModalbox";
 import CalendarComponent from "./components/calenderComponents";
 import CounterComponent from "./components/counterComponent";
 import CarInfo from "./components/resultCard";
 import { FaFilter } from "react-icons/fa";
-import { GoogleMap } from "@react-google-maps/api";
+import { GoogleMap, Libraries, LoadScript } from "@react-google-maps/api";
 import MapContainer from "./components/googleMap";
 import FilterDrawer from "./components/filterDrawer";
+
 
 
 
@@ -133,7 +134,6 @@ const Home = () => {
             </HStack>
             <Flex flex={1}>
                 <Box flex={1} bg="white" borderRadius="md" boxShadow="sm" mr={4} p={4}>
-                    {/* Left box */}
                     <MapContainer />
                 </Box>
 
