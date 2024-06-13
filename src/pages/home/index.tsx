@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Box, Flex, Text, Badge, Divider, Icon, Button, Spacer, useDisclosure, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, ModalFooter, Stack, Image, IconButton, HStack, Tag, TagLabel, TagCloseButton } from "@chakra-ui/react";
+import { Box, Flex, Text, Badge, Divider, Icon, Button, Spacer, useDisclosure, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, ModalFooter, Stack, Image, IconButton, HStack, Tag, TagLabel, TagCloseButton, VStack, Avatar } from "@chakra-ui/react";
 import { FaLocationArrow, FaUser } from 'react-icons/fa';
 import { FaLocationDot, FaCalendarDays } from "react-icons/fa6";
 import PlaceAutocompleteModal from "../components/placeModalbox";
@@ -64,6 +64,13 @@ const Home = () => {
 
     return (
         <Flex direction="column" p={4} w="100vw" h="100vh" bg="gray.50">
+            <Flex direction="row" mb={4}>
+                <Image src="/images/Black_T.png" alt="Drop Here Logo" w="50px" />
+                <Text fontSize="xl" fontWeight="bold" color="black" mt={2}>Drop Here</Text>
+                <Spacer />
+                <Button borderRadius={300} bgColor={"blackAlpha.800"} size={"sm"} color={"white"}>Earn with us</Button>
+                <Avatar size="sm" ml={4} mr={5} name="John" />
+            </Flex>
             <Box bg="white" borderRadius="md" boxShadow="sm" mb={4} p={2}>
                 <Flex direction="row" align="center">
                     <Flex flex={1} align="center" onClick={() => handleItemClick("Pickup")} cursor="pointer">
