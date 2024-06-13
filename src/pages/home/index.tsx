@@ -7,9 +7,10 @@ import CalendarComponent from "./components/calenderComponents";
 import CounterComponent from "./components/counterComponent";
 import CarInfo from "./components/resultCard";
 import { FaFilter } from "react-icons/fa";
-import { GoogleMap } from "@react-google-maps/api";
+import { GoogleMap, Libraries, LoadScript } from "@react-google-maps/api";
 import MapContainer from "./components/googleMap";
 import FilterDrawer from "./components/filterDrawer";
+
 
 
 
@@ -133,7 +134,6 @@ const Home = () => {
             </HStack>
             <Flex flex={1}>
                 <Box flex={1} bg="white" borderRadius="md" boxShadow="sm" mr={4} p={4}>
-                    {/* Left box */}
                     <MapContainer />
                 </Box>
 
