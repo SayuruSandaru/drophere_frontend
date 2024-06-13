@@ -6,15 +6,18 @@ import PlaceAutocompleteModal from "../components/placeModalbox";
 import CalendarComponent from "./components/calenderComponents";
 import CounterComponent from "./components/counterComponent";
 import CarInfo from "./components/resultCard";
-import { FaFilter } from "react-icons/fa";
+import { FaFilter, FaBox } from "react-icons/fa";
 import { GoogleMap, Libraries, LoadScript } from "@react-google-maps/api";
 import MapContainer from "./components/googleMap";
 import FilterDrawer from "./components/filterDrawer";
+import { useNavigate } from "react-router-dom";
+import { RouterPaths } from "router/routerConfig";
 
 
 
 
 const Home = () => {
+    const navigate = useNavigate();
     const { isOpen: isPickupPlaceOpen, onOpen: onPickupPlaceOpen, onClose: onPickupPlaceClose } = useDisclosure();
     const { isOpen: isDestinationPlaceOpen, onOpen: onDestinationPlaceOpen, onClose: onDestinationPlaceClose } = useDisclosure();
     const { isOpen: isCalendarOpen, onOpen: onCalendarOpen, onClose: onCalendarClose } = useDisclosure();
@@ -68,6 +71,10 @@ const Home = () => {
                 <Image src="/images/Black_T.png" alt="Drop Here Logo" w="50px" />
                 <Text fontSize="xl" fontWeight="bold" color="black" mt={2}>Drop Here</Text>
                 <Spacer />
+                <Button borderRadius={3} bgColor={"transparent"} size={"sm"} color={"black"} mr={10} onClick={() => { navigate(RouterPaths.LOGIN); }}>
+                    <Icon as={FaBox} w={6} h={4} color={"gray.700"} mr={1} />
+                    Deliver
+                </Button>
                 <Button borderRadius={300} bgColor={"blackAlpha.800"} size={"sm"} color={"white"}>Earn with us</Button>
                 <Avatar size="sm" ml={4} mr={5} name="John" />
             </Flex>
