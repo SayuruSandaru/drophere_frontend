@@ -3,14 +3,14 @@ import { Routes, Route } from 'react-router-dom';
 import Login from 'pages/login/index';
 import Register from '../pages/register/index';
 import Home from 'pages/home';
-import SearchDelivery from 'pages/Delivery/Search';
+import SearchDelivery from 'pages/search - delivery';
 // import SearchDelivery from 'pages/Delivery/Search';
 
 export enum RouterPaths {
     LOGIN = "/",
     REGISTER = "/register",
     HOME = "/home",
-    SEARCHDELIVERY="/delivery/search"
+    SEARCHDELIVERY = "/delivery/search"
 }
 
 const RouterConfig: React.FC = () => {
