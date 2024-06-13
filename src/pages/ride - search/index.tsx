@@ -17,7 +17,7 @@ const Ride: React.FC = () => {
     };
     const handleLogin = () => {
         console.log('Login clicked');
-        navigate(RouterPaths.RIDE); // Navigate to the next page after login
+        navigate(RouterPaths.RIDESEARCH); // Navigate to the next page after login
 
     };
 
