@@ -1,20 +1,18 @@
-import { Box, Flex, Image, Stack, Text, useBreakpointValue, Heading } from "@chakra-ui/react";
+import { Box, Flex, Image, Stack, Text, useBreakpointValue, Heading, useMediaQuery } from "@chakra-ui/react";
 import React from "react";
 import { LoginForm } from "./login_form";
 import { colors } from "theme/colors";
 import { useNavigate } from 'react-router-dom';
 import { RouterPaths } from "router/routerConfig";
-
 const Login: React.FC = () => {
   const navigate = useNavigate();
 
   const handleLogin = () => {
     console.log('Login clicked');
-    navigate(RouterPaths.REGISTER); // Navigate to the next page after login
+    navigate(RouterPaths.HOME); // Navigate to the next page after login
   };
 
-  const isLargeScreen = useBreakpointValue({ base: 'lg', lg: true });
-
+  const [isLargeScreen] = useMediaQuery('(min-width: 992px)');
   return (
     <Flex direction="column" h="100vh">
       {!isLargeScreen && (
@@ -37,7 +35,7 @@ const Login: React.FC = () => {
                 <Text as='em'><Text as='u'>Share</Text></Text> the Road
               </Text>
 
-              <Text minW={400} color="white">
+              <Text minW={400} color="white" fontFamily={"sans-serif"}>
                 Turn your empty seats into new friendships. Join us and share the journey              </Text>
 
               <Box display="flex" flexDirection="column" justifyContent="flex-end" height="100vh">

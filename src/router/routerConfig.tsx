@@ -2,6 +2,7 @@ import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import Login from 'pages/login/index';
 import Register from '../pages/register/index';
+import Home from 'pages/home';
 
 export enum RouterPaths {
     LOGIN = "/",
@@ -14,7 +15,7 @@ const RouterConfig: React.FC = () => {
         <Routes>
             <Route path={RouterPaths.LOGIN} element={<Login />} />
             <Route path={RouterPaths.REGISTER} element={<Register />} />
-            {/* Additional routes can be added here */}
+            <Route path={RouterPaths.HOME} element={<Home />} />
         </Routes>
     );
 }
