@@ -15,13 +15,13 @@ interface CarInfoProps {
 
 const CarInfo: React.FC<CarInfoProps> = ({ imageUrl, altText, carName, date, from, to, availability, seatsLeft, price }) => {
     return (
-        <Box borderRadius="md" borderWidth="1px">
-            <Flex direction={"row"}>
+        <Box borderRadius="md" borderWidth="1px" p={4}>
+            <Flex direction={{ base: "column", md: "row" }}>
                 <Image
-                    boxSize="144"
+                    boxSize={{ base: "100%", md: "144px" }}
                     objectFit="cover"
                     borderRadius={"md"}
-                    m={5}
+                    m={{ base: "auto", md: 5 }}
                     src={imageUrl}
                     alt={altText}
                 />
@@ -41,11 +41,10 @@ const CarInfo: React.FC<CarInfoProps> = ({ imageUrl, altText, carName, date, fro
                             <Icon as={MdAirlineSeatReclineExtra} w={4} h={4} color="gray.500" mt={0} />
                             <Text ml={2}>{seatsLeft} seats left</Text>
                         </Flex>
-
                     </Stack>
                 </Box>
                 <Spacer />
-                <Text fontSize="xl" fontWeight="bold" m={5}>{price}</Text>
+                <Text fontSize="xl" fontWeight="bold" m={{ base: 4, md: 5 }}>{price}</Text>
             </Flex>
         </Box>
     );
