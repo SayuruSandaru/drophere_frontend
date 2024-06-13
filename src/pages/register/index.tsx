@@ -1,10 +1,11 @@
 import { Box, Flex, Image, Stack, Text, useBreakpointValue, Heading } from "@chakra-ui/react";
 import React from "react";
 import { colors } from "theme/colors";
-import { LoginForm } from "../login/login_form";
+//import { LoginForm } from "../login/login_form";
 import { useNavigate } from 'react-router-dom';
 import { Sing_Up } from "./Sign_Up";
 import { RouterPaths } from "router/routerConfig";
+
 
 const Register: React.FC = () => {
     const navigate = useNavigate();
