@@ -1,8 +1,10 @@
-import { Button, Flex, Modal, ModalBody, ModalCloseButton, ModalContent, ModalHeader, ModalOverlay, Spacer, Text } from "@chakra-ui/react";
+import { Button, Flex, Modal, ModalBody, ModalCloseButton, ModalContent, ModalHeader, ModalOverlay, Spacer, Text, useDisclosure } from "@chakra-ui/react";
 import { useState } from "react";
 
 const CounterComponent = ({ isOpen, onClose, handleCountChange }) => {
     const [count, setCount] = useState(0);
+    const { isOpen: isPickupPlaceOpen, onOpen: onPickupPlaceOpen, onClose: onPickupPlaceClose } = useDisclosure();
+    const { isOpen: isDestinationPlaceOpen, onOpen: onDestinationPlaceOpen, onClose: onDestinationPlaceClose } = useDisclosure();
 
     return (
         <Modal isOpen={isOpen} onClose={onClose}>
@@ -16,8 +18,10 @@ const CounterComponent = ({ isOpen, onClose, handleCountChange }) => {
                         <Spacer />
                         <Button
                             onClick={() => {
-                                setCount(count - 1);
-                                handleCountChange(count - 1);
+                                if (count > 0) {
+                                    setCount(count - 1);
+                                    handleCountChange(count - 1);
+                                }
                             }}
                             variant="outline"
                             colorScheme="black"
