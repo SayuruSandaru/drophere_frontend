@@ -6,12 +6,15 @@ import PlaceAutocompleteModal from "../components/placeModalbox";
 import CalendarComponent from "./components/calenderComponents";
 import CounterComponent from "./components/counterComponent";
 import CarInfo from "./components/resultCard";
-import { FaFilter, FaBox } from "react-icons/fa";
+import { FaFilter, FaBox, FaBars } from "react-icons/fa";
 import MapContainer from "./components/googleMap";
 import FilterDrawer from "./components/filterDrawer";
 import { useNavigate } from "react-router-dom";
 import { RouterPaths } from "router/routerConfig";
 import { is } from "@babel/types";
+import MenuDrawer from "./components/menuDrawer";
+import { set } from "lodash";
+import FilterDrawerMobile from "./components/filterDrawerMobile";
 
 const Home = () => {
     const navigate = useNavigate();
@@ -19,7 +22,9 @@ const Home = () => {
     const { isOpen: isDestinationPlaceOpen, onOpen: onDestinationPlaceOpen, onClose: onDestinationPlaceClose } = useDisclosure();
     const { isOpen: isCalendarOpen, onOpen: onCalendarOpen, onClose: onCalendarClose } = useDisclosure();
     const { isOpen: isPassangerOpen, onOpen: onPassangerOpen, onClose: onPassangerClose } = useDisclosure();
-    const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+    const [isFilterDrawerOpen, setIsFilterDrawerOpen] = useState(false);
+    const [isFilterDrawerMobileOpen, setIsFilterDrawerMobileOpen] = useState(false);
+    const [isMenuDrawerOpen, setIsMenuDrawerOpen] = useState(false);
     const [selectedItem, setSelectedItem] = useState("");
     const [selectedDate, setSelectedDate] = useState(new Date());
     const [selectedPickupLocation, setSelectedPickupLocation] = useState("");
@@ -83,6 +88,38 @@ const Home = () => {
                     </HStack>
                 </Flex>
             )}
+
+            {!isLargeScreen && (
+                (
+
+                    <Flex align="center" mb={{ base: 4, md: 0 }}>
+                        <Image src="/images/Black_T.png" alt="Drop Here Logo" w="50px" />
+                        <Text fontSize="xl" fontWeight="bold" color="black" ml={2}>Drop Here</Text>
+                        <Spacer />
+                        <IconButton
+                            icon={<Icon as={FaBars} w={6} h={4} color={"gray.500"} />}
+                            aria-label="Filter"
+                            onClick={() => setIsMenuDrawerOpen(true)}
+                            borderRadius="md"
+                            _hover={{ bg: "gray.200" }}
+                            height="40px"
+                            width="40px"
+                            ml={3}
+                        />
+                        <IconButton
+                            icon={<Icon as={FaFilter} w={6} h={4} color={"gray.500"} />}
+                            aria-label="Filter"
+                            onClick={() => setIsFilterDrawerMobileOpen(true)}
+                            borderRadius="md"
+                            _hover={{ bg: "gray.200" }}
+                            height="40px"
+                            width="40px"
+                            ml={3}
+                        />
+                    </Flex>
+
+                )
+            )}
             {
                 isLargeScreen && (
                     <Box bg="white" borderRadius="md" boxShadow="sm" mb={4} p={2}>
@@ -121,7 +158,7 @@ const Home = () => {
                             <IconButton
                                 icon={<Icon as={FaFilter} w={6} h={4} color={"gray.500"} />}
                                 aria-label="Filter"
-                                onClick={() => setIsDrawerOpen(true)}
+                                onClick={() => setIsFilterDrawerOpen(true)}
                                 borderRadius="md"
                                 _hover={{ bg: "gray.200" }}
                                 height="40px"
@@ -129,7 +166,7 @@ const Home = () => {
                                 ml={3}
                             />
                         </Flex>
-                        <FilterDrawer isOpen={isDrawerOpen} onClose={() => setIsDrawerOpen(false)} />
+
                     </Box>
                 )
             }
@@ -147,6 +184,9 @@ const Home = () => {
                     </HStack>
                 )
             }
+            <FilterDrawer isOpen={isFilterDrawerOpen} onClose={() => setIsFilterDrawerOpen(false)} />
+            <FilterDrawerMobile isOpen={isFilterDrawerMobileOpen} onClose={() => setIsFilterDrawerMobileOpen(false)} />
+            <MenuDrawer isOpen={isMenuDrawerOpen} onClose={() => setIsMenuDrawerOpen(false)} />
             <Flex flex={1} direction={{ base: "column", lg: "row" }}>
                 <Box flex={1} bg="white" borderRadius="md" boxShadow="sm" mb={{ base: 4, lg: 0 }} mr={{ lg: 4 }} p={4}>
                     <MapContainer />
@@ -163,6 +203,7 @@ const Home = () => {
                             availability="Available"
                             seatsLeft="2"
                             price="$382.25"
+                            onClick={() => navigate(RouterPaths.ORDER)}
                         />
                         <CarInfo
                             imageUrl="https://images.pexels.com/photos/909907/pexels-photo-909907.jpeg?auto=compress&cs=tinysrgb&w=960&h=750&dpr=1"
@@ -174,6 +215,7 @@ const Home = () => {
                             availability="Available"
                             seatsLeft="2"
                             price="$382.25"
+                            onClick={() => navigate(RouterPaths.ORDER)}
                         />
                         <CarInfo
                             imageUrl="https://images.pexels.com/photos/909907/pexels-photo-909907.jpeg?auto=compress&cs=tinysrgb&w=960&h=750&dpr=1"
@@ -185,6 +227,7 @@ const Home = () => {
                             availability="Available"
                             seatsLeft="2"
                             price="$382.25"
+                            onClick={() => navigate(RouterPaths.ORDER)}
                         />
                     </Stack>
                 </Box>

@@ -16,8 +16,10 @@ const CounterComponent = ({ isOpen, onClose, handleCountChange }) => {
                         <Spacer />
                         <Button
                             onClick={() => {
-                                setCount(count - 1);
-                                handleCountChange(count - 1);
+                                if (count > 0) {
+                                    setCount(count - 1);
+                                    handleCountChange(count - 1);
+                                }
                             }}
                             variant="outline"
                             colorScheme="black"
