@@ -203,6 +203,7 @@ const Home = () => {
                             availability="Available"
                             seatsLeft="2"
                             price="$382.25"
+                            onClick={() => navigate(RouterPaths.ORDER)}
                         />
                         <CarInfo
                             imageUrl="https://images.pexels.com/photos/909907/pexels-photo-909907.jpeg?auto=compress&cs=tinysrgb&w=960&h=750&dpr=1"
@@ -214,6 +215,7 @@ const Home = () => {
                             availability="Available"
                             seatsLeft="2"
                             price="$382.25"
+                            onClick={() => navigate(RouterPaths.ORDER)}
                         />
                         <CarInfo
                             imageUrl="https://images.pexels.com/photos/909907/pexels-photo-909907.jpeg?auto=compress&cs=tinysrgb&w=960&h=750&dpr=1"
@@ -225,6 +227,7 @@ const Home = () => {
                             availability="Available"
                             seatsLeft="2"
                             price="$382.25"
+                            onClick={() => navigate(RouterPaths.ORDER)}
                         />
                     </Stack>
                 </Box>

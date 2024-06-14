@@ -11,8 +11,8 @@ export enum RouterPaths {
     LOGIN = "/",
     REGISTER = "/register",
     HOME = "/home",
-    ORDER = "/order"
-    SEARCHDELIVERY = "/delivery/search"
+    ORDER = "/order",
+    SEARCHDELIVERY = "/delivery/search",
 }
 
 const RouterConfig: React.FC = () => {

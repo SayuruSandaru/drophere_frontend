@@ -11,11 +11,12 @@ interface CarInfoProps {
     availability: string;
     seatsLeft: string;
     price: string;
+    onClick: () => void
 }
 
-const CarInfo: React.FC<CarInfoProps> = ({ imageUrl, altText, carName, date, from, to, availability, seatsLeft, price }) => {
+const CarInfo: React.FC<CarInfoProps> = ({ imageUrl, altText, carName, date, from, to, availability, seatsLeft, price, onClick }) => {
     return (
-        <Box borderRadius="md" borderWidth="1px" p={4}>
+        <Box borderRadius="md" borderWidth="1px" p={4} onClick={onClick}>
             <Flex direction={{ base: "column", md: "row" }}>
                 <Image
                     boxSize={{ base: "100%", md: "144px" }}
