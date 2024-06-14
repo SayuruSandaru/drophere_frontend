@@ -5,7 +5,9 @@ import Register from '../pages/register/index';
 import Home from 'pages/home';
 import Order from 'pages/order/index';
 import SearchDelivery from 'pages/search - delivery';
+import Ride from 'pages/ride - search';
 // import SearchDelivery from 'pages/Delivery/Search';
+import Profile from 'pages/owner_profile';
 
 export enum RouterPaths {
     LOGIN = "/",
@@ -13,6 +15,8 @@ export enum RouterPaths {
     HOME = "/home",
     ORDER = "/order",
     SEARCHDELIVERY = "/delivery/search",
+    SEARCHRIDE = "/ride/search",
+    PROFILE = "/profile"
 }
 
 const RouterConfig: React.FC = () => {
@@ -23,8 +27,13 @@ const RouterConfig: React.FC = () => {
             <Route path={RouterPaths.HOME} element={<Home />} />
             <Route path={RouterPaths.ORDER} element={<Order />} />
             <Route path={RouterPaths.SEARCHDELIVERY} element={<SearchDelivery />} />
+            <Route path={RouterPaths.SEARCHRIDE} element={<Ride />} />
+            <Route path={RouterPaths.PROFILE} element={<Profile />} />
         </Routes>
     );
 }
 
 export default RouterConfig;
+
+
+
