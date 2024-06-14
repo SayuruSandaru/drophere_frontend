@@ -4,6 +4,7 @@ import { LoginForm } from "./login_form";
 import { colors } from "theme/colors";
 import { useNavigate } from 'react-router-dom';
 import { RouterPaths } from "router/routerConfig";
+import Footer from "pages/components/footer";
 const Login: React.FC = () => {
   const navigate = useNavigate();
 
@@ -44,6 +45,7 @@ const Login: React.FC = () => {
         )}
         <LoginForm onLogin={handleLogin} />
       </Flex>
+      <Footer />
     </Flex>
   );
 };
