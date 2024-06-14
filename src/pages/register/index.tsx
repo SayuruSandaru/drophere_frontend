@@ -15,6 +15,7 @@ import { useNavigate } from "react-router-dom";
 import { Sing_Up } from "./Sign_Up";
 import { RouterPaths } from "router/routerConfig";
 
+
 const Register: React.FC = () => {
   const navigate = useNavigate();
 
