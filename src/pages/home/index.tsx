@@ -198,7 +198,7 @@ const Home = () => {
                             altText="Kia Motors Subcompact car"
                             carName="Car"
                             date="2nd May 2024"
-                            from="Colombo"
+                            from="Kandy"
                             to="Badulla"
                             availability="Available"
                             seatsLeft="2"
