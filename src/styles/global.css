@@ -13,3 +13,7 @@ a:focus {
 .font-container {
   font-family: "Montserrat", sans-serif;
 }
+
+.pac-container {
+  z-index: 2000 !important; 
+}

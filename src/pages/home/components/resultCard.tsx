@@ -23,39 +23,26 @@ interface CarInfoProps {
   availability: string;
   seatsLeft: string;
   price: string;
+  onClick: () => void
   name: string;
 }
 
-const CarInfo: React.FC<CarInfoProps> = ({
-  imageUrl,
-  altText,
-  carName,
-  date,
-  from,
-  to,
-  availability,
-  seatsLeft,
-  price,
-  name,
-}) => {
-    const navigate = useNavigate();
+const CarInfo: React.FC<CarInfoProps> = ({ imageUrl, altText, carName, date, from, to, availability, seatsLeft, price, name, onClick }) => {
   return (
-    <Box borderRadius="md" borderWidth="1px">
-      <Flex direction={"row"}>
+    <Box borderRadius="md" borderWidth="1px" p={4} onClick={onClick}>
+      <Flex direction={{ base: "column", md: "row" }}>
         <Image
-          boxSize="144"
+          boxSize={{ base: "100%", md: "144px" }}
           objectFit="cover"
           borderRadius={"md"}
-          m={5}
+          m={{ base: "auto", md: 5 }}
           src={imageUrl}
           alt={altText}
         />
         <Box m={4}>
           <Stack spacing={2}>
             <Text fontSize="lg">
-              <Box as="span" fontWeight="bold">
-                {carName}
-              </Box>{" "}
+              <Box as="span" fontWeight="bold">{carName}</Box>{" "}
             </Text>
 
             <Text fontSize="sm">{date}</Text>
@@ -67,20 +54,11 @@ const CarInfo: React.FC<CarInfoProps> = ({
             </Text>
 
             <Flex align="center">
-              <Badge colorScheme="green" w={75}>
-                {availability}
-              </Badge>
+              <Badge colorScheme="green" w={75}>{availability}</Badge>
               <Box ml={2} />
-              <Icon
-                as={MdAirlineSeatReclineExtra}
-                w={4}
-                h={4}
-                color="gray.500"
-                mt={0}
-              />
+              <Icon as={MdAirlineSeatReclineExtra} w={4} h={4} color="gray.500" mt={0} />
               <Text ml={2}>{seatsLeft} seats left</Text>
             </Flex>
-
             <Divider
               sx={{
                 height: "3px",
@@ -90,7 +68,7 @@ const CarInfo: React.FC<CarInfoProps> = ({
             />
             <Box
               onClick={() => navigate("/profile")}
-              _hover={{ bg: "gray.50", cursor: "pointer",borderRadius:"md" }}
+              _hover={{ bg: "gray.50", cursor: "pointer", borderRadius: "md" }}
               cursor="pointer"
             >
               <Flex align={"center"}>
@@ -106,12 +84,11 @@ const CarInfo: React.FC<CarInfoProps> = ({
           </Stack>
         </Box>
         <Spacer />
-        <Text fontSize="xl" fontWeight="bold" m={5}>
-          {price}
-        </Text>
+        <Text fontSize="xl" fontWeight="bold" m={{ base: 4, md: 5 }}>{price}</Text>
       </Flex>
     </Box>
   );
 };
 
 export default CarInfo;
+

@@ -47,10 +47,10 @@ const PlaceAutocompleteModal: React.FC<PlaceAutocompleteModalProps> = ({ isOpen,
         setQuery(value);
         if (value && autocompleteService.current) {
             autocompleteService.current.getPlacePredictions(
-                { 
-                    input: value, 
-                    componentRestrictions: { country: 'LK' } 
-                }, 
+                {
+                    input: value,
+                    componentRestrictions: { country: 'LK' }
+                },
                 (predictions, status) => {
                     if (status === google.maps.places.PlacesServiceStatus.OK && predictions) {
                         setFilteredSuggestions(predictions);
@@ -67,7 +67,7 @@ const PlaceAutocompleteModal: React.FC<PlaceAutocompleteModalProps> = ({ isOpen,
     const handleSuggestionClick = (suggestion: PlacePrediction) => {
         setQuery(suggestion.description);
         setFilteredSuggestions([]);
-        onPlaceSelect(suggestion.description); 
+        onPlaceSelect(suggestion.description);
         onClose();
     };
 
@@ -125,3 +125,4 @@ const PlaceAutocompleteModal: React.FC<PlaceAutocompleteModalProps> = ({ isOpen,
 };
 
 export default PlaceAutocompleteModal;
+

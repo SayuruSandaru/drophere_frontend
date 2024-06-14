@@ -10,7 +10,13 @@ import {
     Button,
     Text,
     Box,
+    Avatar,
+    Center,
+    Divider,
 } from '@chakra-ui/react';
+import { FaBox } from 'react-icons/fa';
+import { useNavigate } from 'react-router-dom';
+import { RouterPaths } from 'router/routerConfig';
 
 const Chips = ({ options, selectedOption, onSelect }) => {
     return (
@@ -38,7 +44,8 @@ const Chips = ({ options, selectedOption, onSelect }) => {
     );
 };
 
-const FilterDrawer = ({ isOpen, onClose }) => {
+const MenuDrawer = ({ isOpen, onClose }) => {
+    const navigate = useNavigate();
     const [selectedVehicleOption, setSelectedVehicleOption] = useState('');
     const [selectedAvailabilityOption, setSelectedAvailabilityOption] = useState('');
 
@@ -47,36 +54,37 @@ const FilterDrawer = ({ isOpen, onClose }) => {
 
 
     return (
-        <Drawer
-            isOpen={isOpen}
-            placement="right"
-            onClose={onClose}
-        >
+        <Drawer isOpen={isOpen} placement="right" onClose={onClose}>
             <DrawerOverlay />
             <DrawerContent>
                 <DrawerCloseButton />
-                <DrawerHeader>Filter Options</DrawerHeader>
-
+                <DrawerHeader>Menu </DrawerHeader>
                 <DrawerBody>
-                    <Text>Vehicle type</Text>
-                    <Chips options={vehicleOption} selectedOption={selectedVehicleOption} onSelect={setSelectedVehicleOption} />
+                    <Center>
+                        <Avatar name="John Doe" src="https://bit.ly/broken-link" />
+                    </Center>
+                    <Box mt={3} />
+                    <Center>
+                        <Text ml={3} fontSize="lg" fontWeight="bold">John Doe</Text>
+                    </Center>
                     <Box mt={10} />
-                    <Text>Availablity</Text>
-                    <Chips options={availabilityOption} selectedOption={selectedAvailabilityOption} onSelect={setSelectedAvailabilityOption} />
-                </DrawerBody>
-
-                <DrawerFooter>
-                    <Button variant="outline" mr={3} onClick={onClose}>
-                        Cancel
+                    <Divider></Divider>
+                    <Box mt={35} />
+                    <Button variant="outline" w="full" mb={3} onClick={() => { navigate(RouterPaths.SEARCHDELIVERY) }}>
+                        <FaBox />
+                        <Text ml={3}>Deliver</Text>
                     </Button>
-                    <Button colorScheme="blue">Apply</Button>
-                </DrawerFooter>
+                    <Button w="full" mt={3} bgColor={"black"}>
+                        <Text ml={3} color={"white"}>Earn with us</Text>
+                    </Button>
+                </DrawerBody>
             </DrawerContent>
         </Drawer>
+
     );
 };
 
-export default FilterDrawer;
+export default MenuDrawer;
 
 
 
