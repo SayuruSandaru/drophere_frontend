@@ -1,4 +1,4 @@
-import { Box, Flex, Image, Stack, Text, useBreakpointValue, Heading, useMediaQuery } from "@chakra-ui/react";
+import { Box, Flex, Image, Stack, Text, Heading, useMediaQuery } from "@chakra-ui/react";
 import React from "react";
 import { LoginForm } from "./login_form";
 import { colors } from "theme/colors";
@@ -34,10 +34,8 @@ const Login: React.FC = () => {
                 Join the Journey, <br />
                 <Text as='em'><Text as='u'>Share</Text></Text> the Road
               </Text>
-
               <Text minW={400} color="white" fontFamily={"sans-serif"}>
                 Turn your empty seats into new friendships. Join us and share the journey              </Text>
-
               <Box display="flex" flexDirection="column" justifyContent="flex-end" height="100vh">
                 <Text fontWeight={300} color="white">© {new Date().getFullYear()} Drop Here. All rights reserved</Text>
               </Box>

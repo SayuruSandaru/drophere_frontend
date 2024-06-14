@@ -20,7 +20,7 @@ const Register: React.FC = () => {
 
   const handleLogin = () => {
     console.log("Login clicked");
-    navigate(RouterPaths.LOGIN);
+    navigate(RouterPaths.LOGIN); // Navigate to the index page in components
   };
 
   const [isLargeScreen] = useMediaQuery('(min-width: 992px)');
