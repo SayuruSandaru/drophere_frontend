@@ -4,13 +4,12 @@ import { LoginForm } from "./login_form";
 import { colors } from "theme/colors";
 import { useNavigate } from 'react-router-dom';
 import { RouterPaths } from "router/routerConfig";
-
 const Login: React.FC = () => {
   const navigate = useNavigate();
 
   const handleLogin = () => {
     console.log('Login clicked');
-    navigate(RouterPaths.REGISTER); // Navigate to the next page after login
+    navigate(RouterPaths.HOME); // Navigate to the next page after login
   };
 
   const [isLargeScreen] = useMediaQuery('(min-width: 992px)');
@@ -35,11 +34,8 @@ const Login: React.FC = () => {
                 Join the Journey, <br />
                 <Text as='em'><Text as='u'>Share</Text></Text> the Road
               </Text>
-
-              <Text minW={400} color="white">
-                Turn your empty seats into new friendships. Join us and share the journey.  
-              </Text>
-
+              <Text minW={400} color="white" fontFamily={"sans-serif"}>
+                Turn your empty seats into new friendships. Join us and share the journey              </Text>
               <Box display="flex" flexDirection="column" justifyContent="flex-end" height="100vh">
                 <Text fontWeight={300} color="white">© {new Date().getFullYear()} Drop Here. All rights reserved</Text>
               </Box>
