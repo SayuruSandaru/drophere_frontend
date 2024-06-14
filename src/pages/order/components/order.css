@@ -1,0 +1,14 @@
+.hr{
+    border: 1px solid rgb(234, 234, 234);
+    height: 5px;
+    border-radius: 10px;
+    background-color: rgb(234, 234, 234);
+    margin-top: 20px;
+}
+
+.time{
+    size: 100px;
+    color: #2b8ab0;
+    font-weight: bold;
+}
+
