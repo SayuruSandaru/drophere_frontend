@@ -1,68 +1,66 @@
-import React from 'react'
-import "react-responsive-modal/styles.css";
-import {Modal} from 'react-responsive-modal';
-import './payment.css'
+import React from 'react';
+import {
+    Modal,
+    ModalOverlay,
+    ModalContent,
+    ModalHeader,
+    ModalFooter,
+    ModalBody,
+    ModalCloseButton,
+    Button,
+    Input,
+    FormControl,
+    Text,
+    FormLabel,
+    Flex,
+    Image,
+    Box
+} from '@chakra-ui/react';
+import './payment.css';
 
 interface RespModalProps {
     hasOpen: boolean;
     onCloseModal: () => void;
-  }
+}
 
 class RespModal extends React.Component<RespModalProps> {
 
-    render(){
-        const {hasOpen, onCloseModal} = this.props;
+    render() {
+        const { hasOpen, onCloseModal } = this.props;
 
-        return(
-            <div>
-                
-                <Modal classNames={{ modal: 'modal'}} open={hasOpen} onClose={onCloseModal} center >
-                <h2 className='hediing'>Add credit or debit card</h2>
-                <form>
-                    
-                    
-                    <div>
-                    <label>Card Number</label><br/>
-                    <input type='text' className='details' placeholder='Card Number' maxLength={16} required/><br/>
-                    </div>
-                    
-                    <div>
-                    <label>Cardholder Name</label><br/>
-                    <input type='text' className='details' placeholder='Enter Cardholder Name' required/><br/>
-                    </div>
-                   
-                    <div className='flex'>
-                    
-                    <div>
-                    <label className='date'>Expiry Date</label><br/>                 
-                    <input type='text' className='box' placeholder='MM/YY' maxLength={5} required/>
-                    </div>
-
-                    <div>                    
-                    <label className='cvv'>CVV</label><br/>
-                    <input type='text' className='box' placeholder='CVV' maxLength={3} required/>
-                
-                    </div>
-                    
-                    </div>
-
-                    <div className='logo'>
-                        <img src='/images/visa.png' alt='visa' className='icon' id='visa' width={65} />
-                        <img src='/images/master.png' alt='mastercard' className='icon' id='master' width={50}/>
-                    </div>
-
-                    <div className='btn'>
-                    <button type='submit' className='submitbtn'>Pay</button>
-                    </div>
-                </form>
-                </Modal>
-            </div>
-        )
+        return (
+            <Modal isOpen={hasOpen} onClose={onCloseModal} isCentered>
+                <ModalOverlay />
+                <ModalContent>
+                    <ModalCloseButton />
+                    <ModalBody>
+                        <Text size='xl' mt={5} mb={5} fontWeight="bold">Add credit or debit card</Text>
+                        <FormControl isRequired>
+                            <FormLabel fontSize="sm" color={"gray.600"}>Card Number</FormLabel>
+                            <Input type='text' placeholder='Card Number' maxLength={16} />
+                        </FormControl>
+                        <FormControl isRequired mt={4}>
+                            <FormLabel fontSize="sm" color={"gray.600"}>Cardholder Name</FormLabel>
+                            <Input type='text' placeholder='Enter Cardholder Name' />
+                        </FormControl>
+                        <Flex mt={4}>
+                            <FormControl isRequired mr={2}>
+                                <FormLabel fontSize="sm" color={"gray.600"}>Expiration date</FormLabel>
+                                <Input type='text' placeholder='MM/YY' maxLength={5} />
+                            </FormControl>
+                            <FormControl isRequired ml={2}>
+                                <FormLabel fontSize="sm" color={"gray.600"}>CVV</FormLabel>
+                                <Input type='text' placeholder='CVV' maxLength={3} />
+                            </FormControl>
+                        </Flex>
+                        <Button bg="#2b8ab0" type='submit' width='full' mt={5} mb={4} color={'white'} onClick={onCloseModal}>
+                            Pay
+                        </Button>
+                    </ModalBody>
+                </ModalContent>
+            </Modal>
+        );
     }
-
-
-
-}  
-  
+}
 
 export default RespModal;
