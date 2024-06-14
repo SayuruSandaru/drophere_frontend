@@ -25,6 +25,7 @@ import { is } from "@babel/types";
 import MenuDrawer from "./components/menuDrawer";
 import { set } from "lodash";
 import FilterDrawerMobile from "./components/filterDrawerMobile";
+import Footer from "pages/components/footer";
 
 const Home = () => {
   const navigate = useNavigate();
@@ -80,9 +81,9 @@ const Home = () => {
   };
 
   return (
-    <Flex direction="column" p={4} h="100vh" bg="gray.50">
+    <Flex direction="column" h="100vh" bg="gray.50">
       {isLargeScreen && (
-        <Flex direction={{ base: "column", md: "row" }} mb={4} align="center">
+        <Flex direction={{ base: "column", md: "row" }} mb={4} align="center" p={3}>
           <Flex align="center" mb={{ base: 4, md: 0 }}>
             <Image src="/images/Black_T.png" alt="Drop Here Logo" w="50px" />
             <Text fontSize="xl" fontWeight="bold" color="black" ml={2}>Drop Here</Text>
