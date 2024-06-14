@@ -1,27 +1,25 @@
-import { Flex, Image, Heading, VStack, Input, useDisclosure, Button, Icon, Text } from "@chakra-ui/react";
+import { Flex, Heading, VStack, Input, useDisclosure, Button, Icon, Text, Stack, FormControl, FormLabel } from "@chakra-ui/react";
 import React from "react";
 import { useNavigate } from 'react-router-dom';
 import { RouterPaths } from "router/routerConfig";
-//import { useState } from "react";
-import { FaUser } from 'react-icons/fa'; // Import the FaUser icon
+import { FaUser } from 'react-icons/fa';
 import CounterComponent from './CounterComponent';
 
-//const Ride: React.FC = () => {
+
 const Ride: React.FC = () => {
     const navigate = useNavigate();
     const { isOpen, onOpen, onClose } = useDisclosure();
 
+    const onLogin = () => {
+        console.log('Login clicked');
+        navigate(RouterPaths.RIDESEARCH);
+    };
 
     const handleCountChange = (newCount) => {
         console.log('New count:', newCount);
     };
-    const handleLogin = () => {
-        console.log('Login clicked');
-        navigate(RouterPaths.RIDESEARCH); // Navigate to the next page after login
 
-    };
-
-
+    const selectedDestinationLocation = "";
 
     return (
         <Flex
@@ -45,8 +43,28 @@ const Ride: React.FC = () => {
                     <Heading as="h1" size="lg" textAlign="center">
                         Passenger
                     </Heading>
-                    <Input placeholder="Pick up" variant="outline" />
-                    <Input placeholder="Destination" variant="outline" />
+
+
+                    <FormControl mb={4}>
+                        <FormLabel fontSize="sm" color={"gray.600"}>Pick Up</FormLabel>
+                        <Input
+                            placeholder=""
+                            onClick={() => console.log('clicked')}
+                            value={selectedDestinationLocation}
+                            readOnly
+                        />
+                    </FormControl>
+
+
+                    <FormControl mb={4}>
+                        <FormLabel fontSize="sm" color={"gray.600"}>Destination</FormLabel>
+                        <Input
+                            placeholder=""
+                            onClick={() => console.log('clicked')}
+                            value={selectedDestinationLocation}
+                            readOnly
+                        />
+                    </FormControl>
 
 
                     <Flex flex={1} align="center" onClick={onOpen} cursor="pointer">
@@ -54,17 +72,18 @@ const Ride: React.FC = () => {
                         <Text ml={2} fontSize="md" fontWeight={"medium"}>Passenger</Text>
                     </Flex>
 
-                    <Flex justifyContent="center" w="full">
-                        <Image
-                            src="https://via.placeholder.com/150"
-                            alt="Passenger Image"
-                            objectFit="cover"
-                            borderRadius="md"
-                        />
-                    </Flex>
-                    <Button colorScheme="blue" variant="solid" w="full">
-                        Search for a Ride
-                    </Button>
+
+                    <Stack spacing="6">
+                        <Button
+                            bgColor={"black"}
+                            onClick={onLogin}
+                            color="white"
+                            _hover={{ bgColor: "gray.700" }}
+                        >
+                            Search for a Ride
+                        </Button>
+                    </Stack>
+
                 </VStack>
             </Flex>
 
