@@ -59,6 +59,10 @@ export const Sing_Up: React.FC<LoginProps> = ({ onLogin }) => (
                 </FormControl>
               </Flex>
               <FormControl>
+                <FormLabel htmlFor="email">Username</FormLabel>
+                <Input id="username" type="text" />
+              </FormControl>
+              <FormControl>
                 <FormLabel htmlFor="mobileNumber">Mobile Number</FormLabel>
                 <Input id="mobileNumber" type="tel" />
               </FormControl>
