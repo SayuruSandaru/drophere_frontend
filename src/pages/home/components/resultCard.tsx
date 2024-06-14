@@ -12,6 +12,7 @@ import {
 } from "@chakra-ui/react";
 import { MdAirlineSeatReclineExtra } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
+import RouterConfig, { RouterPaths } from "router/routerConfig";
 
 interface CarInfoProps {
   imageUrl: string;
@@ -28,8 +29,9 @@ interface CarInfoProps {
 }
 
 const CarInfo: React.FC<CarInfoProps> = ({ imageUrl, altText, carName, date, from, to, availability, seatsLeft, price, name, onClick }) => {
+
   return (
-    <Box borderRadius="md" borderWidth="1px" p={4} onClick={onClick}>
+    <Box borderRadius="md" borderWidth="1px" p={1} onClick={onClick}>
       <Flex direction={{ base: "column", md: "row" }}>
         <Image
           boxSize={{ base: "100%", md: "144px" }}
@@ -66,18 +68,13 @@ const CarInfo: React.FC<CarInfoProps> = ({ imageUrl, altText, carName, date, fro
                 backgroundColor: "gray.200",
               }}
             />
-            <Box
-              onClick={() => navigate("/profile")}
-              _hover={{ bg: "gray.50", cursor: "pointer", borderRadius: "md" }}
-              cursor="pointer"
-            >
+            <Box _hover={{ bg: "gray.50", cursor: "pointer", borderRadius: "md" }} cursor="pointer">
               <Flex align={"center"}>
                 <Avatar
                   size="sm"
                   name="Prosper Otemuyiwa"
                   src="https://bit.ly/prosper-baba"
                 />
-
                 <Text pl={"4"}>{name}</Text>
               </Flex>
             </Box>

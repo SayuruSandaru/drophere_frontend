@@ -210,6 +210,7 @@ const Home = () => {
               date="2nd May 2024"
               from="Kandy"
               to="Badulla"
+              name="John"
               availability="Available"
               seatsLeft="2"
               price="$382.25"
@@ -223,6 +224,7 @@ const Home = () => {
               from="Colombo"
               to="Badulla"
               availability="Available"
+              name="John"
               seatsLeft="2"
               price="$382.25"
               onClick={() => navigate(RouterPaths.ORDER)}
@@ -234,6 +236,7 @@ const Home = () => {
               date="2nd May 2024"
               from="Colombo"
               to="Badulla"
+              name="John"
               availability="Available"
               seatsLeft="2"
               price="$382.25"
