@@ -1,19 +1,16 @@
 import {
   Box,
   Button,
-  Checkbox,
   Container,
   FormControl,
   FormLabel,
   Heading,
-  HStack,
   Input,
   Link,
   Stack,
   Text,
   Flex,
   Image,
-  Center
 } from "@chakra-ui/react";
 // import { Logo } from "./components/logo";
 import { PasswordField } from "../login/components/passwordField";
@@ -34,10 +31,10 @@ export const Sing_Up: React.FC<LoginProps> = ({ onLogin }) => (
     >
       <Stack spacing="8">
         <Stack>
-          <Image src="/images/Black_T.png" w={"24"}  m="auto" />
+          <Image src="/images/Black_T.png" w={"24"} m="auto" />
           <Stack spacing={{ base: "2", md: "3" }} textAlign="center">
             <Heading size="xs">Create your account</Heading>
-          
+
             <Text color="fg.muted">
               Already have an account?  <Link href={Signinindex}>Sign in</Link>
             </Text>
@@ -61,6 +58,10 @@ export const Sing_Up: React.FC<LoginProps> = ({ onLogin }) => (
                   <Input id="lastName" type="text" />
                 </FormControl>
               </Flex>
+              <FormControl>
+                <FormLabel htmlFor="email">Username</FormLabel>
+                <Input id="username" type="text" />
+              </FormControl>
               <FormControl>
                 <FormLabel htmlFor="mobileNumber">Mobile Number</FormLabel>
                 <Input id="mobileNumber" type="tel" />
