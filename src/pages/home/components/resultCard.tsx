@@ -29,9 +29,9 @@ interface CarInfoProps {
 }
 
 const CarInfo: React.FC<CarInfoProps> = ({ imageUrl, altText, carName, date, from, to, availability, seatsLeft, price, name, onClick }) => {
-
+ 
   return (
-    <Box borderRadius="md" borderWidth="1px" p={1} onClick={onClick}>
+    <Box borderRadius="md" borderWidth="1px" p={1} onClick={onClick} _hover={{ bg: "gray.50", cursor: "pointer", borderRadius: "md" }}>
       <Flex direction={{ base: "column", md: "row" }}>
         <Image
           boxSize={{ base: "100%", md: "144px" }}
@@ -68,7 +68,7 @@ const CarInfo: React.FC<CarInfoProps> = ({ imageUrl, altText, carName, date, fro
                 backgroundColor: "gray.200",
               }}
             />
-            <Box _hover={{ bg: "gray.50", cursor: "pointer", borderRadius: "md" }} cursor="pointer">
+            <Box  >
               <Flex align={"center"}>
                 <Avatar
                   size="sm"
