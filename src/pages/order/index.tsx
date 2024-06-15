@@ -16,8 +16,11 @@ import Modal from "./components/payment";
 import React, { useState } from "react";
 import "./components/order.css";
 import { MdEmail, MdPhone } from "react-icons/md";
+import { RouterPaths } from "router/routerConfig";
+import { useNavigate } from "react-router-dom";
 
 export default function SocialProfileWithImage() {
+  const navigate = useNavigate();
   const rating = 4.5; // Set the rating value here
   const reviews = 50; // Set the number of reviews here
   const joinDate = "Joined 2024";
@@ -50,7 +53,7 @@ export default function SocialProfileWithImage() {
           </Heading>
         </Stack>
 
-        <Flex justify={"left"} ml={20} mt={12}>
+        <Flex justify={"left"} ml={20} mt={12} >
           <Avatar
             size={"xl"}
             src={
@@ -59,10 +62,12 @@ export default function SocialProfileWithImage() {
             css={{
               border: "2px solid white",
             }}
+            cursor={"pointer"}
+            onClick={() => navigate(RouterPaths.PROFILE)}
           />
 
           <Stack spacing={0} align={"left"} mt={2} ml={5} mb={5}>
-            <Heading fontSize={"2xl"} fontWeight={500} fontFamily={"body"}>
+            <Heading fontSize={"2xl"} fontWeight={500} fontFamily={"body"} onClick={() => navigate(RouterPaths.PROFILE)} cursor={"pointer"}>
               Sayuru Sandaru
             </Heading>
             <Text color={"gray.500"}>
