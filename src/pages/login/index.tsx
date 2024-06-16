@@ -1,17 +1,28 @@
-import { Box, Flex, Image, Stack, Text, useBreakpointValue, Heading, useMediaQuery } from "@chakra-ui/react";
+// src/components/login.tsx
+import { Box, Flex, Image, Stack, Text, useMediaQuery, Heading } from "@chakra-ui/react";
 import React from "react";
 import { LoginForm } from "./login_form";
 import { colors } from "theme/colors";
 import { useNavigate } from 'react-router-dom';
 import { RouterPaths } from "router/routerConfig";
 import Footer from "pages/components/footer";
+import { login } from "./login";
+
 const Login: React.FC = () => {
+  const [email, setEmail] = React.useState('');
+  const [password, setPassword] = React.useState('');
   const navigate = useNavigate();
 
-  const handleLogin = () => {
-    console.log('Login clicked');
-    navigate(RouterPaths.HOME); // Navigate to the next page after login
-  };
+  const handleLogin = async () => {
+    const credentials = { email, password };
+    try {
+      await login(credentials);
+      navigate(RouterPaths.HOME);
+      console.log('Logged in successfully');
+    } catch (error) {
+      console.error('Login failed:', error);
+    }
+  }
 
   const [isLargeScreen] = useMediaQuery('(min-width: 992px)');
   return (
@@ -22,9 +33,9 @@ const Login: React.FC = () => {
         </Flex>
       )}
 
-      <Flex direction="row" >
+      <Flex direction="row">
         {isLargeScreen && (
-          <Box w="50%" bg={colors.primary[500]} >
+          <Box w="50%" bg={colors.primary[500]}>
             <Stack direction="column" p="50" h="100vh" spacing={4}>
               <Flex alignItems="center">
                 <Image src="/images/White_T.png" w={"14"} />
@@ -37,7 +48,8 @@ const Login: React.FC = () => {
               </Text>
 
               <Text minW={400} color="white" fontFamily={"sans-serif"}>
-                Turn your empty seats into new friendships. Join us and share the journey              </Text>
+                Turn your empty seats into new friendships. Join us and share the journey
+              </Text>
 
               <Box display="flex" flexDirection="column" justifyContent="flex-end" height="100vh">
                 <Text fontWeight={300} color="white">© {new Date().getFullYear()} Drop Here. All rights reserved</Text>
@@ -45,7 +57,7 @@ const Login: React.FC = () => {
             </Stack>
           </Box>
         )}
-        <LoginForm onLogin={handleLogin} />
+        <LoginForm email={email} password={password} setEmail={setEmail} setPassword={setPassword} onLogin={handleLogin} />
       </Flex>
       <Footer />
     </Flex>
