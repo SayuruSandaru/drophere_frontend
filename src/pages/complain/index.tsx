@@ -13,7 +13,6 @@ import {
   Flex,
 } from "@chakra-ui/react";
 import React, { useState } from "react";
-import { Stepper, Step } from "chakra-ui-stepper";
 
 const Complain = () => {
   const [action, setAction] = useState("");
@@ -65,20 +64,6 @@ const Complain = () => {
           alignItems={"center"}
           justifyItems="center"
         >
-          <Stepper activeStep={activeStep}>
-            {steps.map((step, index) => (
-              <Step
-                key={index}
-                label={{ title: step.title, description: step.description }}
-                isActive={activeStep === index}
-                isFinished={activeStep > index}
-              >
-                <Box p={4}>
-                  <Text>{step.description}</Text>
-                </Box>
-              </Step>
-            ))}
-          </Stepper>
 
           <VStack spacing={4} align="center" mt={4}>
             <Text>Welcome! Here you can work things out and resolve issues regarding your orders</Text>
