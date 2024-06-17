@@ -8,6 +8,8 @@ import SearchDelivery from 'pages/search - delivery';
 import Ride from 'pages/ride - search';
 // import SearchDelivery from 'pages/Delivery/Search';
 import Profile from 'pages/owner_profile';
+import Cride from 'pages/Create-ride/Create/create-ride';
+
 
 export enum RouterPaths {
     LOGIN = "/",
@@ -16,7 +18,8 @@ export enum RouterPaths {
     ORDER = "/order",
     SEARCHDELIVERY = "/delivery/search",
     SEARCHRIDE = "/ride/search",
-    PROFILE = "/profile"
+    PROFILE = "/profile",
+    CREATERIDE = "/ride/create"
 }
 
 const RouterConfig: React.FC = () => {
@@ -29,6 +32,7 @@ const RouterConfig: React.FC = () => {
             <Route path={RouterPaths.SEARCHDELIVERY} element={<SearchDelivery />} />
             <Route path={RouterPaths.SEARCHRIDE} element={<Ride />} />
             <Route path={RouterPaths.PROFILE} element={<Profile />} />
+            <Route path={RouterPaths.CREATERIDE} element={<Cride />} />
         </Routes>
     );
 }
