@@ -1,68 +1,115 @@
-import { Box, FormLabel, Center, RadioGroup, Link, Button, HStack, VStack, FormControl, Radio, Image, Stack, Text, useBreakpointValue, Heading, useMediaQuery, Flex } from "@chakra-ui/react";
-import React, { useState } from "react";
-import { colors } from "theme/colors";
-import { useNavigate } from 'react-router-dom';
-import { RouterPaths } from "router/routerConfig";
+import React, { useState, MouseEvent } from 'react';
+import { Box, Button, FormControl, FormLabel, Input, HStack, VStack, Text, Stack, useDisclosure } from '@chakra-ui/react';
+import 'react-datepicker/dist/react-datepicker.css';
+import PlaceAutocompleteModal from 'pages/components/placeModalbox';
+import Footer from 'pages/components/footer';
+import NavbarHome from 'pages/components/NavbarHome';
+import Navbar from 'pages/components/NavbarNeedLogin';
 
+const SearchDelivery = () => {
+  const { isOpen: isPickupPlaceOpen, onOpen: onPickupPlaceOpen, onClose: onPickupPlaceClose } = useDisclosure();
+  const { isOpen: isDestinationPlaceOpen, onOpen: onDestinationPlaceOpen, onClose: onDestinationPlaceClose } = useDisclosure();
+  const [packageType, setPackageType] = useState('Document');
+  const [deliveryType, setDeliveryType] = useState('Standard delivery');
+  const [selectedItem, setSelectedItem] = useState("");
+  const [selectedPickupLocation, setSelectedPickupLocation] = useState("");
+  const [selectedDestinationLocation, setSelectedDestinationLocation] = useState("");
 
+  const handleItemClick = (item) => {
+    setSelectedItem(item);
+    if (item === "Pickup") {
+      onPickupPlaceOpen();
+    } else if (item === "Destination") {
+      onDestinationPlaceOpen();
+    }
+  };
 
+  const handleDestiantionSelect = (place) => {
+    setSelectedDestinationLocation(place);
+  };
 
-const Complain = () => {
-  const [action, setAction] = useState('');
-
-  const handleContinue = () => {
-    // Handle the continue button click
-    // alert(You selected: ${action});
-
-
-  }
-
-
-    ;
+  const handlePickupLocationSelect = (place) => {
+    setSelectedPickupLocation(place);
+  };
 
   return (
-    <><Center bg='skyblue' as="h1" h='100px' color='black' fontSize="3xl">
-      Resolution Center
-    </Center>
-      <Flex justify='center' align='center'>
-        <Box p={8}
-          borderWidth={7}
-          borderRadius="9g"
-          boxShadow="9g"
-          height={330}
-          justifyContent="center"
-          padding={0}
-          width="900%"
-          maxWidth="800px"
-          textAlign="center"
-          alignItems={"center"}
-          justifyItems="center"
-
+    <Box>
+      <Box h={20}><Navbar isDelivery={false} /></Box>
+      <Box
+        display="flex"
+        alignItems="center"
+        justifyContent="center"
+        height="100vh"
+        bg="gray.50"
+        overflow="hidden"
+      >
+        <style>
+          {`
+          @keyframes moveBackground {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(-50%, -50%); }
+          }
+        `}
+        </style>
+        <Box
+          position="relative"
+          maxWidth="sm"
+          width="100%"
+          p={4}
+          bg="white"
+          borderRadius="md"
+          boxShadow="md"
         >
-          <VStack spacing={4} align="center" mt={4}>
-
-            <Text>Welcome! Here you can work things out and resolve issues regarding your orders</Text>
-            <FormControl as="fieldset" >
-              <FormLabel as="legend" >What can we help you do?</FormLabel>
-              <RadioGroup onChange={setAction} value={action}>
-                <VStack align="left">
-                  <Radio value="modify">      Modify the order     </Radio>
-                  <Radio value="extend">Extend the delivery time          </Radio>
-                  <Radio value="cancel">Ask the buyer to cancel this order</Radio>
-                </VStack>
-              </RadioGroup>
-            </FormControl>
-            <HStack justify="center" width="100%" mt={4}>
-              <Button colorScheme="teal" onClick={handleContinue} isDisabled={!action}>
-                Continue
-              </Button>
-              <Text>Couldn’t find what you need? Contact our <Link color="teal.500" href="#">Customer Support</Link></Text>
+          <Text fontSize="xl" fontWeight="bold" color="black" mb={4} textAlign="center">
+            Navigating Miles, Delivering Smiles
+          </Text>
+          <FormControl mb={4}>
+            <FormLabel fontSize="sm" color={"gray.600"}>Pickup</FormLabel>
+            <Input
+              placeholder=""
+              onClick={() => handleItemClick("Pickup")}
+              value={selectedPickupLocation}
+              readOnly
+            />
+          </FormControl>
+          <FormControl mb={4}>
+            <FormLabel fontSize="sm" color={"gray.600"}>Destination</FormLabel>
+            <Input
+              placeholder=""
+              onClick={() => handleItemClick("Destination")}
+              value={selectedDestinationLocation}
+              readOnly
+            />
+          </FormControl>
+          <FormControl mb={4}>
+            <FormLabel fontSize="sm" color={"gray.600"}>Date</FormLabel>
+            <Input type="date" />
+          </FormControl>
+          <FormControl mb={4}>
+            <FormLabel fontSize="sm" color={"gray.600"}>Weight</FormLabel>
+            <HStack>
+              <Input placeholder="" type="number" />
+              <Text pl={3} pr={3}>Kg</Text>
             </HStack>
-          </VStack>
+          </FormControl>
+          <Stack spacing="6" mt={10}>
+            <Button
+              bgColor={"black"}
+              onClick={() => { }}
+              color="white"
+              _hover={{ bgColor: "gray.700" }}
+            >
+              Search
+            </Button>
+          </Stack>
         </Box>
-      </Flex>
-    </>
+        <PlaceAutocompleteModal isOpen={isPickupPlaceOpen} onClose={onPickupPlaceClose} onPlaceSelect={handlePickupLocationSelect} />
+        <PlaceAutocompleteModal isOpen={isDestinationPlaceOpen} onClose={onDestinationPlaceClose} onPlaceSelect={handleDestiantionSelect} />
+      </Box>
+
+      <Footer />
+    </Box>
   );
 };
 
-export default Complain
+export default SearchDelivery;

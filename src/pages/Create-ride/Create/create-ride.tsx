@@ -2,10 +2,14 @@ import React from 'react';
 import { ChakraProvider, Box, Button, FormControl, FormLabel, Input, HStack, VStack, Grid, GridItem, Center } from '@chakra-ui/react';
 import { GoogleMap } from '@react-google-maps/api';
 import MapContainer from 'pages/home/components/googleMap';
+import NavbarLogged from 'pages/components/NavbarLogged';
+import Footer from 'pages/components/footer';
+import NavbarHome from 'pages/components/NavbarHome';
 
 const Cride = () => {
   return (
     <Box>
+      <NavbarHome />
       <Box p={5}>
         <Grid templateColumns="repeat(2, 1fr)" gap={6}>
           <GridItem w="100%">
@@ -60,6 +64,8 @@ const Cride = () => {
         </Grid>
 
       </Box>
+      <Box height={10} />
+      <Footer />
     </Box>
   );
 };

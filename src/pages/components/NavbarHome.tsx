@@ -30,7 +30,7 @@ function NavbarHome() {
                             <Icon as={FaBox} w={6} h={4} color={"gray.700"} mr={1} />
                             Deliver
                         </Button>
-                        <Button borderRadius={5} bgColor={"blackAlpha.800"} size={"sm"} color={"white"}>Earn with us</Button>
+                        <Button borderRadius={5} bgColor={"blackAlpha.800"} size={"sm"} color={"white"} onClick={() => { navigate(RouterPaths.CREATERIDE); }}>Earn with us</Button>
                         <Avatar size="sm" name="John" />
                     </HStack>
                 </Flex>

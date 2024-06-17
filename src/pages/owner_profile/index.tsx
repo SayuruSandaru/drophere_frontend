@@ -13,6 +13,7 @@ import {
 import { MdCheckCircle, MdEmail, MdPhone } from "react-icons/md";
 import { FaStar } from 'react-icons/fa';
 import NavbarHome from "pages/components/NavbarHome";
+import Footer from "pages/components/footer";
 
 const Profile = () => {
   const [ratingData, setRatingData] = useState({ rating: 0, reviews: 20 });
@@ -50,14 +51,16 @@ const Profile = () => {
 
   return (
     <Box>
-      <NavbarHome />
+
+      <Box h={20}><NavbarHome /></Box>
       <Flex
         position="relative"
         justifyContent="center"
         alignItems="center"
         height="100vh"
+        bg={"gray.50"}
       >
-        <Box maxW={"500px"}>
+        <Box maxW={"500px"} boxShadow={"xl"} padding={20}>
           <Stack spacing="4">
             <Box>
               <Flex>
@@ -143,6 +146,7 @@ const Profile = () => {
           </Stack>
         </Box>
       </Flex>
+      <Footer />
     </Box>
   );
 };

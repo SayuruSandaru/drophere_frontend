@@ -30,7 +30,7 @@ function Navbar({ isDelivery = true }) {
                             {isDelivery ? (<Icon as={FaBox} w={6} h={4} color={"gray.700"} mr={1} />) : (<Icon as={FaBicycle} w={6} h={4} color={"gray.700"} mr={1} />)}
                             {isDelivery ? "Deliver" : "Ride"}
                         </Button>
-                        <Button borderRadius={2} bgColor={"white"} size={"sm"} color={"black"} onClick={() => { }}>Earn with us</Button>
+                        <Button borderRadius={2} bgColor={"white"} size={"sm"} color={"black"} onClick={() => { navigate(RouterPaths.CREATERIDE); }}>Earn with us</Button>
                         <Button borderRadius={2} bgColor={"white"} size={"sm"} color={"black"} onClick={() => { navigate(RouterPaths.LOGIN) }}>Login</Button>
                         <Button borderRadius={5} bgColor={"#2b8ab0"} size={"sm"} color={"white"} onClick={() => { navigate(RouterPaths.REGISTER) }}>Register</Button>
 
