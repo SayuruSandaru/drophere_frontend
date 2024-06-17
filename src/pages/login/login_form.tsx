@@ -15,6 +15,7 @@ import {
   Text,
   Flex,
   Image,
+  Spinner,
 } from "@chakra-ui/react";
 import { PasswordField } from "./components/passwordField";
 
@@ -26,9 +27,10 @@ interface LoginFormProps {
   setEmail: (email: string) => void;
   setPassword: (password: string) => void;
   onLogin: () => void;
+  loading: boolean;
 }
 
-export const LoginForm: React.FC<LoginFormProps> = ({ email, password, setEmail, setPassword, onLogin }) => {
+export const LoginForm: React.FC<LoginFormProps> = ({ email, password, setEmail, setPassword, onLogin, loading }) => {
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(e.target.value);
   };
@@ -93,7 +95,12 @@ export const LoginForm: React.FC<LoginFormProps> = ({ email, password, setEmail,
                     color="white"
                     _hover={{ bgColor: "gray.700" }}
                   >
-                    Sign in
+                    {loading ? "" : "Log in"}
+                    {loading && (
+                      <Flex justify="center">
+                        <Spinner size="md" ml={2} />
+                      </Flex>
+                    )}
                   </Button>
                 </Stack>
               </Stack>

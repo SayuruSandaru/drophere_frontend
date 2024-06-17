@@ -1,37 +1,52 @@
-// src/components/login.tsx
-import { Box, Flex, Image, Stack, Text, useMediaQuery, Heading } from "@chakra-ui/react";
 import React from "react";
+import { Flex, Box, Stack, Image, Text, Heading, useMediaQuery, Spinner } from "@chakra-ui/react";
 import { LoginForm } from "./login_form";
-import { colors } from "theme/colors";
 import { useNavigate } from 'react-router-dom';
 import { RouterPaths } from "router/routerConfig";
 import Footer from "pages/components/footer";
-import { login } from "./login";
+import { colors } from "theme/colors";
+import { login } from "api/auth";
 
 const Login: React.FC = () => {
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
+  const [errorMessage, setErrorMessage] = React.useState('');
+  const [loading, setLoading] = React.useState(false);
   const navigate = useNavigate();
 
   const handleLogin = async () => {
-    const credentials = { email, password };
     try {
-      await login(credentials);
+      setLoading(true);
+      setErrorMessage('');
+      await login({ email, password });
+      setLoading(false);
       navigate(RouterPaths.HOME);
-      console.log('Logged in successfully');
     } catch (error) {
-      console.error('Login failed:', error);
+      setLoading(false);
+      setErrorMessage(error.message);
     }
-  }
+  };
 
   const [isLargeScreen] = useMediaQuery('(min-width: 992px)');
+
   return (
     <Flex direction="column" h="100vh">
+
+
+
+      {errorMessage && (
+        <Box p={2} color="white" bg={"red.400"} textAlign="center">
+          {errorMessage}
+        </Box>
+      )}
+
       {!isLargeScreen && (
         <Flex direction="row" bg={colors.primary[500]} p="5">
           <Heading m="auto" color="white">Drop Here</Heading>
         </Flex>
       )}
+
+
 
       <Flex direction="row">
         {isLargeScreen && (
@@ -57,7 +72,7 @@ const Login: React.FC = () => {
             </Stack>
           </Box>
         )}
-        <LoginForm email={email} password={password} setEmail={setEmail} setPassword={setPassword} onLogin={handleLogin} />
+        <LoginForm email={email} password={password} setEmail={setEmail} setPassword={setPassword} onLogin={handleLogin} loading={loading} />
       </Flex>
       <Footer />
     </Flex>
