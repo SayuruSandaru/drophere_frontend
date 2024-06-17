@@ -1,7 +1,6 @@
 
-import { Box, Flex, Image, Stack, Text, Heading, useMediaQuery } from "@chakra-ui/react";
+import { Box, Flex, Image, Stack, Text, Heading, useMediaQuery, Spinner } from "@chakra-ui/react";
 import React from "react";
-import { Flex, Box, Stack, Image, Text, Heading, useMediaQuery, Spinner } from "@chakra-ui/react";
 import { LoginForm } from "./login_form";
 import { useNavigate } from 'react-router-dom';
 import { RouterPaths } from "router/routerConfig";
@@ -33,8 +32,6 @@ const Login: React.FC = () => {
 
   return (
     <Flex direction="column" h="100vh">
-
-
 
       {errorMessage && (
         <Box p={2} color="white" bg={"red.400"} textAlign="center">
