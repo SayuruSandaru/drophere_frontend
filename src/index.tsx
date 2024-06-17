@@ -1,12 +1,14 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { RecoilRoot } from "recoil"; // Import RecoilRoot
+import RecoilNexus from "recoil-nexus";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 
 ReactDOM.render(
   <React.StrictMode>
     <RecoilRoot> {/* Wrap App component with RecoilRoot */}
+      <RecoilNexus />
       <App />
     </RecoilRoot>
   </React.StrictMode>,
