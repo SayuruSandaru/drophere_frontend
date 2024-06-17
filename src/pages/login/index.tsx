@@ -33,8 +33,6 @@ const Login: React.FC = () => {
   return (
     <Flex direction="column" h="100vh">
 
-
-
       {errorMessage && (
         <Box p={2} color="white" bg={"red.400"} textAlign="center">
           {errorMessage}
