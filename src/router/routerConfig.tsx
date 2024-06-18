@@ -8,6 +8,7 @@ import SearchDelivery from 'pages/search - delivery';
 import Ride from 'pages/ride - search';
 // import SearchDelivery from 'pages/Delivery/Search';
 import Profile from 'pages/owner_profile';
+import DriverRegister from 'pages/register_driver/index';
 
 export enum RouterPaths {
     LOGIN = "/",
@@ -16,7 +17,8 @@ export enum RouterPaths {
     ORDER = "/order",
     SEARCHDELIVERY = "/delivery/search",
     SEARCHRIDE = "/ride/search",
-    PROFILE = "/profile"
+    PROFILE = "/profile",
+    DRIVERREGISTER = "/driver_register"
 }
 
 const RouterConfig: React.FC = () => {
@@ -29,6 +31,7 @@ const RouterConfig: React.FC = () => {
             <Route path={RouterPaths.SEARCHDELIVERY} element={<SearchDelivery />} />
             <Route path={RouterPaths.SEARCHRIDE} element={<Ride />} />
             <Route path={RouterPaths.PROFILE} element={<Profile />} />
+            <Route path={RouterPaths.DRIVERREGISTER} element={< DriverRegister/>} />
         </Routes>
     );
 }
