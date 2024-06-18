@@ -1,4 +1,4 @@
-import { Flex, Heading, VStack, Input, useDisclosure, Button, Icon, Text, Stack, FormControl, FormLabel, Box } from "@chakra-ui/react";
+import { Flex, Heading, Input, useDisclosure, Button, Icon, Text, FormControl, FormLabel } from "@chakra-ui/react";
 import React, { useState } from "react";
 import { useNavigate } from 'react-router-dom';
 import { RouterPaths } from "router/routerConfig";
@@ -13,8 +13,8 @@ const Ride: React.FC = () => {
     const [selectedDestinationLocation, setSelectedDestinationLocation] = useState("");
     const navigate = useNavigate();
     const { isOpen, onOpen, onClose } = useDisclosure();
-    const [selectedItem, setSelectedItem] = useState("");
-    const [selectedPickupLocation, setSelectedPickupLocation] = useState("");
+   // const [selectedItem, setSelectedItem] = useState("");
+  //const [selectedPickupLocation, setSelectedPickupLocation] = useState("");
     const [count, setCount] = React.useState(0);
 
     const handleItemClick = (item) => {
@@ -61,11 +61,11 @@ const Ride: React.FC = () => {
                 maxW="400px"
                 w="full"
             >
-                <Heading as="h1" size="lg" textAlign="center">
+                <Heading as="h1" size="lg">
                     Where you need to go?
                 </Heading>
                 <FormControl mb={4} mt={8}>
-                    <FormLabel fontSize="sm" color={"gray.600"}>Pick Up</FormLabel>
+                    <FormLabel color={"gray.600"}>Pick Up</FormLabel>
                     <Input
                         placeholder=""
                         onClick={() => handleItemClick("Pickup")}
@@ -74,7 +74,7 @@ const Ride: React.FC = () => {
                     />
                 </FormControl>
                 <FormControl mb={4}>
-                    <FormLabel fontSize="sm" color={"gray.600"}>Destination</FormLabel>
+                    <FormLabel color={"gray.600"}>Destination</FormLabel>
                     <Input
                         placeholder=""
                         onClick={() => handleItemClick("Destination")}
@@ -85,8 +85,8 @@ const Ride: React.FC = () => {
                 <FormControl mb={10} mt={3}>
                     <Flex flex={1} onClick={onOpen} cursor="pointer">
                         <Icon as={FaUser} w={6} h={4} color={"gray.500"} />
-                        <Text ml={2} fontSize="md" fontWeight={"medium"}>Passenger</Text>
-                        <Text ml={10} fontSize="md" fontWeight={"medium"}>{count}</Text>
+                        <Text ml={2}>Passenger</Text>
+                        <Text ml={10}>{count}</Text>
                     </Flex>
                 </FormControl>
                 <Button
@@ -113,3 +113,11 @@ const Ride: React.FC = () => {
 };
 
 export default Ride;
+function setSelectedItem(item: any) {
+    throw new Error("Function not implemented.");
+}
+
+function setSelectedPickupLocation(place: any) {
+    throw new Error("Function not implemented.");
+}
+
