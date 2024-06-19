@@ -18,7 +18,7 @@ export enum RouterPaths {
     SEARCHDELIVERY = "/delivery/search",
     SEARCHRIDE = "/ride/search",
     PROFILE = "/profile",
-    DRIVERREGISTER = "/driver_register"
+    DRIVERREGISTER = "/drive/register"
 }
 
 const RouterConfig: React.FC = () => {
@@ -31,7 +31,7 @@ const RouterConfig: React.FC = () => {
             <Route path={RouterPaths.SEARCHDELIVERY} element={<SearchDelivery />} />
             <Route path={RouterPaths.SEARCHRIDE} element={<Ride />} />
             <Route path={RouterPaths.PROFILE} element={<Profile />} />
-            <Route path={RouterPaths.DRIVERREGISTER} element={< DriverRegister/>} />
+            <Route path={RouterPaths.DRIVERREGISTER} element={< DriverRegister />} />
         </Routes>
     );
 }

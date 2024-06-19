@@ -1,28 +1,30 @@
 import {
-    Box,
-    Flex,
-    Heading,
-    useMediaQuery,
-    Image,
-    Text,
-  } from "@chakra-ui/react";
-  import React, { useState } from "react";
-  import DriverDetails from "./components/driver_details";
-  import VehicleDetails from "./components/vehicle_details";
-  
-  const Register: React.FC = () => {
-    const [isLargeScreen] = useMediaQuery("(min-width: 992px)");
-    const [step, setStep] = useState(1);
-  
-    const handleNext = () => {
-      setStep(step + 1);
-    };
-  
-    const handleBack = () => {
-      setStep(step - 1);
-    };
-  
-    return (
+  Box,
+  Flex,
+  Heading,
+  useMediaQuery,
+  Image,
+  Text,
+} from "@chakra-ui/react";
+import Footer from "pages/components/footer";
+import React, { useState } from "react";
+import DriverDetails from "./components/driver_details";
+import VehicleDetails from "./components/vehicle_details";
+
+const Register: React.FC = () => {
+  const [isLargeScreen] = useMediaQuery("(min-width: 992px)");
+  const [step, setStep] = useState(1);
+
+  const handleNext = () => {
+    setStep(step + 1);
+  };
+
+  const handleBack = () => {
+    setStep(step - 1);
+  };
+
+  return (
+    <Box>
       <Flex direction="column" h="100vh">
         {!isLargeScreen && (
           <Flex direction="row" bg="#05aed0" p="5">
@@ -47,7 +49,7 @@ import {
                 p="50"
                 h="100%"
                 textAlign="center"
-                
+
               >
                 <Flex alignItems="center" mb={4}>
                   <Image src="/images/Black_T.png" w={"14"} />
@@ -55,7 +57,7 @@ import {
                     Drop Here
                   </Text>
                 </Flex>
-  
+
                 <Text fontSize="40px" fontWeight="600" color="black" lineHeight="shorter">
                   Wants to Earn Money!
                 </Text>
@@ -69,8 +71,10 @@ import {
           {step === 2 && <VehicleDetails onBack={handleBack} />}
         </Flex>
       </Flex>
-    );
-  };
-  
-  export default Register;
-  
+      <Box h={6}></Box>
+      <Footer />
+    </Box>
+  );
+};
+
+export default Register;
