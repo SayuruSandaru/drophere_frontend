@@ -9,3 +9,9 @@ export const userState = atom<any>({
     key: 'userState',
     default: null,
 });
+
+
+export const driverState = atom<any>({
+    key: 'driverState',
+    default: null,
+});
