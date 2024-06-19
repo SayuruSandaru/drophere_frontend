@@ -12,6 +12,8 @@ import {
 } from "@chakra-ui/react";
 import { MdCheckCircle, MdEmail, MdPhone } from "react-icons/md";
 import { FaStar } from 'react-icons/fa';
+import NavbarHome from "pages/components/NavbarHome";
+import Footer from "pages/components/footer";
 
 const Profile = () => {
   const [ratingData, setRatingData] = useState({ rating: 0, reviews: 20 });
@@ -48,98 +50,104 @@ const Profile = () => {
   };
 
   return (
-    <Flex
-      position="relative"
-      justifyContent="center"
-      alignItems="center"
-      height="100vh"
-    >
-      <Box maxW={"500px"}>
-        <Stack spacing="4">
-          <Box>
-            <Flex>
-              <Avatar
-                size="lg"
-                name="Prosper Otemuyiwa"
-                src="https://bit.ly/prosper-baba"
-              />
-              <VStack align="start" pl="2">
-                <Text as="b" fontSize="xl">
-                  Sayuru Sadaru
-                </Text>
-                <Text>Working Year: 2</Text>
-              </VStack>
-            </Flex>
-            <Text pt="6" fontSize="sm" color={"gray"}>
-              <b>{ratingData.rating}.0</b> ({ratingData.reviews} reviews)
-            </Text>
-            <Box pt={2}>
-              <StarRating />
+    <Box>
+
+      <Box h={20}><NavbarHome /></Box>
+      <Flex
+        position="relative"
+        justifyContent="center"
+        alignItems="center"
+        height="100vh"
+        bg={"gray.50"}
+      >
+        <Box maxW={"500px"} boxShadow={"xl"} padding={20}>
+          <Stack spacing="4">
+            <Box>
+              <Flex>
+                <Avatar
+                  size="lg"
+                  name="Prosper Otemuyiwa"
+                  src="https://bit.ly/prosper-baba"
+                />
+                <VStack align="start" pl="2">
+                  <Text as="b" fontSize="xl">
+                    Sayuru Sadaru
+                  </Text>
+                  <Text>Working Year: 2</Text>
+                </VStack>
+              </Flex>
+              <Text pt="6" fontSize="sm" color={"gray"}>
+                <b>{ratingData.rating}.0</b> ({ratingData.reviews} reviews)
+              </Text>
+              <Box pt={2}>
+                <StarRating />
+              </Box>
             </Box>
-          </Box>
-          <Divider />
-          <Box>
-            <Flex align="center" pt="2">
-              <MdCheckCircle color="green" />
-              <Text fontSize="sm" ml="2">
-                Verified ID
+            <Divider />
+            <Box>
+              <Flex align="center" pt="2">
+                <MdCheckCircle color="green" />
+                <Text fontSize="sm" ml="2">
+                  Verified ID
+                </Text>
+              </Flex>
+              <Flex align="center" pt="2">
+                <MdCheckCircle color="green" />
+                <Text fontSize="sm" ml="2">
+                  Confirmed email
+                </Text>
+              </Flex>
+              <Flex align="center" pt="2">
+                <MdCheckCircle color="green" />
+                <Text fontSize="sm" ml="2">
+                  Confirmed phone number
+                </Text>
+              </Flex>
+            </Box>
+            <Divider
+              sx={{
+                height: "5px",
+                borderRadius: "md",
+                backgroundColor: "gray.300"
+              }}
+            />
+            <Box>
+              <Heading size="xs">
+                About Sayuru
+              </Heading>
+              <Text pt="2" fontSize="sm">
+                I am a professional driver with 2 years of experience. I have a 5-star rating and I am a verified driver.
               </Text>
-            </Flex>
-            <Flex align="center" pt="2">
-              <MdCheckCircle color="green" />
-              <Text fontSize="sm" ml="2">
-                Confirmed email
-              </Text>
-            </Flex>
-            <Flex align="center" pt="2">
-              <MdCheckCircle color="green" />
-              <Text fontSize="sm" ml="2">
-                Confirmed phone number
-              </Text>
-            </Flex>
-          </Box>
-          <Divider
-            sx={{
-              height: "5px",
-              borderRadius: "md",
-              backgroundColor: "gray.300"
-            }}
-          />
-          <Box>
-            <Heading size="xs">
-              About Sayuru
-            </Heading>
-            <Text pt="2" fontSize="sm">
-              I am a professional driver with 2 years of experience. I have a 5-star rating and I am a verified driver.
-            </Text>
-          </Box>
-          <Divider
-            sx={{
-              height: "5px",
-              borderRadius: "md",
-              backgroundColor: "gray.300"
-            }}
-          />
-          <Box>
-            <Heading size="xs">
-              Contact
-            </Heading>
-            <Flex align="center" pt="2">
-              <MdEmail />
-              <Text fontSize="sm" ml="2">
-                sayuru@gmail.com
-              </Text>
-            </Flex>
-            <Flex align="center" pt="2">
-              <MdPhone />
-              <Text fontSize="sm" ml="2">
-                0771234567
-              </Text>
-            </Flex>
-          </Box>
-        </Stack>
-      </Box>
-    </Flex>
+            </Box>
+            <Divider
+              sx={{
+                height: "5px",
+                borderRadius: "md",
+                backgroundColor: "gray.300"
+              }}
+            />
+            <Box>
+              <Heading size="xs">
+                Contact
+              </Heading>
+              <Flex align="center" pt="2">
+                <MdEmail />
+                <Text fontSize="sm" ml="2">
+                  sayuru@gmail.com
+                </Text>
+              </Flex>
+              <Flex align="center" pt="2">
+                <MdPhone />
+                <Text fontSize="sm" ml="2">
+                  0771234567
+                </Text>
+              </Flex>
+            </Box>
+          </Stack>
+        </Box>
+      </Flex>
+      <Footer />
+    </Box>
   );
 };
 
