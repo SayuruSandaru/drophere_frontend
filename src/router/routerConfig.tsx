@@ -10,12 +10,14 @@ import Ride from 'pages/ride - search';
 import Profile from 'pages/owner_profile';
 import PrivateRoute from 'pages/components/privateRoute';
 import Cride from 'pages/Create-ride/Create/create-ride';
+import HomeDelivery from 'pages/home - delivery';
 
 
 export enum RouterPaths {
     LOGIN = "/",
     REGISTER = "/register",
     HOME = "/home",
+    HOMEDELIVERY = "/delivery",
     ORDER = "/order",
     SEARCHDELIVERY = "/delivery/search",
     SEARCHRIDE = "/ride/search",
@@ -34,6 +36,7 @@ const RouterConfig: React.FC = () => {
             <Route path={RouterPaths.SEARCHRIDE} element={<PrivateRoute element={<Ride />} />} />
             <Route path={RouterPaths.PROFILE} element={<PrivateRoute element={<Profile />} />} />
             <Route path={RouterPaths.CREATERIDE} element={<Cride />} />
+            <Route path={RouterPaths.HOMEDELIVERY} element={<HomeDelivery />} />
         </Routes>
     );
 }
