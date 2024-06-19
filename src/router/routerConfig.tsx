@@ -21,9 +21,9 @@ export enum RouterPaths {
     SEARCHDELIVERY = "/delivery/search",
     SEARCHRIDE = "/ride/search",
     PROFILE = "/profile",
-    ORDERDELIVERY = "/delivery/order"
-    DRIVERREGISTER = "/drive/register"
-    CREATERIDE = "/ride/create"
+    ORDERDELIVERY = "/delivery/order",
+    DRIVERREGISTER = "/drive/register",
+    CREATERIDE = "/ride/create",
 }
 
 const RouterConfig: React.FC = () => {
