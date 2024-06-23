@@ -12,20 +12,29 @@ import {
   Select,
   Image,
   FormErrorMessage,
+  Spinner,
 } from "@chakra-ui/react";
 import { FiArrowLeft } from 'react-icons/fi';
+import { createVehicle } from 'api/vehicle';
+import { fileUpload } from 'api/common';
+import { useNavigate } from 'react-router-dom';
+import { RouterPaths } from 'router/routerConfig';
 
 interface VehicleDetailsProps {
   onBack: () => void;
+  onError: (error: string) => void;
 }
 
-const VehicleDetails: React.FC<VehicleDetailsProps> = ({ onBack }) => {
+const VehicleDetails: React.FC<VehicleDetailsProps> = ({ onBack, onError }) => {
+  const navigator = useNavigate();
   const [vehicleModel, setVehicleModel] = useState('');
   const [year, setYear] = useState('');
   const [licensePlate, setLicensePlate] = useState('');
   const [vehicleImage, setVehicleImage] = useState<File | null>(null);
   const [type, setType] = useState('');
   const [capacity, setCapacity] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const [formErrors, setFormErrors] = useState({
     vehicleModel: '',
@@ -78,11 +87,52 @@ const VehicleDetails: React.FC<VehicleDetailsProps> = ({ onBack }) => {
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    setError(null);
     if (validateForm()) {
-      // Here you can proceed with form submission logic
-      console.log('Form submitted');
+      onError('');
+      uploadProofDocument();
     } else {
       console.log('Form has errors. Please fill in all required fields.');
+    }
+  };
+
+  const uploadProofDocument = async () => {
+    try {
+      if (!vehicleImage) {
+        return;
+      }
+      setLoading(true);
+      const res = await fileUpload(vehicleImage);
+      await updateVehicle(res);
+      setLoading(false);
+      navigator
+    } catch (error) {
+      setLoading(false);
+      const errorMessage = error.message || 'Failed to upload document. Please try again.';
+      setError(errorMessage);
+      onError(errorMessage);
+    }
+  };
+
+  const updateVehicle = async (imageurl: string) => {
+    try {
+      setLoading(true);
+      await createVehicle({
+        capacity: parseInt(capacity),
+        license_plate: licensePlate,
+        model: vehicleModel,
+        type: type,
+        year: parseInt(year),
+        image_url: imageurl,
+      });
+      setLoading(false);
+      navigator(RouterPaths.HOME)
+    } catch (error) {
+      setLoading(false);
+      console.error(error);
+      const errorMessage = error.message || 'Failed to create vehicle. Please try again.';
+      setError(errorMessage);
+      onError(errorMessage);
     }
   };
 
@@ -145,12 +195,12 @@ const VehicleDetails: React.FC<VehicleDetailsProps> = ({ onBack }) => {
                     <FormLabel htmlFor="type">Type</FormLabel>
                     <Select id="type" value={type} onChange={(e) => setType(e.target.value)}>
                       <option value="">Select Type</option>
-                      <option value="sedan">Bike</option>
-                      <option value="suv">Tuktuk</option>
-                      <option value="truck">Car</option>
-                      <option value="truck">Van</option>
-                      <option value="truck">Bus</option>
-                      <option value="truck">Other</option>
+                      <option value="bike">Bike</option>
+                      <option value="tuktuk">Tuktuk</option>
+                      <option value="car">Car</option>
+                      <option value="van">Van</option>
+                      <option value="bus">Bus</option>
+                      <option value="other">Other</option>
                     </Select>
                     <FormErrorMessage>{formErrors.type}</FormErrorMessage>
                   </FormControl>
@@ -175,9 +225,11 @@ const VehicleDetails: React.FC<VehicleDetailsProps> = ({ onBack }) => {
                     bgColor={"black"}
                     color="white"
                     _hover={{ bgColor: "gray.700" }}
+                    width="100%"
                     type="submit"
+                    isDisabled={loading}
                   >
-                    Register
+                    {loading ? <Spinner size="md" /> : "Next"}
                   </Button>
                 </Stack>
               </Stack>

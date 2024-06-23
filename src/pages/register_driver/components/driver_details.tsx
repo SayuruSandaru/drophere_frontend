@@ -10,26 +10,63 @@ import {
   Stack,
   Flex,
   Image,
+  Spinner,
 } from "@chakra-ui/react";
+import { createDriver } from 'api/driver';
+import { fileUpload } from 'api/common';
+import { on } from 'events';
 
 interface DriverDetailsProps {
-  onNext: () => void; // Function to navigate to the next step (VehicleDetails)
+  onNext: () => void;
+  onError: (error: string) => void;
 }
 
-const DriverDetails: React.FC<DriverDetailsProps> = ({ onNext }) => {
+const DriverDetails: React.FC<DriverDetailsProps> = ({ onNext, onError }) => {
   const [proofDocument, setProofDocument] = useState<File | null>(null);
   const [street, setStreet] = useState('');
   const [city, setCity] = useState('');
   const [province, setProvince] = useState('');
+  const [loading, setLoading] = useState(false);
+  // const [imageUrl, setImageUrl] = useState('');
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-
-    // Validate if all required fields are filled before proceeding
     if (proofDocument && street && city && province) {
-      onNext(); // Navigate to the next step (VehicleDetails)
+      onError('');
+      await uploadProofDocument();
+
     } else {
-      alert('Please fill in all required fields.');
+      onError('Please fill all the fields');
+    }
+  };
+
+  const driver = async (imageurl: string) => {
+    try {
+      await createDriver({
+        street: street,
+        city: city,
+        province: province,
+        proof_document: imageurl,
+      });
+      setLoading(false);
+      onNext();
+    } catch (error) {
+      setLoading(false);
+      onError(error || 'Failed to create driver. Please try again.');
+    }
+  };
+
+  const uploadProofDocument = async () => {
+    try {
+      if (!proofDocument) {
+        return;
+      }
+      setLoading(true);
+      const res = await fileUpload(proofDocument);
+      await driver(res);
+    } catch (error) {
+      setLoading(false);
+      onError(error || 'Failed to upload document. Please try again.');
     }
   };
 
@@ -105,8 +142,9 @@ const DriverDetails: React.FC<DriverDetailsProps> = ({ onNext }) => {
                     _hover={{ bgColor: "gray.700" }}
                     width="100%"
                     type="submit"
+                    disabled={loading}
                   >
-                    Next
+                    {loading ? <Spinner size="md" /> : "Next"}
                   </Button>
                 </Stack>
               </Stack>
