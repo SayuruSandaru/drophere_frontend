@@ -4,6 +4,7 @@ import { Routes, Route } from 'react-router-dom';
 import Login from 'pages/login/index';
 import Register from '../pages/register/index';
 import Home from 'pages/home';
+import Complain from 'pages/complain';
 import Order from 'pages/order/index';
 import SearchDelivery from 'pages/search - delivery';
 import Ride from 'pages/ride - search';
@@ -21,6 +22,7 @@ export enum RouterPaths {
     LOGIN = "/login",
     REGISTER = "/register",
     HOME = "/home",
+    COMPLAIN = "/complain",
     HOMEDELIVERY = "/delivery",
     ORDER = "/order",
     SEARCHDELIVERY = "/delivery/search",
@@ -48,6 +50,7 @@ const RouterConfig: React.FC = () => {
             <Route path={RouterPaths.HOMEDELIVERY} element={<HomeDelivery />} />
             <Route path={RouterPaths.LANDING} element={<LandingPage />} />
             <Route path={RouterPaths.CONTACT} element={<ContactUs />} />
+            <Route path={RouterPaths.COMPLAIN} element={<Complain />} />
         </Routes>
     );
 }
