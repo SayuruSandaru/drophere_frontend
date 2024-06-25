@@ -105,7 +105,6 @@ const VehicleDetails: React.FC<VehicleDetailsProps> = ({ onBack, onError }) => {
       const res = await fileUpload(vehicleImage);
       await updateVehicle(res);
       setLoading(false);
-      navigator
     } catch (error) {
       setLoading(false);
       const errorMessage = error.message || 'Failed to upload document. Please try again.';
