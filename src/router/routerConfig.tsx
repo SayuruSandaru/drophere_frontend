@@ -8,12 +8,13 @@ import Order from 'pages/order/index';
 import SearchDelivery from 'pages/search - delivery';
 import Ride from 'pages/ride - search';
 import Profile from 'pages/owner_profile';
+import OrderDelivery from 'pages/order - delivery';
+import DriverRegister from 'pages/register_driver/index';
 import PrivateRoute from 'pages/components/privateRoute';
 import Cride from 'pages/Create-ride/Create/create-ride';
 import HomeDelivery from 'pages/home - delivery';
 import LandingPage from 'pages/landing';
 import ContactUs from 'pages/contact';
-
 
 export enum RouterPaths {
     LANDING = "/",
@@ -27,6 +28,8 @@ export enum RouterPaths {
     PROFILE = "/profile",
     CREATERIDE = "/ride/create",
     CONTACT = "/contact",
+    ORDERDELIVERY = "/delivery/order",
+    DRIVERREGISTER = "/drive/register",
 }
 
 const RouterConfig: React.FC = () => {
@@ -34,6 +37,8 @@ const RouterConfig: React.FC = () => {
         <Routes>
             <Route path={RouterPaths.LOGIN} element={<Login />} />
             <Route path={RouterPaths.REGISTER} element={<Register />} />
+            <Route path={RouterPaths.ORDERDELIVERY} element={<OrderDelivery />} />
+            <Route path={RouterPaths.DRIVERREGISTER} element={< DriverRegister />} />
             <Route path={RouterPaths.HOME} element={<PrivateRoute element={<Home />} />} />
             <Route path={RouterPaths.ORDER} element={<PrivateRoute element={<Order />} />} />
             <Route path={RouterPaths.SEARCHDELIVERY} element={<PrivateRoute element={<SearchDelivery />} />} />

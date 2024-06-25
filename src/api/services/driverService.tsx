@@ -7,7 +7,7 @@ class DriverService extends ApiService {
                 {
                     "street": driver.street,
                     "city": driver.city,
-                    "province": driver.state,
+                    "province": driver.province,
                     "proof_document": driver.proof_document,
                 }
             );
