@@ -27,8 +27,9 @@ import { set } from "lodash";
 import FilterDrawerMobile from "./components/filterDrawerMobile";
 import Footer from "pages/components/footer";
 import NavbarHome from "../components/NavbarHome";
+import NavbarHomeDelivery from "pages/components/NavbarHomeDelivery";
 
-const Home = () => {
+const HomeDelivery = () => {
   const navigate = useNavigate();
   const { isOpen: isPickupPlaceOpen, onOpen: onPickupPlaceOpen, onClose: onPickupPlaceClose } = useDisclosure();
   const { isOpen: isDestinationPlaceOpen, onOpen: onDestinationPlaceOpen, onClose: onDestinationPlaceClose } = useDisclosure();
@@ -83,7 +84,7 @@ const Home = () => {
 
   return (
     <Flex direction="column" h="100vh" bg="gray.50">
-      <NavbarHome />
+      <NavbarHomeDelivery />
       {
         isLargeScreen && (
           <Box bg="white" borderRadius="md" boxShadow="sm" mb={4} p={2}>
@@ -92,20 +93,17 @@ const Home = () => {
                 <Icon as={FaLocationArrow} w={6} h={4} color={"gray.500"} mt={0} />
                 <Text ml={2} fontSize="md" fontWeight={"medium"}>{selectedPickupLocation}</Text>
               </Flex>
-              {/* <Divider orientation={{ base: "horizontal", md: "vertical" }} height={{ base: "2px", md: "24px" }} mx={4} borderColor={'gray.400'} /> */}
               <Flex flex={1} align="center" onClick={() => handleItemClick("Destination")} cursor="pointer" mb={{ base: 4, md: 0 }}>
                 <Icon as={FaLocationDot} w={6} h={4} color={"gray.500"} />
                 <Text ml={2} fontSize="md" fontWeight={"medium"}>{selectedDestinationLocation}</Text>
               </Flex>
-              {/* <Divider orientation={{ base: "horizontal", md: "vertical" }} height={{ base: "2px", md: "24px" }} mx={4} borderColor={'gray.400'} /> */}
               <Flex flex={1} align="center" onClick={() => handleItemClick("Calendar")} cursor="pointer" mb={{ base: 4, md: 0 }}>
                 <Icon as={FaCalendarDays} w={6} h={4} color={"gray.500"} />
                 <Text ml={2} fontSize="md" fontWeight={"medium"}>{formatDateWithoutYear(selectedDate)}</Text>
               </Flex>
-              {/* <Divider orientation={{ base: "horizontal", md: "vertical" }} height={{ base: "2px", md: "24px" }} mx={4} borderColor={'gray.400'} /> */}
               <Flex flex={1} align="center" onClick={() => handleItemClick("Passenger")} cursor="pointer" mb={{ base: 4, md: 0 }}>
-                <Icon as={FaUser} w={6} h={4} color={"gray.500"} />
-                <Text ml={2} fontSize="md" fontWeight={"medium"}>{`${selectedPassangerCount} Passenger`}</Text>
+                <Icon as={FaBox} w={6} h={4} color={"gray.500"} />
+                <Text ml={2} fontSize="md" fontWeight={"medium"}>{`${selectedPassangerCount} Kg`}</Text>
               </Flex>
               <Button
                 bg="#2b8ab0"
@@ -212,4 +210,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default HomeDelivery;

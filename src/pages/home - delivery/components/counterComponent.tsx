@@ -8,11 +8,11 @@ const CounterComponent = ({ isOpen, onClose, handleCountChange }) => {
         <Modal isOpen={isOpen} onClose={onClose}>
             <ModalOverlay />
             <ModalContent bg="#f7fafc" borderRadius="md" boxShadow="md">
-                <ModalHeader bg="#2b8ab0" color="white" borderTopRadius="md" fontSize={"md"}>Passanger amount</ModalHeader>
+                <ModalHeader bg="#2b8ab0" color="white" borderTopRadius="md" fontSize={"md"}>Your weight</ModalHeader>
                 <ModalCloseButton color="white" />
                 <ModalBody>
                     <Flex direction="row" align="center" justify="center">
-                        <Text>Passanger</Text>
+                        <Text>Weight</Text>
                         <Spacer />
                         <Button
                             onClick={() => {
