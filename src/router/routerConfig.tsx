@@ -13,9 +13,12 @@ import DriverRegister from 'pages/register_driver/index';
 import PrivateRoute from 'pages/components/privateRoute';
 import Cride from 'pages/Create-ride/Create/create-ride';
 import HomeDelivery from 'pages/home - delivery';
+import LandingPage from 'pages/landing';
+import ContactUs from 'pages/contact';
 
 export enum RouterPaths {
-    LOGIN = "/",
+    LANDING = "/",
+    LOGIN = "/login",
     REGISTER = "/register",
     HOME = "/home",
     HOMEDELIVERY = "/delivery",
@@ -23,9 +26,10 @@ export enum RouterPaths {
     SEARCHDELIVERY = "/delivery/search",
     SEARCHRIDE = "/ride/search",
     PROFILE = "/profile",
+    CREATERIDE = "/ride/create",
+    CONTACT = "/contact",
     ORDERDELIVERY = "/delivery/order",
     DRIVERREGISTER = "/drive/register",
-    CREATERIDE = "/ride/create",
 }
 
 const RouterConfig: React.FC = () => {
@@ -42,6 +46,8 @@ const RouterConfig: React.FC = () => {
             <Route path={RouterPaths.PROFILE} element={<PrivateRoute element={<Profile />} />} />
             <Route path={RouterPaths.CREATERIDE} element={<Cride />} />
             <Route path={RouterPaths.HOMEDELIVERY} element={<HomeDelivery />} />
+            <Route path={RouterPaths.LANDING} element={<LandingPage />} />
+            <Route path={RouterPaths.CONTACT} element={<ContactUs />} />
         </Routes>
     );
 }
