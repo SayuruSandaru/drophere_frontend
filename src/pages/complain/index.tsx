@@ -1,11 +1,9 @@
 import {
   Box,
-
   Center,
   RadioGroup,
   Link,
   Button,
-  
   VStack,
   FormControl,
   Radio,
@@ -30,7 +28,7 @@ const steps = [
 
 const Stepper = ({ steps, activeStep }) => {
   return (
-    <Flex width="100%" justify="space-between" my={4}>
+    <Flex width="100%" justify="center" my={4}>
       {steps.map((step, index) => (
         <VStack key={index} align="center" flex={1}>
           <Box
@@ -84,10 +82,10 @@ const Complain = () => {
 
   return (
     <>
-      <Center bg="skyblue" as="h1" h="100px" color="black" fontSize="3xl">
+      <Center bg="skyblue" as="h1" h="60px" color="black" fontSize="3xl">
         Resolution Center
       </Center>
-      <Flex justify="center" align="center" p={4}>
+      <Flex direction="column" align="center" justify="center" minHeight="100vh">
         <Box
           p={8}
           borderWidth={1}
@@ -105,14 +103,14 @@ const Complain = () => {
                 Welcome! Here you can work things out and resolve issues
                 regarding your orders.
               </Text>
+              <Box />
               <FormControl as="fieldset">
                 <FormLabel as="legend">What can we help you do?</FormLabel>
                 <RadioGroup onChange={setAction} value={action}>
                   <VStack align="left">
-                    <Radio value="modify">Modify the order</Radio>
-                    <Radio value="extend">Extend the delivery time</Radio>
+                    <Radio value="modify">Make a complain</Radio>
                     <Radio value="cancel">
-                      Ask the buyer to cancel this order
+                      Request to cancel the ride
                     </Radio>
                   </VStack>
                 </RadioGroup>
@@ -125,12 +123,6 @@ const Complain = () => {
                 >
                   Continue
                 </Button>
-                <Text>
-                  Couldn’t find what you need? Contact our{" "}
-                  <Link color="teal.500" href="#">
-                    Customer Support
-                  </Link>
-                </Text>
               </HStack>
             </VStack>
           )}
@@ -161,7 +153,7 @@ const Complain = () => {
                           isInvalid={form.errors.firstName && form.touched.firstName}
                         >
                           <FormLabel htmlFor="firstName">First Name</FormLabel>
-                          <Input {...field} id="firstName" placeholder="Enter your first name" />
+                          <Input {...field} id="firstName" placeholder="" />
                           <FormErrorMessage>{form.errors.firstName}</FormErrorMessage>
                         </FormControl>
                       )}
@@ -171,9 +163,8 @@ const Complain = () => {
                         <FormControl
                           isInvalid={form.errors.lastName && form.touched.lastName}
                         >
-                          
                           <FormLabel htmlFor="lastName">Last Name</FormLabel>
-                          <Input {...field} id="lastName" placeholder="Enter your last name" />
+                          <Input {...field} id="lastName" placeholder="" />
                           <FormErrorMessage>{form.errors.lastName}</FormErrorMessage>
                         </FormControl>
                       )}
@@ -184,33 +175,23 @@ const Complain = () => {
                           isInvalid={form.errors.phone && form.touched.phone}
                         >
                           <FormLabel htmlFor="phone">Phone Number</FormLabel>
-                          <Input {...field} id="phone" placeholder="Enter your phone number" />
+                          <Input {...field} id="phone" placeholder="" />
                           <FormErrorMessage>{form.errors.phone}</FormErrorMessage>
                         </FormControl>
                       )}
                     </Field>
-                    <Field name="details">
+                    <Field name="additionalInfo">
                       {({ field, form }) => (
                         <FormControl
-                          isInvalid={form.errors.details && form.touched.details}
+                          isInvalid={form.errors.additionalInfo && form.touched.additionalInfo}
                         >
-                          <FormLabel htmlFor="details">Details</FormLabel>
-                          <Textarea {...field} id="details" placeholder="Enter details about your issue" />
-                          <FormErrorMessage>{form.errors.details}</FormErrorMessage>
+                          <FormLabel htmlFor="additionalInfo">Describe your problem in details</FormLabel>
+                          <Textarea {...field} id="additionalInfo" placeholder="" />
+                          <FormErrorMessage>{form.errors.additionalInfo}</FormErrorMessage>
                         </FormControl>
                       )}
                     </Field>
-                    <Field name="contact">
-                      {({ field, form }) => (
-                        <FormControl
-                          isInvalid={form.errors.contact && form.touched.contact}
-                        >
-                          <FormLabel htmlFor="contact">Contact Email</FormLabel>
-                          <Input {...field} id="contact" placeholder="Enter your contact email" />
-                          <FormErrorMessage>{form.errors.contact}</FormErrorMessage>
-                        </FormControl>
-                      )}
-                    </Field>
+
                     <Flex justify="flex-end" width="100%" mt={4}>
                       <Button
                         colorScheme="teal"
