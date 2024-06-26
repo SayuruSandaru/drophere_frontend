@@ -12,8 +12,16 @@ const PlaceAutocompleteModal = ({ isOpen, onClose, onPlaceSelect }) => {
 
     const handlePlaceSelect = () => {
         const place = autocompleteRef.current.getPlace();
-        onPlaceSelect(place.name); // Assuming you want to use the place name
-        setQuery(place.name);
+        if (place.geometry) {
+            const { lat, lng } = place.geometry.location;
+            const latitude = lat();
+            const longitude = lng();
+            onPlaceSelect({ name: place.name, latitude, longitude });
+            setQuery(place.name);
+        } else {
+            // Handle the case where no geometry is returned
+            console.error("Place does not have geometry");
+        }
         onClose();
     };
 

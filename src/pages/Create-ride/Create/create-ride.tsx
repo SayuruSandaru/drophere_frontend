@@ -5,11 +5,13 @@ import MapContainer from 'pages/home/components/googleMap';
 import NavbarLogged from 'pages/components/NavbarLogged';
 import Footer from 'pages/components/footer';
 import NavbarHome from 'pages/components/NavbarHome';
+import NavbarOwner from 'pages/components/navbar-owner';
 
 const Cride = () => {
+
   return (
     <Box>
-      <NavbarHome />
+      <NavbarOwner />
       <Box p={5}>
         <Grid templateColumns="repeat(2, 1fr)" gap={6}>
           <GridItem w="100%">
@@ -59,7 +61,7 @@ const Cride = () => {
             </VStack>
           </GridItem>
           <GridItem w="100%">
-            <MapContainer />
+            <MapContainer polylinePath={[]} />
           </GridItem>
         </Grid>
 
