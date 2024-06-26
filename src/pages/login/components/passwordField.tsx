@@ -8,24 +8,32 @@ import {
     InputRightElement,
     useDisclosure,
     useMergeRefs,
-} from '@chakra-ui/react'
-import { forwardRef, useRef } from 'react'
-import { HiEye, HiEyeOff } from 'react-icons/hi'
+    FormErrorMessage,
+} from '@chakra-ui/react';
+import { forwardRef, useRef } from 'react';
+import { HiEye, HiEyeOff } from 'react-icons/hi';
 
-export const PasswordField = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
-    const { isOpen, onToggle } = useDisclosure()
-    const inputRef = useRef<HTMLInputElement>(null)
+interface PasswordFieldProps extends InputProps {
+    isInvalid?: boolean;
+    errorMessage?: string;
+}
 
-    const mergeRef = useMergeRefs(inputRef, ref)
+export const PasswordField = forwardRef<HTMLInputElement, PasswordFieldProps>((props, ref) => {
+    const { isOpen, onToggle } = useDisclosure();
+    const inputRef = useRef<HTMLInputElement>(null);
+
+    const mergeRef = useMergeRefs(inputRef, ref);
     const onClickReveal = () => {
-        onToggle()
+        onToggle();
         if (inputRef.current) {
-            inputRef.current.focus({ preventScroll: true })
+            inputRef.current.focus({ preventScroll: true });
         }
-    }
+    };
+
+    const { isInvalid, errorMessage, ...rest } = props;
 
     return (
-        <FormControl>
+        <FormControl isInvalid={isInvalid}>
             <FormLabel htmlFor="password">Password</FormLabel>
             <InputGroup>
                 <InputRightElement>
@@ -43,11 +51,12 @@ export const PasswordField = forwardRef<HTMLInputElement, InputProps>((props, re
                     type={isOpen ? 'text' : 'password'}
                     autoComplete="current-password"
                     required
-                    {...props}
+                    {...rest}
                 />
             </InputGroup>
+            {isInvalid && <FormErrorMessage>{errorMessage}</FormErrorMessage>}
         </FormControl>
-    )
-})
+    );
+});
 
-PasswordField.displayName = 'PasswordField'
+PasswordField.displayName = 'PasswordField';

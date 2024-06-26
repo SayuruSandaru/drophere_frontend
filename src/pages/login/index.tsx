@@ -7,6 +7,7 @@ import { RouterPaths } from "router/routerConfig";
 import Footer from "pages/components/footer";
 import { colors } from "theme/colors";
 import { login } from "api/auth";
+import { driverByUser } from "api/driver";
 
 const Login: React.FC = () => {
   const [email, setEmail] = React.useState('');
@@ -21,7 +22,7 @@ const Login: React.FC = () => {
       setErrorMessage('');
       await login({ email, password });
       setLoading(false);
-      navigate(RouterPaths.HOME);
+      navigate(RouterPaths.SEARCHRIDE);
     } catch (error) {
       setLoading(false);
       setErrorMessage(error.message);

@@ -21,7 +21,7 @@ export enum RouterPaths {
     LANDING = "/",
     LOGIN = "/login",
     REGISTER = "/register",
-    HOME = "/home",
+    RIDE = "/ride",
     COMPLAIN = "/complain",
     HOMEDELIVERY = "/delivery",
     ORDER = "/order",
@@ -41,7 +41,7 @@ const RouterConfig: React.FC = () => {
             <Route path={RouterPaths.REGISTER} element={<Register />} />
             <Route path={RouterPaths.ORDERDELIVERY} element={<OrderDelivery />} />
             <Route path={RouterPaths.DRIVERREGISTER} element={< DriverRegister />} />
-            <Route path={RouterPaths.HOME} element={<PrivateRoute element={<Home />} />} />
+            <Route path={RouterPaths.RIDE} element={<PrivateRoute element={<Home />} />} />
             <Route path={RouterPaths.ORDER} element={<PrivateRoute element={<Order />} />} />
             <Route path={RouterPaths.SEARCHDELIVERY} element={<PrivateRoute element={<SearchDelivery />} />} />
             <Route path={RouterPaths.SEARCHRIDE} element={<PrivateRoute element={<Ride />} />} />

@@ -37,6 +37,16 @@ class DriverService extends ApiService {
             throw error;
         }
     }
+
+    public async getDriverByUserId(): Promise<any> {
+        try {
+            const response = await this.post("/driver/user", {});
+            return response;
+        } catch (error) {
+            console.error("Error getting driver: ", error);
+            throw error;
+        }
+    }
 }
 
 export default new DriverService();

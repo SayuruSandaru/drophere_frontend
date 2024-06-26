@@ -29,7 +29,7 @@ function NavbarHomeDelivery() {
                             <Icon as={FaBicycle} w={6} h={4} color={"gray.700"} mr={1} />
                             Ride
                         </Button>
-                        <Button borderRadius={5} bgColor={"blackAlpha.800"} size={"sm"} color={"white"} onClick={() => { navigate(RouterPaths.CREATERIDE); }}>Earn with us</Button>
+                        <Button borderRadius={5} bgColor={"blackAlpha.800"} size={"sm"} color={"white"} onClick={() => { navigate(RouterPaths.DRIVERREGISTER); }}>Earn with us</Button>
                         <Avatar size="sm" name="John" />
                     </HStack>
                 </Flex>

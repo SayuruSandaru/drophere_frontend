@@ -27,9 +27,17 @@ import { set } from "lodash";
 import FilterDrawerMobile from "./components/filterDrawerMobile";
 import Footer from "pages/components/footer";
 import NavbarHome from "../components/NavbarHome";
+import { useRecoilValue, useSetRecoilState } from "recoil";
+import { searchRideState } from "state";
+import { searchRides } from "api/ride";
+import React from "react";
+import { decodePolyline } from "util/map";
 
 const Home = () => {
+  const rideSearchData = useRecoilValue(searchRideState);
+  const setSearchRideState = useSetRecoilState(searchRideState);
   const navigate = useNavigate();
+
   const { isOpen: isPickupPlaceOpen, onOpen: onPickupPlaceOpen, onClose: onPickupPlaceClose } = useDisclosure();
   const { isOpen: isDestinationPlaceOpen, onOpen: onDestinationPlaceOpen, onClose: onDestinationPlaceClose } = useDisclosure();
   const { isOpen: isCalendarOpen, onOpen: onCalendarOpen, onClose: onCalendarClose } = useDisclosure();
@@ -39,12 +47,17 @@ const Home = () => {
   const [isMenuDrawerOpen, setIsMenuDrawerOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState("");
   const [selectedDate, setSelectedDate] = useState(new Date());
-  const [selectedPickupLocation, setSelectedPickupLocation] = useState("");
-  const [selectedDestinationLocation, setSelectedDestinationLocation] = useState("");
-  const [selectedPassangerCount, setPassangerCount] = useState("");
 
+  const [selectedPickupLocation, setSelectedPickupLocation] = useState(rideSearchData.pickupName);
+  const [pickCordinate, setPickCordinate] = useState({ "lat": rideSearchData.pickup_lat, "lng": rideSearchData.pickup_lng });
+  const [destinationCordinate, setDestinationCordinate] = useState({ "lat": rideSearchData.destination_lat, "lng": rideSearchData.destination_lng });
+  const [selectedDestinationLocation, setSelectedDestinationLocation] = useState(rideSearchData.destinationName);
+  const [selectedPassangerCount, setPassangerCount] = useState(`${rideSearchData.passengerCount} Passenger`);
+  const [errorMessage, setErrorMessage] = React.useState('');
+  const [loading, setLoading] = React.useState(false);
   const [isLargeScreen] = useMediaQuery('(min-width: 992px)');
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [polylinePath, setPolylinePath] = useState([]);
 
   const handleItemClick = (item) => {
     setSelectedItem(item);
@@ -58,17 +71,22 @@ const Home = () => {
     }
   };
 
+  const getSearchData = () => {
+
+  }
   const handleDateChange = (date) => {
     setSelectedDate(date);
     onCalendarClose();
   };
 
   const handleDestiantionSelect = (place) => {
-    setSelectedDestinationLocation(place);
+    setSelectedDestinationLocation(place.name);
+    setDestinationCordinate({ lat: place.latitude, lng: place.longitude });
   };
 
   const handlePickupLocationSelect = (place) => {
-    setSelectedPickupLocation(place);
+    setSelectedPickupLocation(place.name);
+    setPickCordinate({ lat: place.latitude, lng: place.longitude });
   };
 
   const handleCountChange = (count) => {
@@ -81,8 +99,46 @@ const Home = () => {
     return date.toLocaleDateString(undefined, options);
   };
 
+  const searchRide = async () => {
+    try {
+      setLoading(true);
+      setErrorMessage('');
+      console.log(pickCordinate['lat']);
+      const res = await searchRides(
+        {
+          pickup_lat: pickCordinate['lat'],
+          pickup_lng: pickCordinate['lng'],
+          destination_lat: destinationCordinate['lat'],
+          destination_lng: destinationCordinate['lng'],
+        }
+      );
+      const rideData = {
+        pickup_lat: pickCordinate['lat'],
+        pickup_lng: pickCordinate['lng'],
+        destination_lat: destinationCordinate['lat'],
+        destination_lng: destinationCordinate['lng'],
+        pickupName: selectedPickupLocation,
+        destinationName: selectedDestinationLocation,
+        passengerCount: selectedPassangerCount,
+        response: res.rides,
+      };
+      setSearchRideState(rideData);
+      console.log(res);
+      console.log("success");
+      setLoading(false);
+    } catch (e) {
+      setLoading(false);
+      setErrorMessage(e.message);
+    }
+  }
+
   return (
     <Flex direction="column" h="100vh" bg="gray.50">
+      {errorMessage && (
+        <Box p={2} color="white" bg={"red.400"} textAlign="center">
+          {errorMessage}
+        </Box>
+      )}
       <NavbarHome />
       {
         isLargeScreen && (
@@ -105,7 +161,7 @@ const Home = () => {
               {/* <Divider orientation={{ base: "horizontal", md: "vertical" }} height={{ base: "2px", md: "24px" }} mx={4} borderColor={'gray.400'} /> */}
               <Flex flex={1} align="center" onClick={() => handleItemClick("Passenger")} cursor="pointer" mb={{ base: 4, md: 0 }}>
                 <Icon as={FaUser} w={6} h={4} color={"gray.500"} />
-                <Text ml={2} fontSize="md" fontWeight={"medium"}>{`${selectedPassangerCount} Passenger`}</Text>
+                <Text ml={2} fontSize="md" fontWeight={"medium"}>{`${selectedPassangerCount}`}</Text>
               </Flex>
               <Button
                 bg="#2b8ab0"
@@ -116,6 +172,7 @@ const Home = () => {
                 width={{ base: "100%", md: "200px" }}
                 fontWeight="medium"
                 mb={{ base: 4, md: 0 }}
+                onClick={searchRide}
               >
                 Search
               </Button>
@@ -153,49 +210,30 @@ const Home = () => {
       <MenuDrawer isOpen={isMenuDrawerOpen} onClose={() => setIsMenuDrawerOpen(false)} />
       <Flex flex={1} direction={{ base: "column", lg: "row" }}>
         <Box flex={1} bg="white" borderRadius="md" boxShadow="sm" mb={{ base: 4, lg: 0 }} mr={{ lg: 4 }} p={4}>
-          <MapContainer />
+          <MapContainer polylinePath={polylinePath} />
         </Box>
         <Box flex={1.5} bg="white" borderRadius="md" boxShadow="sm" p={4}>
           <Stack spacing={4}>
-            <CarInfo
-              imageUrl="https://images.pexels.com/photos/909907/pexels-photo-909907.jpeg?auto=compress&cs=tinysrgb&w=960&h=750&dpr=1"
-              altText="Kia Motors Subcompact car"
-              carName="Car"
-              date="2nd May 2024"
-              from="Kandy"
-              to="Badulla"
-              name="John"
-              availability="Available"
-              seatsLeft="2"
-              price="$382.25"
-              onClick={() => navigate(RouterPaths.ORDER)}
-            />
-            <CarInfo
-              imageUrl="https://images.pexels.com/photos/909907/pexels-photo-909907.jpeg?auto=compress&cs=tinysrgb&w=960&h=750&dpr=1"
-              altText="Kia Motors Subcompact car"
-              carName="Car"
-              date="2nd May 2024"
-              from="Colombo"
-              to="Badulla"
-              availability="Available"
-              name="John"
-              seatsLeft="2"
-              price="$382.25"
-              onClick={() => navigate(RouterPaths.ORDER)}
-            />
-            <CarInfo
-              imageUrl="https://images.pexels.com/photos/909907/pexels-photo-909907.jpeg?auto=compress&cs=tinysrgb&w=960&h=750&dpr=1"
-              altText="Kia Motors Subcompact car"
-              carName="Car"
-              date="2nd May 2024"
-              from="Colombo"
-              to="Badulla"
-              name="John"
-              availability="Available"
-              seatsLeft="2"
-              price="$382.25"
-              onClick={() => navigate(RouterPaths.ORDER)}
-            />
+            {rideSearchData && rideSearchData.response && rideSearchData.response.map(ride => (
+              console.log(ride.vehicle_details.model),
+              <CarInfo
+                key={ride.ride_id}
+                imageUrl={ride.vehicle_details.image_url}
+                altText={ride.vehicle_details.model}
+                carName={`${ride.vehicle_details.type} ${ride.vehicle_details.model}`}
+                date={new Date(ride.start_time).toLocaleDateString()}
+                from={ride.start_location}
+                to={ride.end_location}
+                name={ride.owner_details.city}
+                availability={ride.status}
+                seatsLeft={ride.vehicle_details.capacity}
+                price="$382.25"
+                onClick={() => {
+                  const points = decodePolyline(ride.route)
+                  setPolylinePath(points);
+                }}
+              />
+            ))}
           </Stack>
         </Box>
       </Flex>

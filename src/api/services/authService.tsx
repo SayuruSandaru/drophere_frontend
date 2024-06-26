@@ -1,3 +1,4 @@
+import { AnyFunction } from "@chakra-ui/utils";
 import ApiService from "./apiService";
 
 class AuthService extends ApiService {
@@ -15,17 +16,19 @@ class AuthService extends ApiService {
     }
   }
 
-  public async register(username: string, email: string, password: string, firstname: string, lastname: string, phone: string, profile_image: string): Promise<any> {
+  public async register(user: any): Promise<any> {
     try {
-      const response = await this.post("/register", {
-        username,
-        email,
-        password,
-        firstname,
-        lastname,
-        phone,
-        profile_image
-      }, false);
+      const r = {
+        "email": user.email,
+        "password": user.password,
+        "firstname": user.firstname,
+        "lastname": user.lastname,
+        "username": user.username,
+        "phone": user.phone,
+        "profile_image": "NOT AVAILABLE"
+      };
+      console.log(r);
+      const response = await this.post("/register", r, false);
       return response;
     } catch (error) {
       console.error("Error registering: ", error);

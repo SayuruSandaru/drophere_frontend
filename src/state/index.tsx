@@ -15,3 +15,13 @@ export const driverState = atom<any>({
     key: 'driverState',
     default: null,
 });
+
+export const searchRideState = atom<any>({
+    key: 'searchRideState',
+    default: null,
+});
+
+export const isDriverState = atom<boolean>({
+    key: 'isDriverState',
+    default: false,
+});

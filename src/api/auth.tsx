@@ -26,33 +26,35 @@ export const login = async (credentials: { email: string; password: string }): P
     }
 };
 
-
-// export const register = async (details: {
-//     email: string;
-//     password: string;
-//     firstname: string;
-//     lastname: string;
-//     username: string;
-//     phone: string;
-//     profile_image: string;
-// }): Promise<void> => {
-//     try {
-//         const response = await authService.register;
-
-//         if (!response.token) {
-//             throw new Error('No token returned');
-//         }
-
-//         // Set token in cookies
-//         CookieManager.setCookie("token", response.token, 7);
-//         // Update Recoil state
-//         setRecoil(tokenState, response.token);
-//         setRecoil(userState, response.user);
-//     } catch (error) {
-//         console.error('Failed to register:', error);
-//         throw error;
-//     }
-// };
+export const registerUser = async (details: {
+    email: string;
+    password: string;
+    firstname: string;
+    lastname: string;
+    username: string;
+    phone: string;
+    profile_image: string;
+}): Promise<void> => {
+    try {
+        const response = await authService.register(
+            {
+                'email': details.email,
+                'password': details.password,
+                'firstname': details.firstname,
+                'lastname': details.lastname,
+                'username': details.username,
+                'phone': details.phone,
+                'profile_image': details.profile_image
+            }
+        );
+        if (response.status !== "success") {
+            throw new Error('Registration failed');
+        }
+    } catch (error) {
+        console.error('Failed to register:', error);
+        throw error;
+    }
+};
 
 // export const fetchUserDetails = async (): Promise<void> => {
 //     try {
