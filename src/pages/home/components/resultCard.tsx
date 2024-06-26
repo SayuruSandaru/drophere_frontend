@@ -30,8 +30,9 @@ interface CarInfoProps {
 }
 
 const CarInfo: React.FC<CarInfoProps> = ({ imageUrl, altText, carName, date, from, to, availability, seatsLeft, price, name, onClick }) => {
-
+  const navigate = useNavigate();
   return (
+
     <Box borderRadius="md" borderWidth="1px" p={1} onClick={onClick} _hover={{ bg: "gray.50", cursor: "pointer", borderRadius: "md" }}>
       <Flex direction={{ base: "column", md: "row" }}>
         <Image
@@ -85,7 +86,7 @@ const CarInfo: React.FC<CarInfoProps> = ({ imageUrl, altText, carName, date, fro
         <Flex direction={"column"}>
           <Text fontSize="xl" fontWeight="bold" m={{ base: 4, md: 5 }}>{price}</Text>
           <Spacer />
-          <Button bg="black" color={"white"} m={4}>Book</Button>
+          <Button bg="black" color={"white"} m={4} onClick={() => navigate(RouterPaths.ORDER)} >Book</Button>
         </Flex>
       </Flex>
     </Box>
