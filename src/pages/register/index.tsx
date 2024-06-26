@@ -8,20 +8,51 @@ import {
   Heading,
   useMediaQuery,
 } from "@chakra-ui/react";
-import React from "react";
+import React, { useState } from "react";
 import { colors } from "theme/colors";
 import { LoginForm } from "../login/login_form";
 import { useNavigate } from "react-router-dom";
 import { Sing_Up } from "./Sign_Up";
 import { RouterPaths } from "router/routerConfig";
+import { register } from "module";
+import { registerUser } from "api/auth";
 
 
 const Register: React.FC = () => {
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [username, setUsername] = useState('');
+  const [mobileNumber, setMobileNumber] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [errorMessage, setErrorMessage] = React.useState('');
+  const [loading, setLoading] = React.useState(false);
   const navigate = useNavigate();
 
-  const handleLogin = () => {
-    console.log("Login clicked");
-    navigate(RouterPaths.LOGIN); // Navigate to the index page in components
+
+  const handleRegister = async () => {
+    try {
+      setLoading(true);
+      setErrorMessage('');
+      console.log("Registering user");
+      console.log("email: ", email);
+      await registerUser(
+        {
+          email: email,
+          password: password,
+          firstname: firstName,
+          lastname: lastName,
+          username: username,
+          phone: mobileNumber,
+          profile_image: "NOT AVAILABLE",
+        }
+      );
+      setLoading(false);
+      navigate(RouterPaths.HOME);
+    } catch (error) {
+      setLoading(false);
+      setErrorMessage(error.message);
+    }
   };
 
   const [isLargeScreen] = useMediaQuery('(min-width: 992px)');
@@ -30,6 +61,11 @@ const Register: React.FC = () => {
   return (
     <Box>
       <Flex direction="column" h="100vh">
+        {errorMessage && (
+          <Box p={2} color="white" bg={"red.400"} textAlign="center">
+            {errorMessage}
+          </Box>
+        )}
         {!isLargeScreen && (
           <Flex direction="row" bg="#2bb07b" p="5">
             <Heading m={"auto"} color={"white"}>
@@ -60,7 +96,22 @@ const Register: React.FC = () => {
               </Stack>
             </Box>
           )}
-          <Sing_Up onLogin={handleLogin} />
+          <Sing_Up
+            firstName={firstName}
+            lastName={lastName}
+            username={username}
+            mobileNumber={mobileNumber}
+            email={email}
+            password={password}
+            setFirstName={setFirstName}
+            setLastName={setLastName}
+            setUsername={setUsername}
+            setMobileNumber={setMobileNumber}
+            setEmail={setEmail}
+            setPassword={setPassword}
+            onSignUp={handleRegister}
+            loading={loading}
+          />
         </Flex>
       </Flex>
     </Box>

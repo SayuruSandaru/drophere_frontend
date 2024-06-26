@@ -1,5 +1,4 @@
-// src/components/login_form.tsx
-import React from "react";
+import React, { useState } from "react";
 import {
   Box,
   Button,
@@ -7,6 +6,7 @@ import {
   Container,
   FormControl,
   FormLabel,
+  FormErrorMessage,
   Heading,
   HStack,
   Input,
@@ -31,17 +31,36 @@ interface LoginFormProps {
 }
 
 export const LoginForm: React.FC<LoginFormProps> = ({ email, password, setEmail, setPassword, onLogin, loading }) => {
+  const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
+
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(e.target.value);
+    if (!/\S+@\S+\.\S+/.test(e.target.value)) {
+      setErrors(prevErrors => ({ ...prevErrors, email: "Invalid email address" }));
+    } else {
+      setErrors(prevErrors => ({ ...prevErrors, email: undefined }));
+    }
   };
 
   const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPassword(e.target.value);
+    if (e.target.value.length < 0) {
+      setErrors(prevErrors => ({ ...prevErrors, password: "Please enter your password" }));
+    } else {
+      setErrors(prevErrors => ({ ...prevErrors, password: undefined }));
+    }
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onLogin();
+    const emailError = !email ? "Email is required" : undefined;
+    const passwordError = !password ? "Password is required" : undefined;
+
+    if (emailError || passwordError) {
+      setErrors({ email: emailError, password: passwordError });
+    } else {
+      onLogin();
+    }
   };
 
   return (
@@ -71,7 +90,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({ email, password, setEmail,
             <form onSubmit={handleSubmit}>
               <Stack spacing="6">
                 <Stack spacing="5">
-                  <FormControl>
+                  <FormControl isInvalid={!!errors.email}>
                     <FormLabel htmlFor="email">Email</FormLabel>
                     <Input
                       id="email"
@@ -79,8 +98,14 @@ export const LoginForm: React.FC<LoginFormProps> = ({ email, password, setEmail,
                       value={email}
                       onChange={handleEmailChange}
                     />
+                    {errors.email && <FormErrorMessage>{errors.email}</FormErrorMessage>}
                   </FormControl>
-                  <PasswordField value={password} onChange={handlePasswordChange} />
+                  <PasswordField
+                    value={password}
+                    onChange={handlePasswordChange}
+                    isInvalid={!!errors.password}
+                    errorMessage={errors.password}
+                  />
                 </Stack>
                 <HStack justify="space-between">
                   <Checkbox defaultChecked>Remember me</Checkbox>
