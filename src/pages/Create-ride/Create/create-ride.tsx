@@ -60,7 +60,7 @@ const Cride = () => {
             </VStack>
           </GridItem>
           <GridItem w="100%">
-            <MapContainer />
+            <MapContainer polylinePath={[]} />
           </GridItem>
         </Grid>
 

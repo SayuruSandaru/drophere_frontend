@@ -18,3 +18,13 @@ export const createDriver = async (driver: { street: string; city: string; provi
 
     }
 }
+
+export const getDriverById = async (driverId) => {
+    try {
+        const response = await driverService.getDriverById(driverId);
+        return response.driver;
+    } catch (error) {
+        console.error('Failed to retrieve driver:', error);
+        throw new Error("An error occurred during driver retrieval");
+    }
+};

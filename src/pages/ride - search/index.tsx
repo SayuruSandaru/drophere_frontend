@@ -11,6 +11,8 @@ import { useSetRecoilState } from "recoil";
 import { set } from "lodash";
 import { searchRides } from "api/ride";
 import { searchRideState } from "state";
+import { getDriverById } from "api/driver";
+import { get } from "http";
 
 
 const Ride: React.FC = () => {
@@ -75,6 +77,7 @@ const Ride: React.FC = () => {
                 passengerCount: count,
                 response: res.rides,
             };
+            await getOwnerDetails(res.rides[0].driver_id);
             setSearchRideState(rideData);
             setLoading(false);
             navigate(RouterPaths.RIDE);
@@ -82,6 +85,16 @@ const Ride: React.FC = () => {
             setLoading(false);
             setErrorMessage(error.message);
         }
+    };
+
+    const getOwnerDetails = async (driverId) => {
+        try {
+            const res = await getDriverById({ driverId });
+            console.log(res);
+        } catch (error) {
+            console.log(error);
+        }
+
     };
 
     return (

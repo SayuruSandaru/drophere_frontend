@@ -31,6 +31,7 @@ import { useRecoilValue, useSetRecoilState } from "recoil";
 import { searchRideState } from "state";
 import { searchRides } from "api/ride";
 import React from "react";
+import { decodePolyline } from "util/map";
 
 const Home = () => {
   const rideSearchData = useRecoilValue(searchRideState);
@@ -56,6 +57,7 @@ const Home = () => {
   const [loading, setLoading] = React.useState(false);
   const [isLargeScreen] = useMediaQuery('(min-width: 992px)');
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [polylinePath, setPolylinePath] = useState([]);
 
   const handleItemClick = (item) => {
     setSelectedItem(item);
@@ -208,24 +210,28 @@ const Home = () => {
       <MenuDrawer isOpen={isMenuDrawerOpen} onClose={() => setIsMenuDrawerOpen(false)} />
       <Flex flex={1} direction={{ base: "column", lg: "row" }}>
         <Box flex={1} bg="white" borderRadius="md" boxShadow="sm" mb={{ base: 4, lg: 0 }} mr={{ lg: 4 }} p={4}>
-          <MapContainer />
+          <MapContainer polylinePath={polylinePath} />
         </Box>
         <Box flex={1.5} bg="white" borderRadius="md" boxShadow="sm" p={4}>
           <Stack spacing={4}>
             {rideSearchData && rideSearchData.response && rideSearchData.response.map(ride => (
+              console.log(ride.vehicle_details.model),
               <CarInfo
                 key={ride.ride_id}
-                imageUrl="https://images.pexels.com/photos/909907/pexels-photo-909907.jpeg?auto=compress&cs=tinysrgb&w=960&h=750&dpr=1"
-                altText="Kia Motors Subcompact car"
-                carName="Car"
+                imageUrl={ride.vehicle_details.image_url}
+                altText={ride.vehicle_details.model}
+                carName={`${ride.vehicle_details.type} ${ride.vehicle_details.model}`}
                 date={new Date(ride.start_time).toLocaleDateString()}
                 from={ride.start_location}
                 to={ride.end_location}
-                name="John"
+                name={ride.owner_details.city}
                 availability={ride.status}
-                seatsLeft="2"
+                seatsLeft={ride.vehicle_details.capacity}
                 price="$382.25"
-                onClick={() => navigate(RouterPaths.ORDER)}
+                onClick={() => {
+                  const points = decodePolyline(ride.route)
+                  setPolylinePath(points);
+                }}
               />
             ))}
           </Stack>
