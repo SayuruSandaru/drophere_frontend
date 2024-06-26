@@ -20,4 +20,25 @@ class RideService extends ApiService {
             throw error;
         }
     }
+
+    public async searchRides(search: any): Promise<any> {
+        try {
+            const data = {
+                "pickup_lat": search.pickup_lat,
+                "pickup_lng": search.pickup_lng,
+                "destination_lat": search.destination_lat,
+                "destination_lng": search.destination_lng
+            };
+            console.log(data);
+            const response = await this.post("/rides/search",
+                data
+            );
+            return response;
+        } catch (error) {
+            console.error("Error searching for rides: ", error);
+            throw error;
+        }
+    }
 }
+
+export default new RideService();

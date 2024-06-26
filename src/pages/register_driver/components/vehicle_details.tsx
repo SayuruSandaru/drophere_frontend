@@ -125,7 +125,7 @@ const VehicleDetails: React.FC<VehicleDetailsProps> = ({ onBack, onError }) => {
         image_url: imageurl,
       });
       setLoading(false);
-      navigator(RouterPaths.HOME)
+      navigator(RouterPaths.RIDE)
     } catch (error) {
       setLoading(false);
       console.error(error);

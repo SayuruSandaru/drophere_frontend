@@ -47,7 +47,7 @@ const ContactUs: React.FC = () => {
             setErrorMessage('');
             await login({ email, password });
             setLoading(false);
-            navigate(RouterPaths.HOME);
+            navigate(RouterPaths.RIDE);
         } catch (error) {
             setLoading(false);
             setErrorMessage(error.message);

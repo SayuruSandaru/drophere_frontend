@@ -21,7 +21,7 @@ const Login: React.FC = () => {
       setErrorMessage('');
       await login({ email, password });
       setLoading(false);
-      navigate(RouterPaths.HOME);
+      navigate(RouterPaths.SEARCHRIDE);
     } catch (error) {
       setLoading(false);
       setErrorMessage(error.message);

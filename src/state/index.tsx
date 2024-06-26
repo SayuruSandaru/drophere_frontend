@@ -15,3 +15,8 @@ export const driverState = atom<any>({
     key: 'driverState',
     default: null,
 });
+
+export const searchRideState = atom<any>({
+    key: 'searchRideState',
+    default: null,
+});

@@ -42,7 +42,7 @@ class ApiService {
 
             return await response.json();
         } catch (error) {
-            console.error("Error fetching data: ", error);
+            console.error(error);
             throw error;
         }
     }
