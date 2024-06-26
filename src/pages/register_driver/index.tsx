@@ -26,7 +26,6 @@ const Register: React.FC = () => {
   };
 
   const handleErrorMessage = (message) => {
-    console.log("here is the error: ", message);
     setErrorMessage(message);
   };
 
