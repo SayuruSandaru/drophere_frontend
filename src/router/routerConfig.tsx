@@ -30,8 +30,8 @@ export enum RouterPaths {
     PROFILE = "/profile",
     CREATERIDE = "/ride/create",
     CONTACT = "/contact",
-    ORDERDELIVERY = "/delivery/order",
     DRIVERREGISTER = "/drive/register",
+    ORDERDELIVERY = "/delivery/order",
 }
 
 const RouterConfig: React.FC = () => {
