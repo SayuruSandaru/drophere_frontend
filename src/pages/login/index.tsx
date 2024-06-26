@@ -72,7 +72,6 @@ const Login: React.FC = () => {
         )}
         <LoginForm email={email} password={password} setEmail={setEmail} setPassword={setPassword} onLogin={handleLogin} loading={loading} />
       </Flex>
-      <Footer />
     </Flex>
   );
 };
