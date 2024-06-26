@@ -18,3 +18,34 @@ export const searchRides = async (search: { pickup_lat: number; pickup_lng: numb
         throw error;
     }
 };
+
+export const createRide = async (ride: {
+    driver_id: number;
+    vehicle_id: number;
+    status: string;
+    start_time: string;
+    current_location: string;
+    route: string;
+    start_location: string;
+    end_location: string;
+}): Promise<any> => {
+    try {
+        const response = await rideService.createRide({
+            driver_id: ride.driver_id,
+            vehicle_id: ride.vehicle_id,
+            status: ride.status,
+            start_time: ride.start_time,
+            current_location: ride.current_location,
+            route: ride.route,
+            start_location: ride.start_location,
+            end_location: ride.end_location,
+        });
+        if (response.status === "error") {
+            throw new Error("Failed to create ride");
+        }
+        return response;
+    } catch (error) {
+        console.error("Error creating ride: ", error);
+        throw error;
+    }
+};

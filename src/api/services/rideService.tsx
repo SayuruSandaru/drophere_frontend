@@ -6,6 +6,7 @@ class RideService extends ApiService {
             const response = await this.post("/ride/create",
                 {
                     "driver_id": ride.driver_id,
+                    "vehicle_id": ride.vehicle_id,
                     "status": ride.status,
                     "start_time": ride.start_time,
                     "current_location": ride.current_location,

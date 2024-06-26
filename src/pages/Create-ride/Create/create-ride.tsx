@@ -8,6 +8,7 @@ import NavbarHome from 'pages/components/NavbarHome';
 import NavbarOwner from 'pages/components/navbar-owner';
 
 const Cride = () => {
+
   return (
     <Box>
       <NavbarOwner />

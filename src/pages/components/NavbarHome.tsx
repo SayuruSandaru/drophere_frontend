@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
 import {
-    Flex, Spacer, Button, Text, Image, HStack, Avatar, Icon, Box, useMediaQuery, IconButton
+    Flex, Spacer, Button, Text, Image, HStack, Avatar, Icon, Box, useMediaQuery, IconButton, toast, useToast
 } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
 import { RouterPaths } from 'router/routerConfig';
+import { useRecoilValue } from 'recoil';
 import { FaFilter, FaBox, FaBars } from "react-icons/fa";
+import { isDriverState } from 'state';
+import { driverByUser } from 'api/driver';
 
 
 
@@ -12,9 +15,28 @@ function NavbarHome() {
     const [isMenuDrawerOpen, setIsMenuDrawerOpen] = useState(false);
     const [isFilterDrawerMobileOpen, setIsFilterDrawerMobileOpen] = useState(false);
     const navigate = useNavigate();
+    const toast = useToast();
 
 
     const [isLargeScreen] = useMediaQuery('(min-width: 992px)');
+
+    const handleEarnWithUsClick = async () => {
+        const res = await driverByUser();
+        if (!res) {
+            navigate(RouterPaths.CREATERIDE);
+        } else {
+            toast({
+                title: "Driver Registration Required",
+                description: "You need to register as a driver to access this feature.",
+                status: "warning",
+                duration: 5000,
+                isClosable: true,
+                position: "top",
+                onCloseComplete: () => navigate(RouterPaths.DRIVERREGISTER)
+            });
+
+        }
+    };
 
     return (
         <Box>
@@ -30,7 +52,7 @@ function NavbarHome() {
                             <Icon as={FaBox} w={6} h={4} color={"gray.700"} mr={1} />
                             Deliver
                         </Button>
-                        <Button borderRadius={5} bgColor={"blackAlpha.800"} size={"sm"} color={"white"} onClick={() => { navigate(RouterPaths.DRIVERREGISTER); }}>Earn with us</Button>
+                        <Button borderRadius={5} bgColor={"blackAlpha.800"} size={"sm"} color={"white"} onClick={handleEarnWithUsClick}>Earn with us</Button>
                         <Avatar size="sm" name="John" />
                     </HStack>
                 </Flex>
