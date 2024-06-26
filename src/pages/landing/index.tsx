@@ -30,7 +30,7 @@ const LandingPage = () => {
                         <Text color="gray.600" fontWeight={400} mt={4}>
                             Turn your empty seats into new friendships. <br />Join us and share the journey
                         </Text>
-                        <Button bg="teal" color="white" mt={9} fontWeight={400} borderRadius={5}>
+                        <Button bg="teal" color="white" mt={9} fontWeight={400} borderRadius={5} onClick={() => { navigate(RouterPaths.LOGIN) }}>
                             Search your ride
                         </Button>
                     </Box>
