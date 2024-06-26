@@ -77,7 +77,6 @@ const Ride: React.FC = () => {
                 passengerCount: count,
                 response: res.rides,
             };
-            await getOwnerDetails(res.rides[0].driver_id);
             setSearchRideState(rideData);
             setLoading(false);
             navigate(RouterPaths.RIDE);
