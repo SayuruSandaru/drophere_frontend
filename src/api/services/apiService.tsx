@@ -37,7 +37,7 @@ class ApiService {
             if (!response.ok) {
                 const errorText = await response.text();
                 const errorJson = JSON.parse(errorText);
-                throw new Error(`Error fetching data: ${response.statusText} - ${errorJson.message}`);
+                throw new Error(errorJson.message);
             }
 
             return await response.json();

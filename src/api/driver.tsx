@@ -11,11 +11,17 @@ export const createDriver = async (driver: { street: string; city: string; provi
             if (res.status !== "error") {
                 setRecoil(driverState, res.driver);
             }
+            return true;
+        } else if (response.message === "Driver already registered") {
+            // Handle the case where the driver is already registered
+            console.error('Driver already registered');
+            throw new Error("Driver already registered");
         }
     } catch (error) {
-        console.error('Failed to create or retrieve driver:', error);
-        throw new Error("An error occurred during driver registration");
-
+        // Ensure the error message is always a string
+        const errorMessage = error.message || 'An error occurred during driver registration';
+        console.error('Failed to create or retrieve driver:', errorMessage);
+        throw new Error(errorMessage);
     }
 }
 
@@ -35,14 +41,19 @@ export const getDriverById = async (driverId) => {
 export const driverByUser = async () => {
     try {
         const response = await driverService.getDriverByUserId();
-        if (response.status === "error") {
+        console.log(response);
+        if (response.status === "error" && response.message === "Driver not found") {
+            return false;
         }
         console.log(response);
         setRecoil(isDriverState, true);
         setRecoil(driverState, response.driver);
         return true;
     } catch (error) {
-        console.error('Failed to retrieve driver:', error);
-        throw new Error("An error occurred during driver retrieval");
+        if (error.message === "Driver not found") {
+            return false;
+        } else {
+            return false;
+        }
     }
 };

@@ -22,13 +22,14 @@ function NavbarHome() {
 
     const handleEarnWithUsClick = async () => {
         const res = await driverByUser();
-        if (!res) {
+        console.log(res);
+        if (res) {
             navigate(RouterPaths.CREATERIDE);
         } else {
             toast({
                 title: "Driver Registration Required",
                 description: "You need to register as a driver to access this feature.",
-                status: "warning",
+                status: "info",
                 duration: 5000,
                 isClosable: true,
                 position: "top",
