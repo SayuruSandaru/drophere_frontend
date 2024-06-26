@@ -14,7 +14,6 @@ import {
 } from "@chakra-ui/react";
 import { createDriver } from 'api/driver';
 import { fileUpload } from 'api/common';
-import { on } from 'events';
 
 interface DriverDetailsProps {
   onNext: () => void;
@@ -27,14 +26,12 @@ const DriverDetails: React.FC<DriverDetailsProps> = ({ onNext, onError }) => {
   const [city, setCity] = useState('');
   const [province, setProvince] = useState('');
   const [loading, setLoading] = useState(false);
-  // const [imageUrl, setImageUrl] = useState('');
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (proofDocument && street && city && province) {
-      onError('');
+      onError(''); // Clear any previous error
       await uploadProofDocument();
-
     } else {
       onError('Please fill all the fields');
     }
@@ -42,17 +39,24 @@ const DriverDetails: React.FC<DriverDetailsProps> = ({ onNext, onError }) => {
 
   const driver = async (imageurl: string) => {
     try {
-      await createDriver({
+      const res = await createDriver({
         street: street,
         city: city,
         province: province,
         proof_document: imageurl,
       });
+
       setLoading(false);
-      onNext();
-    } catch (error) {
+      if (res) {
+        onNext();
+      } else {
+        onError('Driver already exists.');
+      }
+
+    } catch (error: any) {
       setLoading(false);
-      onError(error || 'Failed to create driver. Please try again.');
+      const errorMessage = error.message || 'Failed to create driver. Please try again.';
+      onError(errorMessage);
     }
   };
 
@@ -64,9 +68,10 @@ const DriverDetails: React.FC<DriverDetailsProps> = ({ onNext, onError }) => {
       setLoading(true);
       const res = await fileUpload(proofDocument);
       await driver(res);
-    } catch (error) {
+    } catch (error: any) {
       setLoading(false);
-      onError(error || 'Failed to upload document. Please try again.');
+      const errorMessage = error.message || 'Failed to upload document. Please try again.';
+      onError(errorMessage);
     }
   };
 
