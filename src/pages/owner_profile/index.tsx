@@ -95,7 +95,7 @@ const Profile = () => {
                 <Flex>
                   <Avatar
                     size="lg"
-                    name="Sayuru Sadaru"
+                    name="John"
                     src="https://bit.ly/prosper-baba"
                   />
                   <VStack align="start" pl="2">
@@ -141,7 +141,7 @@ const Profile = () => {
                 }}
               />
               <Box>
-                <Heading size="xs">About Sayuru</Heading>
+                <Heading size="xs">About John</Heading>
                 <Text pt="2" fontSize="sm">
                   I am a professional driver with 2 years of experience. I have a 5-star rating and I am a verified driver.
                 </Text>
@@ -158,7 +158,7 @@ const Profile = () => {
                 <Flex align="center" pt="2">
                   <MdEmail />
                   <Text fontSize="sm" ml="2">
-                    sayuru@gmail.com
+                    john@gmail.com
                   </Text>
                 </Flex>
                 <Flex align="center" pt="2">
