@@ -26,6 +26,7 @@
     "react-datepicker": "^6.9.0",
     "react-dom": "^17.0.2",
     "react-icons": "^5.2.1",
+    "react-rating": "^2.0.5",
     "react-responsive-modal": "^6.4.2",
     "react-responsive-timeline": "^0.1.5",
     "react-router-dom": "^6.23.1",
