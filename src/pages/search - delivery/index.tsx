@@ -12,8 +12,8 @@ const SearchDelivery = () => {
   const [packageType, setPackageType] = useState('Document');
   const [deliveryType, setDeliveryType] = useState('Standard delivery');
   const [selectedItem, setSelectedItem] = useState("");
-  const [selectedPickupLocation, setSelectedPickupLocation] = useState("");
-  const [selectedDestinationLocation, setSelectedDestinationLocation] = useState("");
+  const [selectedPickupLocation, setSelectedPickupLocation] = useState({});
+  const [selectedDestinationLocation, setSelectedDestinationLocation] = useState({});
 
   const handleItemClick = (item) => {
     setSelectedItem(item);
@@ -25,11 +25,13 @@ const SearchDelivery = () => {
   };
 
   const handleDestiantionSelect = (place) => {
-    setSelectedDestinationLocation(place);
+    setSelectedDestinationLocation({ name: place.name, latitude: place.latitude, longitude: place.longitude });
+    console.log(place.name);
+    console.log(place.latitude);
   };
 
   const handlePickupLocationSelect = (place) => {
-    setSelectedPickupLocation(place);
+    setSelectedPickupLocation({ name: place.name, latitude: place.latitude, longitude: place.longitude });
   };
 
   return (
@@ -68,7 +70,7 @@ const SearchDelivery = () => {
             <Input
               placeholder=""
               onClick={() => handleItemClick("Pickup")}
-              value={selectedPickupLocation}
+              value={selectedPickupLocation["name"]}
               readOnly
             />
           </FormControl>
@@ -77,7 +79,7 @@ const SearchDelivery = () => {
             <Input
               placeholder=""
               onClick={() => handleItemClick("Destination")}
-              value={selectedDestinationLocation}
+              value={selectedDestinationLocation["name"]}
               readOnly
             />
           </FormControl>
