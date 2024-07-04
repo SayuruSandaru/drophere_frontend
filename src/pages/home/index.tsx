@@ -215,7 +215,6 @@ const Home = () => {
         <Box flex={1.5} bg="white" borderRadius="md" boxShadow="sm" p={4}>
           <Stack spacing={4}>
             {rideSearchData && rideSearchData.response && rideSearchData.response.map(ride => (
-              console.log(ride.vehicle_details.model),
               <CarInfo
                 key={ride.ride_id}
                 imageUrl={ride.vehicle_details.image_url}
@@ -227,7 +226,7 @@ const Home = () => {
                 name={ride.owner_details.city}
                 availability={ride.status}
                 seatsLeft={ride.vehicle_details.capacity}
-                price="$382.25"
+                price={`Rs ${ride.fee}`}
                 onClick={() => {
                   const points = decodePolyline(ride.route)
                   setPolylinePath(points);
