@@ -58,7 +58,6 @@ const Ride: React.FC = () => {
         try {
             setLoading(true);
             setErrorMessage('');
-
             const res = await searchRides(
                 {
                     pickup_lat: pickCordinate['lat'],
