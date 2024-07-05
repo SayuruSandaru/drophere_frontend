@@ -1,9 +1,10 @@
 {
-  "name": "DropHere",
+  "name": "drophere",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
     "@chakra-ui/css-reset": "^2.3.0",
+    "@chakra-ui/icons": "^2.1.1",
     "@chakra-ui/react": "^1.1.4",
     "@emotion/react": "^11.1.4",
     "@emotion/styled": "^11.0.0",
@@ -14,21 +15,28 @@
     "@types/node": "^18.15.0",
     "@types/react": "^17.0.4",
     "@types/react-dom": "^17.0.3",
-    "axios": "^0.21.1",
+    "ajv": "^8.16.0",
+    "ajv-keywords": "^5.1.0",
+    "axios": "^1.7.2",
+    "chakra": "^0.0.3",
     "date-fns": "^3.6.0",
+    "formik": "^2.4.6",
     "framer-motion": "^3.2.1",
     "react": "^17.0.2",
     "react-datepicker": "^6.9.0",
     "react-dom": "^17.0.2",
     "react-icons": "^5.2.1",
+    "react-rating": "^2.0.5",
     "react-responsive-modal": "^6.4.2",
     "react-responsive-timeline": "^0.1.5",
     "react-router-dom": "^6.23.1",
-    "react-scripts": "^5.0.0",
+    "react-scripts": "^5.0.1",
     "react-use": "^15.3.8",
     "recoil": "^0.7.7",
+    "recoil-nexus": "^0.5.0",
     "typescript": "^4.2.4",
-    "web-vitals": "^1.1.1"
+    "web-vitals": "^1.1.1",
+    "yup": "^1.4.0"
   },
   "scripts": {
     "dev": "react-scripts start",
@@ -52,5 +60,9 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  }
+  },
+  "description": "This project was generated with [superplate](https://github.com/pankod/superplate).",
+  "main": "index.js",
+  "author": "",
+  "license": "ISC"
 }
