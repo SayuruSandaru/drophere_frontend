@@ -1,3 +1,5 @@
+import User from 'model/user';
+import { Convert } from 'model/userModal';
 import { setRecoil } from 'recoil-nexus';
 import { tokenState, userState } from '../state';
 import CookieManager from './cookieManager';
@@ -12,10 +14,18 @@ export const login = async (credentials: { email: string; password: string }): P
             throw new Error('No token returned');
         }
 
+        const res = await authService.getUser();
+        if (res.status !== "success") {
+            throw new Error('Failed to fetch user details');
+        }
+        const user = Convert.toUserModal(JSON.stringify(res));
+        User.setUserDetail(user);
         CookieManager.setCookie("token", response.token, 7);
         setRecoil(tokenState, response.token);
         setRecoil(userState, response.user);
+        console.log('User:', User.getUserEmail());
     } catch (error) {
+        console.error('Failed to login:', error);
         if (error.message.includes('Invalid password')) {
             throw new Error('Invalid email or password.');
         } else if (error.message === 'Failed to fetch') {

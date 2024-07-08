@@ -50,13 +50,34 @@ const Cride = () => {
   };
 
   const direction = async () => {
-    if (!selectedPickupLocation || !selectedDestinationLocation || !vehicleType || !date || !time) {
-      showErrorToast("Please fill all the fields");
-      return;
+    let formValid = true;
+
+    if (!selectedPickupLocation) {
+      showErrorToast("Pickup location is required");
+      formValid = false;
     }
 
-    if (!pickCordinate || !destinationCordinate) {
-      showErrorToast("Please select pickup and destination location");
+    if (!selectedDestinationLocation) {
+      showErrorToast("Destination location is required");
+      formValid = false;
+    }
+
+    if (!vehicleType) {
+      showErrorToast("Vehicle type is required");
+      formValid = false;
+    }
+
+    if (!date) {
+      showErrorToast("Date is required");
+      formValid = false;
+    }
+
+    if (!time) {
+      showErrorToast("Time is required");
+      formValid = false;
+    }
+
+    if (!formValid) {
       return;
     }
 
@@ -108,7 +129,7 @@ const Cride = () => {
                   <Text color={"black"} fontWeight={"bold"} fontSize={"2xl"}>Plan your journey</Text>
                   <Text color={"gray.600"} fontSize={"md"}>Fill the following details to plan your journey</Text>
                   <Box mb={4} mt={5}>
-                    <FormControl isInvalid={!selectedPickupLocation}>
+                    <FormControl>
                       <FormLabel fontSize="sm" color={"gray.500"}>Pick Up</FormLabel>
                       <Input
                         placeholder=""
@@ -116,11 +137,10 @@ const Cride = () => {
                         value={selectedPickupLocation}
                         readOnly
                       />
-                      {!selectedPickupLocation && <Text color="red.500" fontSize="sm">Pickup location is required</Text>}
                     </FormControl>
                   </Box>
                   <Box mb={4}>
-                    <FormControl isInvalid={!selectedDestinationLocation}>
+                    <FormControl>
                       <FormLabel fontSize="sm" color={"gray.500"}>Destination</FormLabel>
                       <Input
                         placeholder=""
@@ -128,11 +148,10 @@ const Cride = () => {
                         value={selectedDestinationLocation}
                         readOnly
                       />
-                      {!selectedDestinationLocation && <Text color="red.500" fontSize="sm">Destination location is required</Text>}
                     </FormControl>
                   </Box>
                   <Box mb={4}>
-                    <FormControl isInvalid={!vehicleType}>
+                    <FormControl>
                       <FormLabel fontSize="sm" color={"gray.500"}>Vehicle</FormLabel>
                       <Select
                         placeholder="Select vehicle"
@@ -147,23 +166,21 @@ const Cride = () => {
                         <option value="bus">Bus</option>
                         <option value="other">Other</option>
                       </Select>
-                      {!vehicleType && <Text color="red.500" fontSize="sm">Vehicle type is required</Text>}
                     </FormControl>
                   </Box>
                   <HStack spacing={4} w="100%" mt={8}>
                     <Box>
-                      <FormControl isInvalid={!date}>
+                      <FormControl>
                         <FormLabel fontSize="sm" color={"gray.500"}>Date</FormLabel>
                         <Input
                           type="date"
                           value={date}
                           onChange={(e) => setDate(e.target.value)}
                         />
-                        {!date && <Text color="red.500" fontSize="sm">Date is required</Text>}
                       </FormControl>
                     </Box>
                     <Box>
-                      <FormControl isInvalid={!time}>
+                      <FormControl>
                         <FormLabel fontSize="sm" color={"gray.500"}>Time</FormLabel>
                         <HStack>
                           <Input
@@ -173,7 +190,6 @@ const Cride = () => {
                             onChange={(e) => setTime(e.target.value)}
                           />
                         </HStack>
-                        {!time && <Text color="red.500" fontSize="sm">Time is required</Text>}
                       </FormControl>
                     </Box>
                   </HStack>
