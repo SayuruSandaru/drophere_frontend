@@ -7,7 +7,6 @@ import {
   ModalCloseButton,
   ModalBody,
   ModalFooter,
-
 } from "@chakra-ui/react";
 import { FaLocationArrow, FaUser } from "react-icons/fa";
 import { Box, Flex, Text, Badge, Divider, Icon, Button, Spacer, useDisclosure, Image, IconButton, HStack, Tag, TagLabel, TagCloseButton, Avatar, Stack, useMediaQuery } from "@chakra-ui/react";

@@ -1,3 +1,4 @@
+import { start } from "repl";
 import rideService from "./services/rideService";
 
 export const searchRides = async (search: { pickup_lat: number; pickup_lng: number; destination_lat: number; destination_lng: number }): Promise<any> => {
@@ -49,3 +50,21 @@ export const createRide = async (ride: {
         throw error;
     }
 };
+
+
+
+// export const getDirections = async (origin: { lat: number; lng: number }, destination: { lat: number; lng: number }): Promise<any> => {
+//     try {
+//         const response = await rideService.getDirections(
+//             origin,
+//             destination,);
+//         if (response.status === "error") {
+//             throw new Error("Failed to get directions");
+//         }
+//         return response;
+//     } catch (error) {
+//         console.error("Error getting directions: ", error);
+//         throw error;
+//     }
+// }
+

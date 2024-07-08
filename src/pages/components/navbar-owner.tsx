@@ -37,7 +37,6 @@ function NavbarOwner() {
             )}
             {!isLargeScreen && (
                 (
-
                     <Flex align="center" mb={{ base: 4, md: 0 }}>
                         <Image src="/images/Black_T.png" alt="Drop Here Logo" w="50px" />
                         <Text fontSize="xl" fontWeight="bold" color="black" ml={2}>Drop Here</Text>
@@ -46,16 +45,6 @@ function NavbarOwner() {
                             icon={<Icon as={FaBars} w={6} h={4} color={"gray.500"} />}
                             aria-label="Filter"
                             onClick={() => setIsMenuDrawerOpen(true)}
-                            borderRadius="md"
-                            _hover={{ bg: "gray.200" }}
-                            height="40px"
-                            width="40px"
-                            ml={3}
-                        />
-                        <IconButton
-                            icon={<Icon as={FaFilter} w={6} h={4} color={"gray.500"} />}
-                            aria-label="Filter"
-                            onClick={() => setIsFilterDrawerMobileOpen(true)}
                             borderRadius="md"
                             _hover={{ bg: "gray.200" }}
                             height="40px"

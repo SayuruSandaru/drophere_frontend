@@ -30,7 +30,6 @@ class RideService extends ApiService {
                 "destination_lat": search.destination_lat,
                 "destination_lng": search.destination_lng
             };
-            console.log(data);
             const response = await this.post("/rides/search",
                 data
             );
@@ -40,6 +39,24 @@ class RideService extends ApiService {
             throw error;
         }
     }
+
+    public async getDirections(start: any, end: any): Promise<any> {
+        try {
+            const data = {
+                "pickup_lat": start.lat,
+                "pickup_lng": start.lng,
+                "destination_lat": end.lat,
+                "destination_lng": end.lng
+            }
+            console.log(data);
+            const response = await this.post("/rides/direction", data);
+            return response;
+        } catch (error) {
+            console.error('Failed to get directions:', error);
+            throw error;
+        }
+    }
+
 }
 
 export default new RideService();

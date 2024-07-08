@@ -1,74 +1,204 @@
-import React from 'react';
-import { ChakraProvider, Box, Button, FormControl, FormLabel, Input, HStack, VStack, Grid, GridItem, Center } from '@chakra-ui/react';
-import { GoogleMap } from '@react-google-maps/api';
-import MapContainer from 'pages/home/components/googleMap';
-import NavbarLogged from 'pages/components/NavbarLogged';
-import Footer from 'pages/components/footer';
-import NavbarHome from 'pages/components/NavbarHome';
+import React, { useEffect, useState } from 'react';
+import { ChakraProvider, Text, Box, Button, FormControl, FormLabel, Input, HStack, VStack, Grid, GridItem, Center, useDisclosure, Select, useToast, useMediaQuery } from '@chakra-ui/react';
 import NavbarOwner from 'pages/components/navbar-owner';
+import Footer from 'pages/components/footer';
+import PlaceAutocompleteModal from 'pages/components/placeModalbox';
+import rideService from 'api/services/rideService';
+import vehicleService from 'api/services/vehicleService';
+import { decodePolyline } from 'util/map';
+import MapContainerMulitRoute from 'pages/home/components/googleMap_multiroute';
+import { useShowErrorToast, useShowSuccessToast } from 'pages/components/toast';
+
+interface Coordinate {
+  lat: number;
+  lng: number;
+}
 
 const Cride = () => {
+  const { isOpen: isPickupPlaceOpen, onOpen: onPickupPlaceOpen, onClose: onPickupPlaceClose } = useDisclosure();
+  const { isOpen: isDestinationPlaceOpen, onOpen: onDestinationPlaceOpen, onClose: onDestinationPlaceClose } = useDisclosure();
+  const [destinationCordinate, setDestinationCordinate] = useState<Coordinate | null>(null);
+  const [selectedDestinationLocation, setSelectedDestinationLocation] = useState("");
+  const [selectedPickupLocation, setSelectedPickupLocation] = useState("");
+  const [pickCordinate, setPickCordinate] = useState<Coordinate | null>(null);
+  const [polylinePath, setPolylinePath] = useState([]);
+  const [vehicleType, setVehicleType] = useState("");
+  const [date, setDate] = useState("");
+  const [time, setTime] = useState("");
+  const toast = useToast();
+  const [isLargeScreen] = useMediaQuery('(min-width: 992px)');
+
+  const showSuccessToast = useShowSuccessToast();
+  const showErrorToast = useShowErrorToast();
+
+  const handlePickupLocationSelect = (place) => {
+    setSelectedPickupLocation(place.name);
+    setPickCordinate({ lat: place.latitude, lng: place.longitude });
+  };
+
+  const handleDestinationSelect = (place) => {
+    setSelectedDestinationLocation(place.name);
+    setDestinationCordinate({ lat: place.latitude, lng: place.longitude });
+  };
+
+  const handleItemClick = (item) => {
+    if (item === "Pickup") {
+      onPickupPlaceOpen();
+    } else if (item === "Destination") {
+      onDestinationPlaceOpen();
+    }
+  };
+
+  const direction = async () => {
+    if (!selectedPickupLocation || !selectedDestinationLocation || !vehicleType || !date || !time) {
+      showErrorToast("Please fill all the fields");
+      return;
+    }
+
+    if (!pickCordinate || !destinationCordinate) {
+      showErrorToast("Please select pickup and destination location");
+      return;
+    }
+
+    try {
+      const res = await rideService.getDirections(pickCordinate, destinationCordinate);
+      if (res.status === "error") {
+        showErrorToast("Failed to get directions");
+      } else {
+        const lines = res.directions.map(decodePolyline);
+        setPolylinePath(lines);
+      }
+    } catch (error) {
+      showErrorToast("Failed to get directions");
+    }
+  };
+
+  const handleRouteSelect = (index) => {
+    showSuccessToast("Route selected successfully");
+  };
+
+  const getVehicle = async () => {
+    try {
+      const res = await vehicleService.getVehicle();
+      if (res.status === "error") {
+        showErrorToast("Failed to get vehicle");
+      } else {
+        console.log(res);
+      }
+    } catch (error) {
+      showErrorToast("Failed to get vehicle");
+    }
+  };
+
+  useEffect(() => {
+    getVehicle();
+  }, []);
 
   return (
-    <Box>
-      <NavbarOwner />
-      <Box p={5}>
-        <Grid templateColumns="repeat(2, 1fr)" gap={6}>
-          <GridItem w="100%">
-            <VStack spacing={4} align="stretch">
-              <Box borderWidth="1px" borderRadius="lg" p={4}>
-                <FormControl>
-                  <FormLabel fontSize="sm" color={"gray.600"}>Pick Up</FormLabel>
-                  <Input placeholder="Pick up location" />
-                </FormControl>
-              </Box>
-              <Box borderWidth="1px" borderRadius="lg" p={4}>
-                <FormControl>
-                  <FormLabel fontSize="sm" color={"gray.600"}>Pick Up</FormLabel>
-                  <Input placeholder="Drop off location" />
-                </FormControl>
-              </Box>
-              <Box borderWidth="1px" borderRadius="lg" p={4}>
-                <FormControl>
-                  <FormLabel fontSize="sm" color={"gray.600"}>Pick Up</FormLabel>
-                  <Input placeholder="Your preferred Vehicle" />
-
-                </FormControl>
-              </Box>
-
-              <HStack spacing={4} w="100%">
-                <Box borderWidth="1px" borderRadius="lg" p={4} w="100%">
-                  <FormControl>
-                    <FormLabel fontSize="sm" color={"gray.600"}>Pick Up</FormLabel>
-                    <Input type="date" />
-                  </FormControl>
+    <ChakraProvider>
+      <Box bgColor={"gray.50"}>
+        <Box pb={3}>
+          <NavbarOwner />
+        </Box>
+        <Box p={[2, 5]}>
+          <Grid templateColumns={["1fr", null, "repeat(2, 1fr)"]} gap={6} height="calc(100vh - 80px)">
+            <Center h={"90%"}>
+              <GridItem w="100%">
+                <Box bgColor={"white"} p={[4, 5]} borderRadius={10} boxShadow={'2xl'} w={["100%", "80%"]}>
+                  <Text color={"black"} fontWeight={"bold"} fontSize={"2xl"}>Plan your journey</Text>
+                  <Text color={"gray.600"} fontSize={"md"}>Fill the following details to plan your journey</Text>
+                  <Box mb={4} mt={5}>
+                    <FormControl isInvalid={!selectedPickupLocation}>
+                      <FormLabel fontSize="sm" color={"gray.500"}>Pick Up</FormLabel>
+                      <Input
+                        placeholder=""
+                        onClick={() => handleItemClick("Pickup")}
+                        value={selectedPickupLocation}
+                        readOnly
+                      />
+                      {!selectedPickupLocation && <Text color="red.500" fontSize="sm">Pickup location is required</Text>}
+                    </FormControl>
+                  </Box>
+                  <Box mb={4}>
+                    <FormControl isInvalid={!selectedDestinationLocation}>
+                      <FormLabel fontSize="sm" color={"gray.500"}>Destination</FormLabel>
+                      <Input
+                        placeholder=""
+                        onClick={() => handleItemClick("Destination")}
+                        value={selectedDestinationLocation}
+                        readOnly
+                      />
+                      {!selectedDestinationLocation && <Text color="red.500" fontSize="sm">Destination location is required</Text>}
+                    </FormControl>
+                  </Box>
+                  <Box mb={4}>
+                    <FormControl isInvalid={!vehicleType}>
+                      <FormLabel fontSize="sm" color={"gray.500"}>Vehicle</FormLabel>
+                      <Select
+                        placeholder="Select vehicle"
+                        value={vehicleType}
+                        onChange={(e) => setVehicleType(e.target.value)}
+                      >
+                        <option value="">Select Type</option>
+                        <option value="bike">Bike</option>
+                        <option value="tuktuk">Tuktuk</option>
+                        <option value="car">Car</option>
+                        <option value="van">Van</option>
+                        <option value="bus">Bus</option>
+                        <option value="other">Other</option>
+                      </Select>
+                      {!vehicleType && <Text color="red.500" fontSize="sm">Vehicle type is required</Text>}
+                    </FormControl>
+                  </Box>
+                  <HStack spacing={4} w="100%" mt={8}>
+                    <Box>
+                      <FormControl isInvalid={!date}>
+                        <FormLabel fontSize="sm" color={"gray.500"}>Date</FormLabel>
+                        <Input
+                          type="date"
+                          value={date}
+                          onChange={(e) => setDate(e.target.value)}
+                        />
+                        {!date && <Text color="red.500" fontSize="sm">Date is required</Text>}
+                      </FormControl>
+                    </Box>
+                    <Box>
+                      <FormControl isInvalid={!time}>
+                        <FormLabel fontSize="sm" color={"gray.500"}>Time</FormLabel>
+                        <HStack>
+                          <Input
+                            type="text"
+                            placeholder="10:30 AM"
+                            value={time}
+                            onChange={(e) => setTime(e.target.value)}
+                          />
+                        </HStack>
+                        {!time && <Text color="red.500" fontSize="sm">Time is required</Text>}
+                      </FormControl>
+                    </Box>
+                  </HStack>
+                  <Button
+                    bgColor={"black"}
+                    marginTop={30}
+                    onClick={direction}
+                    color="white"
+                    _hover={{ bgColor: "gray.700" }}
+                  >
+                    Confirm the trip
+                  </Button>
                 </Box>
-                <Box borderWidth="1px" borderRadius="lg" p={4} w="100%">
-                  <FormControl>
-                    <FormLabel fontSize="sm" color={"gray.600"}>Pick Up</FormLabel>
-                    <HStack>
-                      <Input type="number" placeholder="10" max={12} min={1} />
-                      <Input type="number" placeholder="30" max={59} min={0} />
-                      <Input type="text" placeholder="AM/PM" />
-                    </HStack>
-                  </FormControl>
-                </Box>
-              </HStack>
-              <Button bgColor={"black"}
-                onClick={() => { }}
-                color="white"
-                _hover={{ bgColor: "gray.700" }}>Confirm the trip</Button>
-            </VStack>
-          </GridItem>
-          <GridItem w="100%">
-            <MapContainer polylinePath={[]} />
-          </GridItem>
-        </Grid>
-
+              </GridItem>
+            </Center>
+            <GridItem w="100%">
+              <MapContainerMulitRoute polylinePath={polylinePath} onRouteSelect={handleRouteSelect} />
+            </GridItem>
+          </Grid>
+        </Box>
+        {!isLargeScreen && <Footer />}
+        <PlaceAutocompleteModal isOpen={isPickupPlaceOpen} onClose={onPickupPlaceClose} onPlaceSelect={handlePickupLocationSelect} />
+        <PlaceAutocompleteModal isOpen={isDestinationPlaceOpen} onClose={onDestinationPlaceClose} onPlaceSelect={handleDestinationSelect} />
       </Box>
-      <Box height={10} />
-      <Footer />
-    </Box>
+    </ChakraProvider>
   );
 };
 

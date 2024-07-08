@@ -17,3 +17,8 @@ a:focus {
 .pac-container {
   z-index: 2000 !important; 
 }
+
+
+.gm-style-iw button[title="Close"] {
+  display: none !important;
+}

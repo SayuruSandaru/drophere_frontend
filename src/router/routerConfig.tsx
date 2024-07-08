@@ -41,9 +41,11 @@ const RouterConfig: React.FC = () => {
             <Route path={RouterPaths.REGISTER} element={<Register />} />
             <Route path={RouterPaths.ORDERDELIVERY} element={<OrderDelivery />} />
             <Route path={RouterPaths.DRIVERREGISTER} element={< DriverRegister />} />
-            <Route path={RouterPaths.RIDE} element={<PrivateRoute element={<Home />} />} />
-            <Route path={RouterPaths.ORDER} element={<PrivateRoute element={<Order />} />} />
-            <Route path={RouterPaths.SEARCHDELIVERY} element={<PrivateRoute element={<SearchDelivery />} />} />
+            {/* <Route path={RouterPaths.RIDE} element={<PrivateRoute element={<Home />} />} /> */}
+            <Route path={RouterPaths.RIDE} element={<Home />} />
+            {/* <Route path={RouterPaths.ORDER} element={<PrivateRoute element={<Order />} />} /> */}
+            <Route path={RouterPaths.ORDER} element={<Order />} />
+            <Route path={RouterPaths.SEARCHDELIVERY} element={<SearchDelivery />} />
             <Route path={RouterPaths.SEARCHRIDE} element={<PrivateRoute element={<Ride />} />} />
             {/* <Route path={RouterPaths.PROFILE} element={<PrivateRoute element={<Profile />} />} /> */}
             <Route path={RouterPaths.PROFILE} element={<Profile />} />
