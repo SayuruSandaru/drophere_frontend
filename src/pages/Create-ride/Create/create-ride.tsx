@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { ChakraProvider, Text, Box, Button, FormControl, FormLabel, Input, HStack, VStack, Grid, GridItem, Center, useDisclosure, Select, useToast, useMediaQuery } from '@chakra-ui/react';
+import { ChakraProvider, Text, Box, Button, FormControl, FormLabel, Input, HStack, VStack, Grid, GridItem, Center, useDisclosure, Select, useToast, useMediaQuery, Spinner, Flex } from '@chakra-ui/react';
 import NavbarOwner from 'pages/components/navbar-owner';
 import Footer from 'pages/components/footer';
 import PlaceAutocompleteModal from 'pages/components/placeModalbox';
@@ -8,6 +8,8 @@ import vehicleService from 'api/services/vehicleService';
 import { decodePolyline } from 'util/map';
 import MapContainerMulitRoute from 'pages/home/components/googleMap_multiroute';
 import { useShowErrorToast, useShowSuccessToast } from 'pages/components/toast';
+import User from 'model/user';
+import { set } from 'date-fns';
 
 interface Coordinate {
   lat: number;
@@ -25,8 +27,13 @@ const Cride = () => {
   const [vehicleType, setVehicleType] = useState("");
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
+  const [vehicles, setVehicles] = useState([]);
   const toast = useToast();
   const [isLargeScreen] = useMediaQuery('(min-width: 992px)');
+  const [availableRoutes, setAvailableRoutes] = useState([]);
+  const [selectedRoute, setSelectedRoute] = useState(null);
+  const [selectedVehicle, setSelectedVehicle] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const showSuccessToast = useShowSuccessToast();
   const showErrorToast = useShowErrorToast();
@@ -82,12 +89,28 @@ const Cride = () => {
     }
 
     try {
-      const res = await rideService.getDirections(pickCordinate, destinationCordinate);
-      if (res.status === "error") {
-        showErrorToast("Failed to get directions");
+      if (availableRoutes.length > 0) {
+        if (selectedRoute !== null) {
+          await createRide();
+          return;
+        } else {
+          showErrorToast("Please select a route");
+          return;
+        }
       } else {
-        const lines = res.directions.map(decodePolyline);
-        setPolylinePath(lines);
+        if (pickCordinate === null || destinationCordinate === null) {
+          showErrorToast("Please select pickup and destination location");
+          return;
+        } else {
+          const res = await rideService.getDirections(pickCordinate, destinationCordinate);
+          if (res.status === "error") {
+            showErrorToast("Failed to get directions");
+          } else {
+            setAvailableRoutes(res.directions);
+            const lines = res.directions.map(decodePolyline);
+            setPolylinePath(lines);
+          }
+        }
       }
     } catch (error) {
       showErrorToast("Failed to get directions");
@@ -95,25 +118,76 @@ const Cride = () => {
   };
 
   const handleRouteSelect = (index) => {
+    setSelectedRoute(index);
     showSuccessToast("Route selected successfully");
   };
 
   const getVehicle = async () => {
     try {
-      const res = await vehicleService.getVehicle();
+      const userId = User.getUserId();
+      const res = await vehicleService.getVehicleByOwenerId(userId.toString());
       if (res.status === "error") {
         showErrorToast("Failed to get vehicle");
       } else {
-        console.log(res);
+        setVehicles([]);
+        setVehicles(res.vehicles);
       }
     } catch (error) {
       showErrorToast("Failed to get vehicle");
     }
   };
 
+  const createRide = async () => {
+    setLoading(true);
+    const ride = {
+      driver_id: User.getDriverDetails().driver_id,
+      vehicle_id: vehicleType,
+      status: "active",
+      start_time: `${date} ${convertTime12to24(time)}`,
+      current_location: "NOT AVAILABLE",
+      route: availableRoutes[selectedRoute],
+      start_location: selectedPickupLocation,
+      end_location: selectedDestinationLocation,
+    };
+    try {
+      const res = await rideService.createRide(ride);
+      setLoading(false);
+      if (res.status === "error") {
+        showErrorToast("Failed to create ride");
+      } else {
+        showSuccessToast("Ride created successfully");
+      }
+    } catch (error) {
+      setLoading(false);
+      showErrorToast("Failed to create ride");
+    }
+  };
+
+  const convertTime12to24 = (time12h) => {
+    const [time, modifier] = time12h.split(' ');
+
+    let [hours, minutes] = time.split(':');
+
+    if (hours === '12') {
+      hours = '00';
+    }
+
+    if (modifier === 'PM') {
+      hours = parseInt(hours, 10) + 12;
+    }
+
+    return `${hours}:${minutes}:00`;
+  };
+
+  // Usage inside your component or before making an API request
+  const startTime = `${date} ${convertTime12to24(time)}`;
+
+
+
   useEffect(() => {
     getVehicle();
   }, []);
+  const uniqueTypes = Array.from(new Set(vehicles.map(v => v.type)));
 
   return (
     <ChakraProvider>
@@ -154,17 +228,19 @@ const Cride = () => {
                     <FormControl>
                       <FormLabel fontSize="sm" color={"gray.500"}>Vehicle</FormLabel>
                       <Select
-                        placeholder="Select vehicle"
+                        id="vehicle-select"
                         value={vehicleType}
-                        onChange={(e) => setVehicleType(e.target.value)}
+                        onChange={(e) => {
+                          setVehicleType(e.target.value)
+                        }}
+                        placeholder="Select vehicle"
                       >
                         <option value="">Select Type</option>
-                        <option value="bike">Bike</option>
-                        <option value="tuktuk">Tuktuk</option>
-                        <option value="car">Car</option>
-                        <option value="van">Van</option>
-                        <option value="bus">Bus</option>
-                        <option value="other">Other</option>
+                        {vehicles.map((vehicle, index) => (
+                          <option key={index} value={vehicle.vehicle_id}>
+                            {`${vehicle.type} - ${vehicle.model} - ${vehicle.license_plate}`}
+                          </option>
+                        ))}
                       </Select>
                     </FormControl>
                   </Box>
@@ -184,7 +260,7 @@ const Cride = () => {
                         <FormLabel fontSize="sm" color={"gray.500"}>Time</FormLabel>
                         <HStack>
                           <Input
-                            type="text"
+                            type="time"
                             placeholder="10:30 AM"
                             value={time}
                             onChange={(e) => setTime(e.target.value)}
@@ -200,7 +276,12 @@ const Cride = () => {
                     color="white"
                     _hover={{ bgColor: "gray.700" }}
                   >
-                    Confirm the trip
+                    {loading ? "Creating..." : "Create Ride"}
+                    {loading && (
+                      <Flex justify="center">
+                        <Spinner size="md" ml={2} />
+                      </Flex>
+                    )}
                   </Button>
                 </Box>
               </GridItem>

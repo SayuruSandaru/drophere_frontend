@@ -3,6 +3,7 @@ import ApiService from "./apiService";
 class RideService extends ApiService {
     public async createRide(ride: any): Promise<any> {
         try {
+            console.log(ride);
             const response = await this.post("/ride/create",
                 {
                     "driver_id": ride.driver_id,

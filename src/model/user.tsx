@@ -3,8 +3,11 @@ import { UserModal } from "./userModal";
 class User {
     static userDetail: UserModal;
 
-    static setUserDetail(userDetail: UserModal) {
+    static setUserDetail(userDetail: UserModal, updateStateFunction = null) {
         this.userDetail = userDetail;
+        if (updateStateFunction) {
+            updateStateFunction(userDetail);
+        }
     }
 
     static getUserDetail() {
