@@ -7,8 +7,8 @@ import PlaceAutocompleteModal from "../components/placeModalbox";
 import CalendarComponent from "./components/calenderComponents";
 import CounterComponent from "./components/counterComponent";
 import CarInfo from "./components/resultCard";
-import MapContainer from "./components/googleMap";
 import FilterDrawer from "./components/filterDrawer";
+import MapContainer from "./components/googleMap";
 import FilterDrawerMobile from "./components/filterDrawerMobile";
 import MenuDrawer from "./components/menuDrawer";
 import NavbarHomeDelivery from "pages/components/NavbarHomeDelivery";
@@ -17,6 +17,7 @@ import { RouterPaths } from "router/routerConfig";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { searchRideState } from "state";
 import { searchRides } from "api/ride";
+import { decodePolyline } from "util/map";
 
 const HomeDelivery = () => {
   const navigate = useNavigate();
@@ -38,6 +39,7 @@ const HomeDelivery = () => {
   const [destinationCordinate, setDestinationCordinate] = useState({ lat: rideSearchData.destination_lat, lng: rideSearchData.destination_lng });
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const [polylinePath, setPolylinePath] = useState([]);
 
   const [isLargeScreen] = useMediaQuery('(min-width: 992px)');
 
@@ -178,7 +180,7 @@ const HomeDelivery = () => {
       <MenuDrawer isOpen={isMenuDrawerOpen} onClose={() => setIsMenuDrawerOpen(false)} />
       <Flex flex={1} direction={{ base: "column", lg: "row" }}>
         <Box flex={1} bg="white" borderRadius="md" boxShadow="sm" mb={{ base: 4, lg: 0 }} mr={{ lg: 4 }} p={4}>
-          <MapContainer />
+          <MapContainer polylinePath={polylinePath} />
         </Box>
         <Box flex={1.5} bg="white" borderRadius="md" boxShadow="sm" p={4}>
           <Stack spacing={4}>
@@ -196,7 +198,8 @@ const HomeDelivery = () => {
                 seatsLeft={ride.vehicle_details.capacity}
                 price={`Rs ${ride.fee}`}
                 onClick={() => {
-                  
+                  const points = decodePolyline(ride.route)
+                  setPolylinePath(points);
                 }}
               />
             ))}
