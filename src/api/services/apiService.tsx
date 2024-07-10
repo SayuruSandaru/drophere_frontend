@@ -2,35 +2,40 @@ import CookieManager from "api/cookieManager";
 
 
 class ApiService {
-    protected baseUrl: string = "https://drophere-staging-665f7065c9e0.herokuapp.com";
+    protected baseUrl: string = "localhost:8000";
 
-    private mergeToken(headers: Headers) {
-        const token = CookieManager.getCookie("token");
+    // private mergeToken(headers: Headers) {
+    //     const token = CookieManager.getCookie("token");
 
-        if (!token) {
-            throw new Error("No token found");
-        }
+    //     if (!token) {
+    //         throw new Error("No token found");
+    //     }
 
-        headers.append("Authorization", `Bearer ${token}`);
-        return headers;
-    }
+    //     headers.append("Authorization", `Bearer ${token}`);
+    //     return headers;
+    // }
 
     public async post(path: string, data: any, authorized = true): Promise<any> {
         try {
-            const headers = new Headers({
-                "Content-Type": "application/json",
-            });
+            const myHeaders = new Headers();
+            myHeaders.append("Content-Type", "application/json");
+            myHeaders.append("Cookie", "PHPSESSID=2flilaupqne7idfcnrkmuk2o9n");
 
-            if (authorized) {
-                this.mergeToken(headers);
-            }
+            // if (authorized) {
+            //     this.mergeToken(headers);
+            // }
 
             const requestOptions: RequestInit = {
                 method: "POST",
-                headers: headers,
+                headers: myHeaders,
                 body: JSON.stringify(data),
-                redirect: 'follow'
+                redirect: 'follow',
+                // credentials: 'include'
             };
+
+            // if (authorized) {
+            //     requestOptions.credentials = 'include'; // Include credentials (cookies) in the request if authorized
+            // }
 
             const response = await fetch(this.baseUrl + path, requestOptions);
 
@@ -51,13 +56,13 @@ class ApiService {
         try {
             const headers = new Headers();
 
-            if (authorized) {
-                this.mergeToken(headers);
-            }
+            // if (authorized) {
+            //     this.mergeToken(headers);
+            // }
 
             const requestOptions: RequestInit = {
                 method: "POST",
-                headers: authorized ? headers : undefined, // Use headers only if authorization is required
+                headers: authorized ? headers : undefined,
                 body: fileData,
                 redirect: 'follow'
             };
@@ -84,9 +89,9 @@ class ApiService {
                 "Content-Type": "application/json",
             });
 
-            if (authorized) {
-                this.mergeToken(headers);
-            }
+            // if (authorized) {
+            //     this.mergeToken(headers);
+            // }
 
             const requestOptions: RequestInit = {
                 method: "GET",

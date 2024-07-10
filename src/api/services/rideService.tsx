@@ -33,6 +33,7 @@ class RideService extends ApiService {
             const response = await this.post("/rides/search",
                 data
             );
+            console.log(response);
             return response;
         } catch (error) {
             console.error("Error searching for rides: ", error);

@@ -80,6 +80,7 @@ const Ride: React.FC = () => {
             setLoading(false);
             navigate(RouterPaths.RIDE);
         } catch (error) {
+            console.log(error);
             setLoading(false);
             setErrorMessage(error.message);
         }

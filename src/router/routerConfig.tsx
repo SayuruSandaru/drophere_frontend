@@ -46,7 +46,8 @@ const RouterConfig: React.FC = () => {
             {/* <Route path={RouterPaths.ORDER} element={<PrivateRoute element={<Order />} />} /> */}
             <Route path={RouterPaths.ORDER} element={<Order />} />
             <Route path={RouterPaths.SEARCHDELIVERY} element={<SearchDelivery />} />
-            <Route path={RouterPaths.SEARCHRIDE} element={<PrivateRoute element={<Ride />} />} />
+            {/* <Route path={RouterPaths.SEARCHRIDE} element={<PrivateRoute element={<Ride />} />} /> */}
+            <Route path={RouterPaths.SEARCHRIDE} element={<Ride />} />
             {/* <Route path={RouterPaths.PROFILE} element={<PrivateRoute element={<Profile />} />} /> */}
             <Route path={RouterPaths.PROFILE} element={<Profile />} />
             <Route path={RouterPaths.CREATERIDE} element={<Cride />} />

@@ -1,5 +1,5 @@
 import { setRecoil } from 'recoil-nexus';
-import { tokenState, userState } from '../state';
+import { userState } from '../state';
 import CookieManager from './cookieManager';
 import authService from './services/authService';
 
@@ -8,12 +8,12 @@ export const login = async (credentials: { email: string; password: string }): P
     try {
         const response = await authService.login(credentials.email, credentials.password);
 
-        if (!response.token) {
-            throw new Error('No token returned');
-        }
+        // if (!response.token) {
+        //     throw new Error('No token returned');
+        // }
 
-        CookieManager.setCookie("token", response.token, 7);
-        setRecoil(tokenState, response.token);
+        // CookieManager.setCookie("token", response.token, 7);
+        // setRecoil(tokenState, response.token);
         setRecoil(userState, response.user);
     } catch (error) {
         if (error.message.includes('Invalid password')) {
