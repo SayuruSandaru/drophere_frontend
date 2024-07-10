@@ -50,7 +50,7 @@ const HomeDelivery = () => {
     } else if (item === "Destination") {
       onDestinationPlaceOpen();
     } else if (item === "Weight") {
-      // Handle weight input
+
     }
   };
 
@@ -196,7 +196,7 @@ const HomeDelivery = () => {
                 seatsLeft={ride.vehicle_details.capacity}
                 price={`Rs ${ride.fee}`}
                 onClick={() => {
-                  // You can add any onClick functionality here if needed
+                  
                 }}
               />
             ))}
