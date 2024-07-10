@@ -1,6 +1,6 @@
 import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api';
 
-const MapContainer = () => {
+const MapContainerDecpre = () => {
     const mapStyles = {
         height: "80vh",
         width: "100%"
@@ -23,4 +23,4 @@ const MapContainer = () => {
     )
 }
 
-export default MapContainer;
+export default MapContainerDecpre;

@@ -1,30 +1,29 @@
-import { setRecoil } from 'recoil-nexus';
+import User from 'model/user';
+import { Convert } from 'model/userModal';
 import { tokenState, userState } from '../state';
 import CookieManager from './cookieManager';
 import authService from './services/authService';
 
-// Function to handle login
-export const login = async (credentials: { email: string; password: string }): Promise<void> => {
+
+export const login = async (credentials: { email: string; password: string }) => {
     try {
         const response = await authService.login(credentials.email, credentials.password);
-
         if (!response.token) {
             throw new Error('No token returned');
         }
-
-        CookieManager.setCookie("token", response.token, 7);
-        setRecoil(tokenState, response.token);
-        setRecoil(userState, response.user);
-    } catch (error) {
-        if (error.message.includes('Invalid password')) {
-            throw new Error('Invalid email or password.');
-        } else if (error.message === 'Failed to fetch') {
-            throw new Error('Network error. Please try again.');
-        } else {
-            throw new Error('An unknown error occurred. Please try again.');
+        const res = await authService.getUser();
+        if (res.status !== "success") {
+            throw new Error('Failed to fetch user details');
         }
+        const user = Convert.toUserModal(JSON.stringify(res));
+        User.setUserDetail(user);
+        return { user, token: response.token };
+    } catch (error) {
+        console.error('Failed to login:', error);
+        throw error;
     }
 };
+
 
 export const registerUser = async (details: {
     email: string;

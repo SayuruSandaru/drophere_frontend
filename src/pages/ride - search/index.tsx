@@ -13,6 +13,7 @@ import { searchRides } from "api/ride";
 import { searchRideState } from "state";
 import { getDriverById } from "api/driver";
 import { get } from "http";
+import User from "model/user";
 
 
 const Ride: React.FC = () => {

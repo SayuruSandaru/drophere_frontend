@@ -109,6 +109,8 @@ const Home = () => {
           pickup_lng: pickCordinate['lng'],
           destination_lat: destinationCordinate['lat'],
           destination_lng: destinationCordinate['lng'],
+          date: selectedDate.toISOString(),
+          passenger_count: parseInt(selectedPassangerCount),
         }
       );
       const rideData = {
@@ -190,6 +192,7 @@ const Home = () => {
           </Box>
         )
       }
+
       {
         isLargeScreen && (
           <HStack spacing={4} mb={5}>
