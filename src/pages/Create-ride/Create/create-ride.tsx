@@ -34,6 +34,7 @@ const Cride = () => {
   const [selectedRoute, setSelectedRoute] = useState(null);
   const [selectedVehicle, setSelectedVehicle] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [passenger, setPassenger] = useState("");
 
   const showSuccessToast = useShowSuccessToast();
   const showErrorToast = useShowErrorToast();
@@ -148,6 +149,7 @@ const Cride = () => {
       route: availableRoutes[selectedRoute],
       start_location: selectedPickupLocation,
       end_location: selectedDestinationLocation,
+      passenger_count: parseInt(passenger),
     };
     try {
       const res = await rideService.createRide(ride);
@@ -244,6 +246,18 @@ const Cride = () => {
                       </Select>
                     </FormControl>
                   </Box>
+                  <Box mb={4}>
+                    <FormControl>
+                      <FormLabel fontSize="sm" color={"gray.500"}>Available Space</FormLabel>
+                      <Input
+                        type="number"
+                        placeholder="Enter available space"
+                        value={passenger}
+                        onChange={(e) => setPassenger(e.target.value)}
+                      />
+                    </FormControl>
+                  </Box>
+
                   <HStack spacing={4} w="100%" mt={8}>
                     <Box>
                       <FormControl>

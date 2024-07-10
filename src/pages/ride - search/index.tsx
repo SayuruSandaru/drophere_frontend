@@ -32,7 +32,6 @@ const Ride: React.FC = () => {
     const [destinationCordinate, setDestinationCordinate] = useState({});
 
     const handleItemClick = (item) => {
-
         setSelectedItem(item);
         if (item === "Pickup") {
             onPickupPlaceOpen();

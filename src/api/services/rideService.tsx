@@ -13,7 +13,8 @@ class RideService extends ApiService {
                     "current_location": ride.current_location,
                     "route": ride.route,
                     "start_location": ride.start_location,
-                    "end_location": ride.end_location
+                    "end_location": ride.end_location,
+                    "passenger_count": ride.passenger_count,
                 }
             );
             return response;
@@ -29,7 +30,9 @@ class RideService extends ApiService {
                 "pickup_lat": search.pickup_lat,
                 "pickup_lng": search.pickup_lng,
                 "destination_lat": search.destination_lat,
-                "destination_lng": search.destination_lng
+                "destination_lng": search.destination_lng,
+                "date": search.date,
+                "passenger_count": search.passenger_count,
             };
             const response = await this.post("/rides/search",
                 data
