@@ -8,7 +8,6 @@ import CalendarComponent from "./components/calenderComponents";
 import CounterComponent from "./components/counterComponent";
 import CarInfo from "./components/resultCard";
 import FilterDrawer from "./components/filterDrawer";
-import MapContainer from "./components/googleMap";
 import FilterDrawerMobile from "./components/filterDrawerMobile";
 import MenuDrawer from "./components/menuDrawer";
 import NavbarHomeDelivery from "pages/components/NavbarHomeDelivery";
@@ -18,6 +17,7 @@ import { useRecoilValue, useSetRecoilState } from "recoil";
 import { searchRideState } from "state";
 import { searchRides } from "api/ride";
 import { decodePolyline } from "util/map";
+import MapContainer from "pages/home/components/googleMap";
 
 const HomeDelivery = () => {
   const navigate = useNavigate();
