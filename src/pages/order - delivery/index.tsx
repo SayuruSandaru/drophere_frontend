@@ -82,7 +82,6 @@ const OrderDelivery = () => {
               </VStack>
             </Box>
 
-            {/* guidelines */}
             <Box
               bg="white"
               p={6}
@@ -96,7 +95,6 @@ const OrderDelivery = () => {
                 </Heading>
 
                 <Text size="md">General Guideliness:</Text>
-                //Small text
                 <Text size="xs" fontWeight={300}>1. Please make sure that the package is properly packed.</Text>
                 <Text size="xs" fontWeight={300}>2. Please make sure details are correct.</Text>
                 <Text size="xs" fontWeight={400}>Prohibited items:</Text>
