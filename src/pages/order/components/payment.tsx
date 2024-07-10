@@ -54,7 +54,7 @@ class RespModal extends React.Component<RespModalProps> {
                             </FormControl>
                         </Flex>
                         <Button bg="#2b8ab0" type='submit' width='full' mt={5} mb={4} color={'white'} onClick={onCloseModal}>
-                            Pay
+                            Add Payment Details
                         </Button>
                     </ModalBody>
                 </ModalContent>
