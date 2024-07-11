@@ -28,6 +28,8 @@ const Login: React.FC = () => {
       setErrorMessage('');
       const credentials = { email, password };
       const { user, token } = await login(credentials);
+      console.log(token);
+      console.log(user);
       CookieManager.setCookie("token", token, 5);
       setToken(token);
       setUser(user);

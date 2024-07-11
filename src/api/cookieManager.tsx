@@ -1,5 +1,6 @@
 class CookieManager {
     static setCookie(name: string, value: string, days?: number): void {
+        console.log(`Setting Cookie: ${name}=${value}`);
         let expires = "";
         if (days) {
             const date = new Date();
@@ -7,7 +8,7 @@ class CookieManager {
             expires = `; expires=${date.toUTCString()}`;
         }
         document.cookie = `${name}=${encodeURIComponent(value)}${expires}; path=/; Secure; SameSite=Strict`;
-        console.log(`Set Cookie: ${name}=${value}${expires}; path=/; Secure; SameSite=Strict`);
+        console.log(`Set Cookie completed: ${name}=${value}${expires}; path=/; Secure; SameSite=Strict`);
     }
 
     static getCookie(name: string): string | undefined {
