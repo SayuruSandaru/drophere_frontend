@@ -3,8 +3,6 @@ import {
     Modal,
     ModalOverlay,
     ModalContent,
-    ModalHeader,
-    ModalFooter,
     ModalBody,
     ModalCloseButton,
     Button,
@@ -13,8 +11,6 @@ import {
     Text,
     FormLabel,
     Flex,
-    Image,
-    Box
 } from '@chakra-ui/react';
 import './payment.css';
 
