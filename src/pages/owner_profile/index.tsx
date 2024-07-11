@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Box,
   Flex,
@@ -11,69 +11,101 @@ import {
   Input,
   Button,
   useMediaQuery,
+  Spinner,
 } from "@chakra-ui/react";
 import { MdCheckCircle, MdEmail, MdPhone, MdStar } from "react-icons/md";
-import { FaStar, FaPaperPlane } from 'react-icons/fa';
+import { FaPaperPlane } from 'react-icons/fa';
 import NavbarHome from "pages/components/NavbarHome";
 import Footer from "pages/components/footer";
 import Rating from "react-rating";
 import ReviewItem from "./review_card";
+import { getReviews, createReview } from "api/review"; // Ensure to import these functions
 
 const Profile = () => {
-  const [ratingData, setRatingData] = useState({ rating: 0, reviews: 20 });
-  const [hasUpdatedReviews, setHasUpdatedReviews] = useState(false);
+  const [ratingData, setRatingData] = useState({ rating: 0, reviews: 0 });
+  const [reviews, setReviews] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [newReview, setNewReview] = useState({ rating: 0, comment: "" });
 
   const [isLargeScreen] = useMediaQuery("(min-width: 992px)");
 
-  const StarRating = () => {
-    const [hover, setHover] = useState(0);
+  useEffect(() => {
+    const fetchReviews = async () => {
+      try {
+        const fetchedReviews = await getReviews();
+        console.log("Fetched Reviews:", fetchedReviews); // Log fetched reviews
 
-    const handleClick = (newRating) => {
-      setRatingData((prevData) => ({
-        rating: newRating,
-        reviews: hasUpdatedReviews ? prevData.reviews : prevData.reviews + 1,
-      }));
-      setHasUpdatedReviews(true);
+        if (Array.isArray(fetchedReviews)) {
+          setReviews(fetchedReviews);
+          const averageRating = fetchedReviews.reduce((acc, review) => acc + review.rating, 0) / fetchedReviews.length;
+          setRatingData({ rating: averageRating, reviews: fetchedReviews.length });
+        } else {
+          console.error("Fetched reviews is not an array");
+          setReviews([]);
+        }
+      } catch (error) {
+        console.error("Failed to fetch reviews", error);
+        setReviews([]); // Set reviews to empty array on error
+      } finally {
+        setIsLoading(false);
+      }
     };
 
-    return (
-      <Box display="flex">
-        {Array(5)
-          .fill("")
-          .map((_, i) => (
-            <FaStar
-              key={i}
-              color={i < (hover || ratingData.rating) ? "red" : "gray"}
-              cursor="pointer"
-              style={{ transition: "color 0.3s" }}
-              onMouseEnter={() => setHover(i + 1)}
-              onMouseLeave={() => setHover(0)}
-              onClick={() => handleClick(i + 1)}
-            />
-          ))}
-      </Box>
-    );
+    fetchReviews();
+  }, []);
+
+
+
+
+  const handleAddReview = async () => {
+    try {
+      setIsLoading(true);
+      console.log("Submitting review:", { description: newReview.comment, rating: newReview.rating, driver_id: 1 }); // Log the data being sent
+      const response = await createReview({ description: newReview.comment, rating: newReview.rating, driver_id: 1 }); // Replace with appropriate driver_id
+      console.log("Response from createReview:", response); // Log the response
+      const updatedReviews = await getReviews();
+      console.log("Updated Reviews:", updatedReviews); // Log updated reviews
+      if (Array.isArray(updatedReviews)) {
+        setReviews(updatedReviews);
+        const averageRating = updatedReviews.reduce((acc, review) => acc + review.rating, 0) / updatedReviews.length;
+        setRatingData({ rating: averageRating, reviews: updatedReviews.length });
+        setNewReview({ rating: 0, comment: "" });
+      } else {
+        console.error("Updated reviews is not an array");
+        setReviews([]);
+      }
+    } catch (error) {
+      console.error("Failed to add review", error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  const ReviewsAndComments = () => {
-    return (
-      <Box pl={isLargeScreen ? 10 : 0}>
-        <Box maxW={"500px"} borderRadius={10} padding={10} bg={"white"}>
-          <Heading size="md" mb={8}>Reviews and Comments</Heading>
+  const ReviewsAndComments = () => (
+    <Box pl={isLargeScreen ? 10 : 0}>
+      <Box maxW={"500px"} borderRadius={10} padding={10} bg={"white"}>
+        <Heading size="md" mb={8}>Reviews and Comments</Heading>
+        {isLoading ? (
+          <Spinner />
+        ) : (
           <Stack spacing={5}>
-            <ReviewItem name="John Doe" comment="Excellent driver! Very punctual and professional." rating={4.5} />
-            <ReviewItem name="Jane Smith" comment="Great service, highly recommend!" rating={5} />
-            <ReviewItem name="Alice Johnson" comment="Very friendly and safe driver." rating={4} />
-            <ReviewItem name="Bob Brown" comment="Good experience, will book again." rating={4.2} />
-            <ReviewItem name="Carol White" comment="Professional and on time." rating={4.8} />
-            <ReviewItem name="Dave Black" comment="The ride was comfortable and smooth." rating={4.7} />
-            <ReviewItem name="Eve Blue" comment="Satisfied with the service." rating={4.3} />
-            <ReviewItem name="Frank Green" comment="Highly recommended!" rating={5} />
+            {Array.isArray(reviews) && reviews.length > 0 ? reviews.map((review, index) => (
+              <ReviewItem
+                key={index}
+                name={review.username || "Anonymous"}
+                comment={review.comment || review.description || "No comment"}
+                rating={review.rating}
+              />
+            )) : (
+              <Text>No reviews available.</Text>
+            )}
           </Stack>
-        </Box>
+        )}
       </Box>
-    );
-  };
+    </Box>
+  );
+
+
 
   return (
     <Box>
@@ -84,11 +116,10 @@ const Profile = () => {
         position="relative"
         justifyContent="center"
         alignItems="start"
-        // height="100vh"
         bg={"gray.50"}
         padding={10}
       >
-        <Flex maxW={"1200px"} w="full" >
+        <Flex maxW={"1200px"} w="full">
           <Box borderRadius={10}>
             <Stack spacing="4">
               <Box>
@@ -106,11 +137,8 @@ const Profile = () => {
                   </VStack>
                 </Flex>
                 <Text pt="6" fontSize="sm" color={"gray"}>
-                  <b>{ratingData.rating}.0</b> ({ratingData.reviews} reviews)
+                  <b>{ratingData.rating.toFixed(1)}</b> ({ratingData.reviews} reviews)
                 </Text>
-                {/* <Box pt={2}>
-                  <StarRating />
-                </Box> */}
               </Box>
               <Divider />
               <Box>
@@ -133,26 +161,14 @@ const Profile = () => {
                   </Text>
                 </Flex>
               </Box>
-              <Divider
-                sx={{
-                  height: "5px",
-                  borderRadius: "md",
-                  backgroundColor: "gray.300",
-                }}
-              />
+              <Divider />
               <Box>
                 <Heading size="xs">About John</Heading>
                 <Text pt="2" fontSize="sm">
                   I am a professional driver with 2 years of experience. I have a 5-star rating and I am a verified driver.
                 </Text>
               </Box>
-              <Divider
-                sx={{
-                  height: "5px",
-                  borderRadius: "md",
-                  backgroundColor: "gray.300",
-                }}
-              />
+              <Divider />
               <Box>
                 <Heading size="xs">Contact</Heading>
                 <Flex align="center" pt="2">
@@ -168,39 +184,35 @@ const Profile = () => {
                   </Text>
                 </Flex>
               </Box>
-              <Divider
-                sx={{
-                  height: "5px",
-                  borderRadius: "md",
-                  backgroundColor: "gray.300",
-                }}
-              />
+              <Divider />
               <Box>
                 <Heading size="xs" mb={3} mt={3}>Add a New Review</Heading>
-                <Flex> <Text fontSize="sm" mr={2}>Rating: </Text>
+                <Flex>
+                  <Text fontSize="sm" mr={2}>Rating: </Text>
                   <Rating
-                    initialRating={3}
+                    initialRating={newReview.rating}
                     emptySymbol={<MdStar size={20} color="gray" />}
                     fullSymbol={<MdStar size={20} color="gold" />}
-                    onClick={(rate) => { }}
-                  /></Flex>
+                    onClick={(rate) => setNewReview({ ...newReview, rating: rate })}
+                  />
+                </Flex>
                 <Flex>
                   <Input
                     placeholder="Comment"
-                    value={""}
-                    onChange={(e) => { }}
+                    value={newReview.comment}
+                    onChange={(e) => setNewReview({ ...newReview, comment: e.target.value })}
                     mb={3}
                     mr={2}
                     borderRadius={5}
                   />
-                  <Button bg={"transparent"}><FaPaperPlane /></Button>
+                  <Button onClick={handleAddReview} bg={"transparent"}>
+                    <FaPaperPlane />
+                  </Button>
                 </Flex>
               </Box>
             </Stack>
           </Box>
-          {isLargeScreen && (
-            <ReviewsAndComments />
-          )}
+          {isLargeScreen && <ReviewsAndComments />}
         </Flex>
       </Flex>
       {!isLargeScreen && <ReviewsAndComments />}

@@ -32,11 +32,17 @@ const HomeDelivery = () => {
   const [isMenuDrawerOpen, setIsMenuDrawerOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState("");
   const [selectedDate, setSelectedDate] = useState(new Date());
-  const [selectedPickupLocation, setSelectedPickupLocation] = useState(rideSearchData.pickupName || "");
-  const [selectedDestinationLocation, setSelectedDestinationLocation] = useState(rideSearchData.destinationName || "");
-  const [selectedWeight, setSelectedWeight] = useState(rideSearchData.weight || "");
-  const [pickCordinate, setPickCordinate] = useState({ lat: rideSearchData.pickup_lat, lng: rideSearchData.pickup_lng });
-  const [destinationCordinate, setDestinationCordinate] = useState({ lat: rideSearchData.destination_lat, lng: rideSearchData.destination_lng });
+  const [selectedPickupLocation, setSelectedPickupLocation] = useState(rideSearchData?.pickupName || "");
+  const [selectedDestinationLocation, setSelectedDestinationLocation] = useState(rideSearchData?.destinationName || "");
+  const [selectedWeight, setSelectedWeight] = useState(rideSearchData?.weight || "");
+  const [pickCordinate, setPickCordinate] = useState({
+    lat: rideSearchData?.pickup_lat || 0, // Provide default coordinates if null
+    lng: rideSearchData?.pickup_lng || 0,
+  });
+  const [destinationCordinate, setDestinationCordinate] = useState({
+    lat: rideSearchData?.destination_lat || 0, // Provide default coordinates if null
+    lng: rideSearchData?.destination_lng || 0,
+  });
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [polylinePath, setPolylinePath] = useState([]);
