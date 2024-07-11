@@ -18,7 +18,6 @@ export const login = async (credentials: { email: string; password: string }) =>
         }
         const user = Convert.toUserModal(JSON.stringify(res));
         User.setUserDetail(user);
-        CookieManager.setCookie("token", response.token, 5);
         return { user, token: response.token };
     } catch (error) {
         console.error('Failed to login:', error);
