@@ -7,21 +7,32 @@ import { RouterPaths } from "router/routerConfig";
 import Footer from "pages/components/footer";
 import { colors } from "theme/colors";
 import { login } from "api/auth";
+import { driverByUser } from "api/driver";
+import { useSetRecoilState } from "recoil";
+import { tokenState, userState } from '../../state';
+import User from "model/user";
 
 const Login: React.FC = () => {
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
   const [errorMessage, setErrorMessage] = React.useState('');
   const [loading, setLoading] = React.useState(false);
+  const setToken = useSetRecoilState(tokenState);
+  const setUser = useSetRecoilState(userState);
   const navigate = useNavigate();
 
   const handleLogin = async () => {
     try {
       setLoading(true);
       setErrorMessage('');
-      await login({ email, password });
+      const credentials = { email, password };
+      const { user, token } = await login(credentials);
+      setToken(token);
+      setUser(user);
+      const userId = User.getUserId();
+      console.log(userId);
       setLoading(false);
-      navigate(RouterPaths.HOME);
+      navigate(RouterPaths.SEARCHRIDE);
     } catch (error) {
       setLoading(false);
       setErrorMessage(error.message);
@@ -32,8 +43,6 @@ const Login: React.FC = () => {
 
   return (
     <Flex direction="column" h="100vh">
-
-
 
       {errorMessage && (
         <Box p={2} color="white" bg={"red.400"} textAlign="center">
@@ -73,7 +82,6 @@ const Login: React.FC = () => {
         )}
         <LoginForm email={email} password={password} setEmail={setEmail} setPassword={setPassword} onLogin={handleLogin} loading={loading} />
       </Flex>
-      <Footer />
     </Flex>
   );
 };
