@@ -12,6 +12,7 @@ export const login = async (credentials: { email: string; password: string }) =>
         if (!response.token) {
             throw new Error('No token returned');
         }
+        CookieManager.setCookie("token", response.token, 5);
         const res = await authService.getUser();
         if (res.status !== "success") {
             throw new Error('Failed to fetch user details');
