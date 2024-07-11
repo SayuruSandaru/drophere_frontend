@@ -1,4 +1,4 @@
-import { Flex, Heading, VStack, Input, useDisclosure, Button, Icon, Text, Stack, FormControl, FormLabel, Box, Spinner } from "@chakra-ui/react";
+import { Flex, Heading, Input, useDisclosure, Button, Icon, Text, FormControl, FormLabel, Box, Spinner } from "@chakra-ui/react";
 import React, { useState } from "react";
 import { useNavigate } from 'react-router-dom';
 import { RouterPaths } from "router/routerConfig";
@@ -8,12 +8,9 @@ import PlaceAutocompleteModal from "pages/components/placeModalbox";
 import Navbar from "pages/components/NavbarNeedLogin";
 import Footer from "pages/components/footer";
 import { useSetRecoilState } from "recoil";
-import { set } from "lodash";
 import { searchRides } from "api/ride";
 import { searchRideState } from "state";
 import { getDriverById } from "api/driver";
-import { get } from "http";
-import User from "model/user";
 
 
 const Ride: React.FC = () => {
