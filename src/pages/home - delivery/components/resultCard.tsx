@@ -9,6 +9,7 @@ import {
   Spacer,
   Avatar,
   Divider,
+  Button,
 } from "@chakra-ui/react";
 import { MdAirlineSeatReclineExtra } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
@@ -29,7 +30,8 @@ interface CarInfoProps {
 }
 
 const CarInfo: React.FC<CarInfoProps> = ({ imageUrl, altText, carName, date, from, to, availability, seatsLeft, price, name, onClick }) => {
- 
+  const navigate = useNavigate();
+
   return (
     <Box borderRadius="md" borderWidth="1px" p={1} onClick={onClick} _hover={{ bg: "gray.50", cursor: "pointer", borderRadius: "md" }}>
       <Flex direction={{ base: "column", md: "row" }}>
@@ -81,8 +83,12 @@ const CarInfo: React.FC<CarInfoProps> = ({ imageUrl, altText, carName, date, fro
           </Stack>
         </Box>
         <Spacer />
-        <Text fontSize="xl" fontWeight="bold" m={{ base: 4, md: 5 }}>{price}</Text>
-      </Flex>
+
+ <Flex direction={"column"}>
+          <Text fontSize="xl" fontWeight="bold" m={{ base: 4, md: 5 }}>{price}</Text>
+          <Spacer />
+          <Button bg="black" color={"white"} m={4} onClick={() => navigate(RouterPaths.ORDERDELIVERY)} >Book</Button>
+        </Flex>      </Flex>
     </Box>
   );
 };
