@@ -18,8 +18,11 @@ import { searchRideState } from "state";
 import { searchRides } from "api/ride";
 import { decodePolyline } from "util/map";
 import MapContainer from "pages/home/components/googleMap";
+import { selectedRideState } from 'state';
 
 const HomeDelivery = () => {
+  const setSelectedRide = useSetRecoilState(selectedRideState);
+
   const navigate = useNavigate();
   const rideSearchData = useRecoilValue(searchRideState);
   const setSearchRideState = useSetRecoilState(searchRideState);
@@ -115,6 +118,13 @@ const HomeDelivery = () => {
     }
   };
 
+
+  const handleCardClick = (ride) => {
+    setSelectedRide(ride);
+    navigate(RouterPaths.ORDERDELIVERY);
+  }
+  
+
   return (
     <Flex direction="column" h="100vh" bg="gray.50">
       {errorMessage && (
@@ -206,7 +216,9 @@ const HomeDelivery = () => {
                 onClick={() => {
                   const points = decodePolyline(ride.route)
                   setPolylinePath(points);
+                  // handleCardClick(ride);
                 }}
+                ride={ride}
               />
             ))}
           </Stack>

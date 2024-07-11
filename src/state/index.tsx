@@ -25,3 +25,8 @@ export const isDriverState = atom<boolean>({
     key: 'isDriverState',
     default: false,
 });
+
+export const selectedRideState = atom({
+    key: 'selectedRideState',
+    default: null,
+  });

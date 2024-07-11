@@ -1,11 +1,23 @@
 import React from "react";
 import { Box, Flex, Heading, VStack, Input, Button, Icon, Image, Text, Stack, useBreakpointValue } from "@chakra-ui/react";
 import { FaMapMarkerAlt, FaUser } from "react-icons/fa";
+import { useRecoilValue } from "recoil";
+import { selectedRideState } from "state";
+import { useLocation } from "react-router-dom";
 
 const OrderDelivery = () => {
+  const location = useLocation();
+  const selectedRide = location.state?.selectedRide;
   const flexDirection = useBreakpointValue({ base: "column", lg: "row" } )as "column" | "row" ;
   const containerWidth = useBreakpointValue({ base: "100%", md: "90%", lg: "80%" });
   const inputWidth = useBreakpointValue({ base: "100%", md: "350px" });
+
+  // const selectedRide = useRecoilValue(selectedRideState);
+  const startLocation = selectedRide?.start_location ?? "N/A";
+  const endLocation = selectedRide?.end_location ?? "N/A";
+  const startTime = selectedRide?.start_time ? new Date(selectedRide.start_time).toLocaleString() : "N/A";
+  const fee = selectedRide?.fee ?? "N/A";
+  const imageUrl = selectedRide?.vehicle_details?.image_url ?? "https://via.placeholder.com/150";
 
   return (
     <Box>
@@ -35,7 +47,7 @@ const OrderDelivery = () => {
 
                 <Flex align="center" mb={4}>
                   <Icon as={FaMapMarkerAlt} w={5} h={5} color="black" mr={2} />
-                  <Text fontSize="md">Nittambuwa</Text>
+                  <Text fontSize="md">{startLocation}</Text>
                 </Flex>
 
                 <VStack spacing={2} w="100%">
@@ -58,7 +70,7 @@ const OrderDelivery = () => {
                 </Heading>
                 <Flex align="center" mb={4}>
                   <Icon as={FaMapMarkerAlt} w={5} h={5} color="black" mr={2} />
-                  <Text fontSize="md">Colombo</Text>
+                  <Text fontSize="md">{endLocation}</Text>
                 </Flex>
                 <Stack spacing={2} w="100%">
                   <Flex align="center" direction={["column", "row"]}>
@@ -115,10 +127,10 @@ const OrderDelivery = () => {
                   maxH="200px"
                 />
               </Flex>
-              <Text><strong>From:</strong> Kandy</Text>
-              <Text><strong>To:</strong> Badulla.</Text>
-              <Text><strong>Date and Time:</strong> June 17, 2024, 6:00 PM</Text>
-              <Text><strong>Price:</strong> $100.00</Text>
+              <Text><strong>From:</strong> {startLocation}</Text>
+              <Text><strong>To:</strong> {endLocation}</Text>
+              <Text><strong>Date and Time:</strong> {startTime}</Text>
+              <Text><strong>Price:</strong> Rs {fee}</Text>
             </Box>
 
             <Button bg="black" variant="solid" color="white" mt={4}>
