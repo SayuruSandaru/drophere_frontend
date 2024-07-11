@@ -31,6 +31,8 @@ import { searchRideState } from "state";
 import { searchRides } from "api/ride";
 import React from "react";
 import { decodePolyline } from "util/map";
+import { encryptData, getLocalStorage, setLocalStorage } from "util/secure";
+import { setDate } from "date-fns";
 
 const Home = () => {
   const rideSearchData = useRecoilValue(searchRideState);
@@ -47,7 +49,7 @@ const Home = () => {
   const [selectedItem, setSelectedItem] = useState("");
   const [selectedDate, setSelectedDate] = useState(new Date());
 
-  const [selectedPickupLocation, setSelectedPickupLocation] = useState(rideSearchData.pickupName);
+  const [selectedPickupLocation, setSelectedPickupLocation] = useState(rideSearchData.pickupName || '');
   const [pickCordinate, setPickCordinate] = useState({ "lat": rideSearchData.pickup_lat, "lng": rideSearchData.pickup_lng });
   const [destinationCordinate, setDestinationCordinate] = useState({ "lat": rideSearchData.destination_lat, "lng": rideSearchData.destination_lng });
   const [selectedDestinationLocation, setSelectedDestinationLocation] = useState(rideSearchData.destinationName);
@@ -131,6 +133,13 @@ const Home = () => {
       setLoading(false);
       setErrorMessage(e.message);
     }
+  }
+  const setdata = (id, prce) => {
+    console.log(id, prce);
+    setLocalStorage(id, prce);
+
+    console.log("success");
+    getLocalStorage(id);
   }
 
   return (
@@ -233,7 +242,12 @@ const Home = () => {
                   const points = decodePolyline(ride.route)
                   setPolylinePath(points);
                 }}
-                onBook={() => navigate(RouterPaths.ORDER)}
+                onBook={() => {
+                  const rideId = ride.ride_id;
+                  setdata(rideId, ride.fee);
+                  navigate(`/order/${rideId}`);
+                  // navigate(`${RouterPaths}`);
+                }}
               />
             ))}
           </Stack>
