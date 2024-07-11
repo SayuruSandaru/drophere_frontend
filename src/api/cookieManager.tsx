@@ -1,6 +1,5 @@
 class CookieManager {
     static setCookie(name: string, value: string, days?: number): void {
-        console.log(`Setting Cookie: ${name}=${value}`);
         let expires = "";
         if (days) {
             const date = new Date();
@@ -8,13 +7,11 @@ class CookieManager {
             expires = `; expires=${date.toUTCString()}`;
         }
         document.cookie = `${name}=${encodeURIComponent(value)}${expires}; path=/; Secure; SameSite=Strict`;
-        console.log(`Set Cookie completed: ${name}=${value}${expires}; path=/; Secure; SameSite=Strict`);
     }
 
     static getCookie(name: string): string | undefined {
         const nameEQ = `${name}=`;
         const ca = document.cookie.split(';');
-        console.log(`Current Cookies: ${document.cookie}`);
         for (let i = 0; i < ca.length; i++) {
             let c = ca[i].trim();
             if (c.startsWith(nameEQ)) {
@@ -23,13 +20,11 @@ class CookieManager {
                 return cookieValue;
             }
         }
-        console.log(`Cookie not found: ${name}`);
         return undefined;
     }
 
     static clearCookie(name: string): void {
         document.cookie = `${name}=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT; Secure; SameSite=Strict`;
-        console.log(`Cleared Cookie: ${name}`);
     }
 }
 

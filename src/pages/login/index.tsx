@@ -27,14 +27,13 @@ const Login: React.FC = () => {
       setLoading(true);
       setErrorMessage('');
       const credentials = { email, password };
+      console.log("login process start");
       const { user, token } = await login(credentials);
-      console.log(token);
-      console.log(user);
-      CookieManager.setCookie("token", token, 5);
+      console.log("login process end");
+      console.log(`token: ${token}`);
       setToken(token);
       setUser(user);
       const userId = User.getUserId();
-      console.log(userId);
       setLoading(false);
       navigate(RouterPaths.SEARCHRIDE);
     } catch (error) {
