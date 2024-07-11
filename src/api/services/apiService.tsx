@@ -6,11 +6,9 @@ class ApiService {
 
     private mergeToken(headers: Headers) {
         const token = CookieManager.getCookie("token");
-
         if (!token) {
             throw new Error("No token found");
         }
-
         headers.append("Authorization", `Bearer ${token}`);
         return headers;
     }

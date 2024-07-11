@@ -26,12 +26,12 @@ interface CarInfoProps {
   seatsLeft: string;
   price: string;
   onClick: () => void
+  onBook: () => void
   name: string;
 }
 
-const CarInfo: React.FC<CarInfoProps> = ({ imageUrl, altText, carName, date, from, to, availability, seatsLeft, price, name, onClick }) => {
-  const navigate = useNavigate();
 
+const CarInfo: React.FC<CarInfoProps> = ({ imageUrl, altText, carName, date, from, to, availability, seatsLeft, price, name, onClick, onBook }) => {
   return (
     <Box borderRadius="md" borderWidth="1px" p={1} onClick={onClick} _hover={{ bg: "gray.50", cursor: "pointer", borderRadius: "md" }}>
       <Flex direction={{ base: "column", md: "row" }}>
@@ -83,12 +83,9 @@ const CarInfo: React.FC<CarInfoProps> = ({ imageUrl, altText, carName, date, fro
           </Stack>
         </Box>
         <Spacer />
-
- <Flex direction={"column"}>
-          <Text fontSize="xl" fontWeight="bold" m={{ base: 4, md: 5 }}>{price}</Text>
-          <Spacer />
-          <Button bg="black" color={"white"} m={4} onClick={() => navigate(RouterPaths.ORDERDELIVERY)} >Book</Button>
-        </Flex>      </Flex>
+        <Text fontSize="xl" fontWeight="bold" m={{ base: 4, md: 5 }}>{price}</Text>
+        <Button bg="black" color={"white"} m={4} onClick={onBook} >Book</Button>
+      </Flex>
     </Box>
   );
 };

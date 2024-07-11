@@ -207,6 +207,7 @@ const HomeDelivery = () => {
                   const points = decodePolyline(ride.route)
                   setPolylinePath(points);
                 }}
+                onBook={() => { }}
               />
             ))}
           </Stack>
