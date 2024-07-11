@@ -2,7 +2,6 @@ import {
   Box,
   Center,
   RadioGroup,
-  Link,
   Button,
   VStack,
   FormControl,
@@ -10,12 +9,12 @@ import {
   Text,
   Flex,
   FormLabel,
-  HStack,
-  useToast,
   Heading,
   Input,
   Textarea,
+  useToast,
   FormErrorMessage,
+  Spinner,
 } from "@chakra-ui/react";
 import React, { useState } from "react";
 import { Formik, Form, Field } from "formik";
@@ -55,7 +54,12 @@ const Complain = () => {
   const [action, setAction] = useState("");
   const [activeStep, setActiveStep] = useState(0);
   const toast = useToast();
+  const [phone, setPhone] = useState("");
+  const [message, setMessage] = useState("");
+  const [details, setDetails] = useState("");
   const [loading, setLoading] = useState(false);
+
+
 
   const handleContinue = () => {
     if (activeStep < steps.length - 1) {
@@ -64,15 +68,17 @@ const Complain = () => {
   };
 
   const handleSubmit = (values, actions) => {
+    console.log("Form submitted with values: ", values);
     toast({
-      title: `Form submitted with action: ${action}`,
-      description: `Details: ${values.details}, Contact: ${values.contact}, First Name: ${values.firstName}, Last Name: ${values.lastName}, Phone: ${values.phone}`,
+      title: "Form submitted successfully",
+      description: "Your complaint has been recorded. We will contact you shortly.",
       status: "success",
       duration: 4000,
       isClosable: true,
     });
     actions.setSubmitting(false);
   };
+
 
   const validationSchema = Yup.object({
     details: Yup.string().required("Details are required"),
@@ -84,35 +90,27 @@ const Complain = () => {
 
   const createDispute = async (disputeData) => {
     try {
-
       setLoading(true);
-
-
-
       const response = await UserService.createDispute({
-        user_Id: disputeData.user_Id,
-        category: disputeData.category,
-        status: disputeData.status,
-        message: disputeData.message,
+        category: "complain",
+        status: "pending",
+        message: details,
       });
 
-
-      console.log('Dispute created successfully:', response);
-
-
-
+      toast({
+        title: "Dispute created successfully",
+        description: "Your dispute has been created. We will contact you shortly.",
+        status: "success",
+        duration: 4000,
+        position: "top",
+        isClosable: true,
+      });
       setLoading(false);
     } catch (error) {
-
       setLoading(false);
-
-
-
       console.error("Error creating dispute: ", error);
     }
   };
-
-
 
   return (
     <>
@@ -130,37 +128,23 @@ const Complain = () => {
           textAlign="center"
         >
           <Stepper steps={steps} activeStep={activeStep} />
-
           {activeStep === 0 && (
             <VStack spacing={4} align="center" mt={4}>
-              <Text>
-                Welcome! Here you can work things out and resolve issues
-                regarding your orders.
-              </Text>
-              <Box />
+              <Text>Welcome! Here you can work things out and resolve issues regarding your orders.</Text>
               <FormControl as="fieldset">
                 <FormLabel as="legend">What can we help you do?</FormLabel>
                 <RadioGroup onChange={setAction} value={action}>
                   <VStack align="left">
-                    <Radio value="modify">Make a complain</Radio>
-                    <Radio value="cancel">
-                      Request to cancel the ride
-                    </Radio>
+                    <Radio value="modify">Make a complaint</Radio>
+                    <Radio value="cancel">Request to cancel the ride</Radio>
                   </VStack>
                 </RadioGroup>
               </FormControl>
-              <HStack justify="center" width="100%" mt={4}>
-                <Button
-                  colorScheme="teal"
-                  onClick={handleContinue}
-                  isDisabled={!action}
-                >
-                  Continue
-                </Button>
-              </HStack>
+              <Button colorScheme="teal" onClick={handleContinue} isDisabled={!action}>
+                Continue
+              </Button>
             </VStack>
           )}
-
           {activeStep === 1 && (
             <Formik
               initialValues={{
@@ -174,67 +158,61 @@ const Complain = () => {
               onSubmit={handleSubmit}
             >
               {({ isSubmitting }) => (
-                <Form style={{ width: "100%" }}>
-                  <VStack spacing={4} align="center" mt={4} width="100%">
+                <Form>
+                  <VStack spacing={4} align="center" mt={4}>
                     <Heading size="md">Add Details & Submit</Heading>
-                    <Text>
-                      Here you can add more details about your complaint and
-                      submit it.
-                    </Text>
                     <Field name="firstName">
                       {({ field, form }) => (
-                        <FormControl
-                          isInvalid={form.errors.firstName && form.touched.firstName}
-                        >
+                        <FormControl isInvalid={form.errors.firstName && form.touched.firstName}>
                           <FormLabel htmlFor="firstName">First Name</FormLabel>
-                          <Input {...field} id="firstName" placeholder="" />
+                          <Input {...field} id="firstName" placeholder="Your first name" />
                           <FormErrorMessage>{form.errors.firstName}</FormErrorMessage>
                         </FormControl>
                       )}
                     </Field>
                     <Field name="lastName">
                       {({ field, form }) => (
-                        <FormControl
-                          isInvalid={form.errors.lastName && form.touched.lastName}
-                        >
+                        <FormControl isInvalid={form.errors.lastName && form.touched.lastName}>
                           <FormLabel htmlFor="lastName">Last Name</FormLabel>
-                          <Input {...field} id="lastName" placeholder="" />
+                          <Input {...field} id="lastName" placeholder="Your last name" />
                           <FormErrorMessage>{form.errors.lastName}</FormErrorMessage>
                         </FormControl>
                       )}
                     </Field>
                     <Field name="phone">
                       {({ field, form }) => (
-                        <FormControl
-                          isInvalid={form.errors.phone && form.touched.phone}
-                        >
+                        <FormControl isInvalid={form.errors.phone && form.touched.phone}>
                           <FormLabel htmlFor="phone">Phone Number</FormLabel>
-                          <Input {...field} id="phone" placeholder="" />
+                          <Input {...field} id="phone" placeholder="Your phone number"
+                            onChange={e => {
+                              form.setFieldValue("phone", e.target.value);
+                              setPhone(e.target.value);
+                            }}
+                            value={field.value}
+                          />
                           <FormErrorMessage>{form.errors.phone}</FormErrorMessage>
                         </FormControl>
                       )}
                     </Field>
-                    <Field name="additionalInfo">
+                    <Field name="details">
                       {({ field, form }) => (
-                        <FormControl
-                          isInvalid={form.errors.additionalInfo && form.touched.additionalInfo}
-                        >
-                          <FormLabel htmlFor="additionalInfo">Describe your problem in details</FormLabel>
-                          <Textarea {...field} id="additionalInfo" placeholder="" />
-                          <FormErrorMessage>{form.errors.additionalInfo}</FormErrorMessage>
+                        <FormControl isInvalid={form.errors.details && form.touched.details}>
+                          <FormLabel htmlFor="details">Details</FormLabel>
+                          <Textarea {...field} id="details" placeholder="Describe your issue"
+                            onChange={e => {
+                              form.setFieldValue("details", e.target.value); // Update Formik's state
+                              setDetails(e.target.value); // Update local state
+                            }}
+                            value={field.value}
+                          />
+                          <FormErrorMessage>{form.errors.details}</FormErrorMessage>
                         </FormControl>
                       )}
                     </Field>
-
-                    <Flex justify="flex-end" width="100%" mt={4}>
-                      <Button
-                        colorScheme="teal"
-                        isLoading={isSubmitting}
-                        type="submit"
-                      >
-                        Submit
-                      </Button>
-                    </Flex>
+                    <Button colorScheme="teal" isLoading={isSubmitting} type="submit" onClick={createDispute}>
+                      {loading ? "" : "Submit"}
+                      {loading && <Spinner size="sm" />}
+                    </Button>
                   </VStack>
                 </Form>
               )}
