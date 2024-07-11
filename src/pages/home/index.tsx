@@ -233,6 +233,7 @@ const Home = () => {
                   const points = decodePolyline(ride.route)
                   setPolylinePath(points);
                 }}
+                onBook={() => navigate(RouterPaths.ORDER)}
               />
             ))}
           </Stack>

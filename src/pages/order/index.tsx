@@ -13,7 +13,7 @@ import {
 } from "@chakra-ui/react";
 import { MdCheck, MdCheckCircle, MdDateRange, MdEmail, MdPhone } from "react-icons/md";
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import NavbarHome from "pages/components/NavbarHome";
 import Footer from "pages/components/footer";
 import StarRating from "./components/starRating";
@@ -21,8 +21,10 @@ import Modal from "./components/payment";
 import { Timeline } from "react-responsive-timeline";
 import "./components/order.css";
 import { RouterPaths } from "router/routerConfig";
+import reservationService from "api/services/reservationService";
+import { useShowSuccessToast } from "pages/components/toast";
 
-export default function SocialProfileWithImage() {
+export default function OrderPageRide() {
   const navigate = useNavigate();
   const rating = 4.5; // Set the rating value here
   const reviews = 50; // Set the number of reviews here
@@ -30,17 +32,36 @@ export default function SocialProfileWithImage() {
   const email = "sayuru@gmail.com"; // User email
   const phone = "0771234567"; // User phone number
 
+  const params = useParams();
+  const [rideId, setRideId] = useState(params.rideid);
+
   const [hasOpen, setHasOpen] = useState(false);
 
   const openModal = () => setHasOpen(true);
   const closeModal = () => setHasOpen(false);
 
+  const placeOrder = async () => {
+    try {
+      const reservation = {
+        driver_id: 1,
+        ride_id: 2,
+        status: "confirmed",
+        price: 150.00,
+        passenger_count: 2,
+      };
+      const response = await reservationService.createReservation(reservation);
+    } catch (error) {
+      console.error("Error placing order:", error);
+      throw error;
+    }
+  };
+
   return (
-    <Box>
+    <Box bgColor={"gray.50"}>
       <Box h={20}>
         <NavbarHome />
       </Box>
-      <Flex direction="row" justify="center" align="center" p={4}>
+      <Flex direction="row" justify="center" align="flex-start" p={4}>
         <Box
           maxW="700px"
           w="full"
@@ -50,9 +71,10 @@ export default function SocialProfileWithImage() {
           overflow="hidden"
           mx={4}
         >
-          <Flex justify="center" mt={6}>
+          <Flex justify="left" align="center" mt={6} p={6}>
             <Avatar
-              size="md"
+              ml="14"
+              size="lg"
               src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-1.2.1&q=80&fm=jpg&crop=faces&fit=crop&h=200&w=200&ixid=eyJhcHBfaWQiOjE3Nzg0fQ"
               css={{
                 border: "2px solid white",
@@ -70,13 +92,12 @@ export default function SocialProfileWithImage() {
               >
                 Sayuru Sandaru
               </Heading>
-              <Flex>
+              <Flex align="center">
                 <Box as={MdCheckCircle} mr={2} />
                 <Text color="gray.500">Verified driver</Text>
               </Flex>
             </Stack>
           </Flex>
-
           <Box p={6}>
             <Stack ml={16}>
               <div className="time">
@@ -119,8 +140,7 @@ export default function SocialProfileWithImage() {
             <hr className="hr" />
           </Box>
         </Box>
-
-        <VStack align="stretch" w="30%" p={4}>
+        <VStack align="stretch" w="30%" p={4} ml={12}>
           <Box
             bg="white"
             p={4}
@@ -137,7 +157,6 @@ export default function SocialProfileWithImage() {
               mb={4}
             />
           </Box>
-
           <Button
             onClick={openModal}
             w="full"
@@ -155,6 +174,7 @@ export default function SocialProfileWithImage() {
           </Button>
         </VStack>
       </Flex>
+      <Box h={20} />
       <Footer />
       <Modal hasOpen={hasOpen} onCloseModal={closeModal} />
     </Box>
