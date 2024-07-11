@@ -20,6 +20,7 @@ import {
 import React, { useState } from "react";
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
+import UserService from "api/services/userService";
 
 const steps = [
   { title: "Select Action" },
@@ -54,6 +55,7 @@ const Complain = () => {
   const [action, setAction] = useState("");
   const [activeStep, setActiveStep] = useState(0);
   const toast = useToast();
+  const [loading, setLoading] = useState(false);
 
   const handleContinue = () => {
     if (activeStep < steps.length - 1) {
@@ -79,6 +81,38 @@ const Complain = () => {
     lastName: Yup.string().required("Last name is required"),
     phone: Yup.string().matches(/^[0-9]+$/, "Phone number is not valid").required("Phone number is required"),
   });
+
+  const createDispute = async (disputeData) => {
+    try {
+
+      setLoading(true);
+
+
+
+      const response = await UserService.createDispute({
+        user_Id: disputeData.user_Id,
+        category: disputeData.category,
+        status: disputeData.status,
+        message: disputeData.message,
+      });
+
+
+      console.log('Dispute created successfully:', response);
+
+
+
+      setLoading(false);
+    } catch (error) {
+
+      setLoading(false);
+
+
+
+      console.error("Error creating dispute: ", error);
+    }
+  };
+
+
 
   return (
     <>
