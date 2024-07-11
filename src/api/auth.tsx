@@ -1,5 +1,6 @@
 import User from 'model/user';
 import { Convert } from 'model/userModal';
+import { setCookie } from 'undici-types';
 import { tokenState, userState } from '../state';
 import CookieManager from './cookieManager';
 import authService from './services/authService';
@@ -17,6 +18,7 @@ export const login = async (credentials: { email: string; password: string }) =>
         }
         const user = Convert.toUserModal(JSON.stringify(res));
         User.setUserDetail(user);
+        CookieManager.setCookie("token", response.token, 5);
         return { user, token: response.token };
     } catch (error) {
         console.error('Failed to login:', error);
