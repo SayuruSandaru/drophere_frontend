@@ -1,0 +1,544 @@
+{
+	"info": {
+		"_postman_id": "c5ab8728-a2bf-4785-a4df-89a26b413f59",
+		"name": "Drophere API list",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "3138767"
+	},
+	"item": [
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "register user",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"sadew@example.com\",\r\n    \"password\": \"pass\",\r\n    \"firstname\": \"John\",\r\n    \"lastname\": \"Doe\",\r\n    \"username\": \"sadew123\",\r\n    \"phone\": \"1234567890\",\r\n    \"profile_image\":\"https://drophere-bucket.s3.amazonaws.com/WhatsApp%20Image%202024-04-24%20at%2022.22.41_a502e882.jpg\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/register",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "login",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\":\"test@gmail.com\",\r\n    \"password\":\"password\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/login",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"login"
+							],
+							"query": [
+								{
+									"key": "email",
+									"value": "test@gmail.com",
+									"disabled": true
+								},
+								{
+									"key": "password",
+									"value": null,
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "vehicle owner - driver",
+			"item": [
+				{
+					"name": "driver by id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyaWQiOjEsImVtYWlsIjoidGVzdEBnbWFpbC5jb20iLCJmaXJzdG5hbWUiOiJKb2huIiwibGFzdG5hbWUiOiJEb2UiLCJ1c2VybmFtZSI6ImpvaG5kb2UiLCJwaG9uZSI6IjEyMzQ1Njc4OTAiLCJpYXQiOjE3MTg0MjcxNTgsImV4cCI6MTcxODUxMzU1OH0.N4j75umXytF3LoPli42CX07zlE0CWCjBEKshR5drty0",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/driver/1",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"driver",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get drivers",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyaWQiOjEsImVtYWlsIjoidGVzdEBnbWFpbC5jb20iLCJmaXJzdG5hbWUiOiJKb2huIiwibGFzdG5hbWUiOiJEb2UiLCJ1c2VybmFtZSI6ImpvaG5kb2UiLCJwaG9uZSI6IjEyMzQ1Njc4OTAiLCJpYXQiOjE3MTg0MjcxNTgsImV4cCI6MTcxODUxMzU1OH0.N4j75umXytF3LoPli42CX07zlE0CWCjBEKshR5drty0",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/drivers",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"drivers"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "driver register",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"street\": \"sdf\",\r\n    \"city\": \"sdf\",\r\n    \"province\": \"sdf\",\r\n    \"proof_document\": \"https://drophere-bucket.s3.amazonaws.com/simplex%20method%20%281%29.jpg\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/driver/register",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"driver",
+								"register"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "vehicle",
+			"item": [
+				{
+					"name": "add vehicle",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"type\": \"Car\",\r\n    \"capacity\": 5,\r\n    \"available\": true,\r\n    \"license_plate\": \"ABC123\",\r\n    \"model\": \"Toyota Prius\",\r\n    \"year\": 2021,\r\n    \"image_url\":\"sdfghjklkjhgfdfghj\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/vehicle/add",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"vehicle",
+								"add"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "vehicles",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/vehicles",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"vehicles"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "vehicle by id",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyaWQiOjEsImVtYWlsIjoidGVzdEBnbWFpbC5jb20iLCJmaXJzdG5hbWUiOiJKb2huIiwibGFzdG5hbWUiOiJEb2UiLCJ1c2VybmFtZSI6ImpvaG5kb2UiLCJwaG9uZSI6IjEyMzQ1Njc4OTAiLCJpYXQiOjE3MTg0MjcxNTgsImV4cCI6MTcxODUxMzU1OH0.N4j75umXytF3LoPli42CX07zlE0CWCjBEKshR5drty0",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/vehicles/owner/1",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"vehicles",
+								"owner",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "vehicle by owner id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyaWQiOjEsImVtYWlsIjoidGVzdEBnbWFpbC5jb20iLCJmaXJzdG5hbWUiOiJKb2huIiwibGFzdG5hbWUiOiJEb2UiLCJ1c2VybmFtZSI6ImpvaG5kb2UiLCJwaG9uZSI6IjEyMzQ1Njc4OTAiLCJpYXQiOjE3MTg3ODQ1NDcsImV4cCI6MTcxODg3MDk0N30.Tg2Yi9jhCQJaYDoGxXkcjr23jw5eAyEILK81704gJRA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"pickup_lat\": 7.26696,//Start location cordinates\r\n    \"pickup_lng\":  80.66929,\r\n    \"destination_lat\": 7.290572,//end location cordinates\r\n    \"destination_lng\": 80.633728\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/rides/search",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"rides",
+								"search"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "ride",
+			"item": [
+				{
+					"name": "create ride",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyaWQiOjEsImVtYWlsIjoidGVzdEBnbWFpbC5jb20iLCJmaXJzdG5hbWUiOiJKb2huIiwibGFzdG5hbWUiOiJEb2UiLCJ1c2VybmFtZSI6ImpvaG5kb2UiLCJwaG9uZSI6IjEyMzQ1Njc4OTAiLCJpYXQiOjE3MTg3MDE2MTksImV4cCI6MTcxODc4ODAxOX0.K4udjkMm-1blmTRych34sQUlIHUjer8C6eoTSWh_css",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"driver_id\": 1,\r\n    \"status\": \"active\",\r\n    \"start_time\": \"2024-06-18 10:00:00\",\r\n    \"current_location\": \"Kurunegala\",\r\n    \"route\": \"s{ti@{`vmNT~BjNAbCaHLqE_H|E_NuKig@jFeNwCwWtDud@rDmo@jGbFvBoHAmDoF_PeKwFaBhHzHyN}JeG`CiCpEgGhAaCoGTgIgHqC{@jDcLzA}L_F_SaDgMeEkImJa^lKaNy@gGlHqQbBeC|DuDwHqMIeNlEoRkAqHzEbCxGjAnDqBxDwAhI_[fE{QvA}MpIsUlAoQnHu]RqAfFcS_FaDsJmGoLqNqKsL~AiIrA`AnEyLvLSzJqMgAsZfG{MtC_M_@kFxJ{IaAkKxGwOtA}c@yVmUs@{OdCmLaDgNyFiHyFgPiN{KcJyCeHeFdEeF{DePsJx@mBaGeBePtGsZtQiIpJgYqAuKiAcU`Kkk@`IgSrC{O|Ms\\\\ln@aMdX{EfU}Tt`@kArV_PpRaXdAcv@j\\\\uBvMnI`LlO~JkCbW`DbVwBrSoRjRvBtZjK`_@pe@`_@dPfTnUvX_FjTfMj[qLpf@dEbKfRxFrNzJ}@`K_JjSfClR}JjHrB~HwR~JkH|OaK~OtAtYsFna@lb@fNvc@nQ|TzJxPbG_@hHwCrEvDfEdPxCbB}CvDlCxC~R`Qx]pMhIdChFhLwClMyMtMm@~O{@lQeKnQEnGX{@dKd@jOlF|UtC~QsFvK|FxYvLXtFhJObE{IVkR_@}PjAgHf@kBgG_WfAgHnJzHbPeEl^nQdKwH{@bQhPnGhRa@~HvQfLnWhTlD~MfQtEzMtEaBvBaFj@dBjJh@jFmFfDeFvKyMQkQbVmLpDgTdBeV~LkUgG{GxHvHhPiNhN}@`FqHg@mDxEsLm@cKcMaPbGaQdBmA`MkHtI{R~XeFbLaLvHaFvClFpHsBhK{D|UiLvI{UjSaExDxB`BtGbHWpIeJbI_c@zViR~ImOt@_]`HuFgHeMbCo]^gJ`@kGrTbN`\\\\lOr@~HrQ`RlPbH`MYhOuD`DyGbHyKpHqHdBmKvFoJPoQhR`Z{Bfe@~AnEnHUhAbElGkG|H{MuCsC|FuIgJgN~Oi@`EhFoBzH|LgClN`IlGrSrHhObB`Ah@k`AlZaZ`F{RpIyXzLsIxFjG|BdNdAwNnRcLFiB~\\\\iLtTdE~GxOnC_EpNiMdN_JbFdBnDtC~NyDeHeIeCa@aHfJcKhAuK{IyCwHvJuNzMlDgSeC_W_FhCkHiCkTpBsSlVqKvAwE`NgDt`@}Id]aDpgAsSbq@iLbNqKrb@yFxh@`J|Cz@pHbJrRbAh\\\\_Ol`@iVb\\\\cHnMkRpHaUnI{KlMiRrS_GlMp@dCkCaA}BvGsFvIs@tPoDpJ~E|IyHtDbGfE\",\r\n    \"start_location\": \"Badulla\",\r\n    \"end_location\": \"Kandy\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8000/ride/create",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"ride",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get rides",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyaWQiOjEsImVtYWlsIjoidGVzdEBnbWFpbC5jb20iLCJmaXJzdG5hbWUiOiJKb2huIiwibGFzdG5hbWUiOiJEb2UiLCJ1c2VybmFtZSI6ImpvaG5kb2UiLCJwaG9uZSI6IjEyMzQ1Njc4OTAiLCJpYXQiOjE3MTg3MDE2MTksImV4cCI6MTcxODc4ODAxOX0.K4udjkMm-1blmTRych34sQUlIHUjer8C6eoTSWh_css",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8000/rides",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"rides"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get ride by id",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyaWQiOjEsImVtYWlsIjoidGVzdEBnbWFpbC5jb20iLCJmaXJzdG5hbWUiOiJKb2huIiwibGFzdG5hbWUiOiJEb2UiLCJ1c2VybmFtZSI6ImpvaG5kb2UiLCJwaG9uZSI6IjEyMzQ1Njc4OTAiLCJpYXQiOjE3MTg3MDE2MTksImV4cCI6MTcxODc4ODAxOX0.K4udjkMm-1blmTRych34sQUlIHUjer8C6eoTSWh_css",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/ride/1",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"ride",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "search ride",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyaWQiOjEsImVtYWlsIjoidGVzdEBnbWFpbC5jb20iLCJmaXJzdG5hbWUiOiJKb2huIiwibGFzdG5hbWUiOiJEb2UiLCJ1c2VybmFtZSI6ImpvaG5kb2UiLCJwaG9uZSI6IjEyMzQ1Njc4OTAiLCJpYXQiOjE3MTg3ODQ1NDcsImV4cCI6MTcxODg3MDk0N30.Tg2Yi9jhCQJaYDoGxXkcjr23jw5eAyEILK81704gJRA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"pickup_lat\": 7.26696,//Start location cordinates\r\n    \"pickup_lng\":  80.66929,\r\n    \"destination_lat\": 7.290572,//end location cordinates\r\n    \"destination_lng\": 80.633728\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8000/rides/search",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"rides",
+								"search"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "file upload",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": "/C:/Users/User/Downloads/WhatsApp Image 2024-04-24 at 22.22.41_a502e882.jpg"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{url}}/common/upload",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"common",
+						"upload"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyaWQiOjEsImVtYWlsIjoidGVzdEBnbWFpbC5jb20iLCJmaXJzdG5hbWUiOiJKb2huIiwibGFzdG5hbWUiOiJEb2UiLCJ1c2VybmFtZSI6ImpvaG5kb2UiLCJwaG9uZSI6IjEyMzQ1Njc4OTAiLCJpYXQiOjE3MTkzNzg0NjIsImV4cCI6MTcyMTk3MDQ2Mn0.p5AQlYxMfq15W0wFIJH9V1qI2ANXf1eqwu_KmYjsRV8",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "id",
+			"value": "1"
+		},
+		{
+			"key": "base_url",
+			"value": "https://postman-rest-api-learner.glitch.me/"
+		},
+		{
+			"key": "url",
+			"value": "https://drophere-staging-665f7065c9e0.herokuapp.com"
+		}
+	]
+}
