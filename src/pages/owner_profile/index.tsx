@@ -20,12 +20,15 @@ import Footer from "pages/components/footer";
 import Rating from "react-rating";
 import ReviewItem from "./review_card";
 import { getReviews, createReview } from "api/review"; // Ensure to import these functions
+import { getUserDetails } from "api/user"; // Ensure to import this function
 
 const Profile = () => {
   const [ratingData, setRatingData] = useState({ rating: 0, reviews: 0 });
   const [reviews, setReviews] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [newReview, setNewReview] = useState({ rating: 0, comment: "" });
+
+  const [userDetails, setUserDetails] = useState(null);////samm
 
   const [isLargeScreen] = useMediaQuery("(min-width: 992px)");
 
@@ -52,9 +55,24 @@ const Profile = () => {
     };
 
     fetchReviews();
+    
+  }, []);
+  
+////sam
+  useEffect(() => {
+    const fetchUserDetails = async () => {
+      try {
+        const fetchedUserDetails = await getUserDetails();
+        setUserDetails(fetchedUserDetails);
+      } catch (error) {
+        console.error("Failed to fetch user details", error);
+      }
+    };
+
+    fetchUserDetails();
   }, []);
 
-
+//sam
 
 
   const handleAddReview = async () => {
@@ -126,14 +144,14 @@ const Profile = () => {
                 <Flex>
                   <Avatar
                     size="lg"
-                    name="John"
-                    src="https://bit.ly/prosper-baba"
+                    name={userDetails?.name || "John"}
+                    src={userDetails?.avatar || "https://bit.ly/prosper-baba"}
                   />
                   <VStack align="start" pl="2">
                     <Text as="b" fontSize="xl">
-                      John
+                      {userDetails?.name || "John"}
                     </Text>
-                    <Text>Working Year: 2</Text>
+                    <Text>Working Year: {userDetails?.workingYears || 2}</Text>
                   </VStack>
                 </Flex>
                 <Text pt="6" fontSize="sm" color={"gray"}>
@@ -163,9 +181,9 @@ const Profile = () => {
               </Box>
               <Divider />
               <Box>
-                <Heading size="xs">About John</Heading>
+                <Heading size="xs">About {userDetails?.name || "John"}</Heading>
                 <Text pt="2" fontSize="sm">
-                  I am a professional driver with 2 years of experience. I have a 5-star rating and I am a verified driver.
+                  {userDetails?.about || "I am a professional driver with 2 years of experience. I have a 5-star rating and I am a verified driver."}
                 </Text>
               </Box>
               <Divider />
@@ -174,13 +192,13 @@ const Profile = () => {
                 <Flex align="center" pt="2">
                   <MdEmail />
                   <Text fontSize="sm" ml="2">
-                    john@gmail.com
+                    {userDetails?.email || "john@gmail.com"}
                   </Text>
                 </Flex>
                 <Flex align="center" pt="2">
                   <MdPhone />
                   <Text fontSize="sm" ml="2">
-                    0771234567
+                    {userDetails?.phone || "0771234567"}
                   </Text>
                 </Flex>
               </Box>
@@ -219,6 +237,7 @@ const Profile = () => {
       <Footer />
     </Box>
   );
+
 };
 
 export default Profile;
