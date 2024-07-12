@@ -246,7 +246,7 @@ const Home = () => {
                   const rideId = ride.ride_id;
                   setdata(rideId, ride.fee);
                   navigate(`/order/${rideId}`);
-                  // navigate(`${RouterPaths}`);
+                  
                 }}
               />
             ))}

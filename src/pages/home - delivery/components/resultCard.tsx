@@ -29,19 +29,19 @@ interface CarInfoProps {
   onClick: () => void
   onBook: () => void
   name: string;
-  ride: any; 
+  
 }
 
-const CarInfo: React.FC<CarInfoProps> = ({ imageUrl, altText, carName, date, from, to, availability, seatsLeft, price, name, onClick }) => {
-  const navigate = useNavigate();
 
 const CarInfo: React.FC<CarInfoProps> = ({ imageUrl, altText, carName, date, from, to, availability, seatsLeft, price, name, onClick, onBook }) => {
+  const navigate = useNavigate();
+
   return (
     <Box
       borderRadius="md"
       borderWidth="1px"
       p={1}
-      onClick={handleCardClick}
+      onClick={onClick}
       _hover={{ bg: "gray.50", cursor: "pointer", borderRadius: "md" }}
     >
       <Flex direction={{ base: "column", md: "row" }}>

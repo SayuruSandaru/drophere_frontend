@@ -19,6 +19,8 @@ import { searchRides } from "api/ride";
 import { decodePolyline } from "util/map";
 import MapContainer from "pages/home/components/googleMap";
 import { selectedRideState } from 'state';
+import { encryptData, getLocalStorage, setLocalStorage } from "util/secure";
+
 
 const HomeDelivery = () => {
   const setSelectedRide = useSetRecoilState(selectedRideState);
@@ -123,6 +125,15 @@ const HomeDelivery = () => {
     setSelectedRide(ride);
     navigate(RouterPaths.ORDERDELIVERY);
   }
+
+  const setdata = (id, price) => {
+    console.log(id, price);
+    setLocalStorage(id, price);
+
+    console.log("success");
+    getLocalStorage(id);
+  }
+
   
 
   return (
@@ -218,7 +229,13 @@ const HomeDelivery = () => {
                   setPolylinePath(points);
                   // handleCardClick(ride);
                 }}
-                onBook={() => { }}
+                onBook={() => { 
+                  const rideId = ride.ride_id;
+                  setdata(rideId, ride.fee);
+                  navigate(`/order/${rideId}`);
+
+
+                }}
               />
             ))}
           </Stack>
