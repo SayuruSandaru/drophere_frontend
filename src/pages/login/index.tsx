@@ -11,6 +11,7 @@ import { driverByUser } from "api/driver";
 import { useSetRecoilState } from "recoil";
 import { tokenState, userState } from '../../state';
 import User from "model/user";
+import CookieManager from "api/cookieManager";
 
 const Login: React.FC = () => {
   const [email, setEmail] = React.useState('');
@@ -26,11 +27,13 @@ const Login: React.FC = () => {
       setLoading(true);
       setErrorMessage('');
       const credentials = { email, password };
+      console.log("login process start");
       const { user, token } = await login(credentials);
+      console.log("login process end");
+      console.log(`token: ${token}`);
       setToken(token);
       setUser(user);
       const userId = User.getUserId();
-      console.log(userId);
       setLoading(false);
       navigate(RouterPaths.SEARCHRIDE);
     } catch (error) {

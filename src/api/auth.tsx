@@ -1,5 +1,6 @@
 import User from 'model/user';
 import { Convert } from 'model/userModal';
+import { setCookie } from 'undici-types';
 import { tokenState, userState } from '../state';
 import CookieManager from './cookieManager';
 import authService from './services/authService';
@@ -11,6 +12,7 @@ export const login = async (credentials: { email: string; password: string }) =>
         if (!response.token) {
             throw new Error('No token returned');
         }
+        CookieManager.setCookie("token", response.token, 5);
         const res = await authService.getUser();
         if (res.status !== "success") {
             throw new Error('Failed to fetch user details');

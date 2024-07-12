@@ -7,146 +7,216 @@ import {
   Text,
   Stack,
   Button,
-  useColorModeValue,
+  VStack,
+  Image,
+  Spinner,
 } from "@chakra-ui/react";
-import { colors } from "theme/colors";
-import StarRating from "./components/starRating";
-import { Timeline } from "react-responsive-timeline";
-import Modal from "./components/payment";
-import React, { useState } from "react";
-import "./components/order.css";
-import { MdEmail, MdPhone } from "react-icons/md";
-import { RouterPaths } from "router/routerConfig";
-import { useNavigate } from "react-router-dom";
+import { MdCheckCircle, MdDateRange, MdEmail, MdPhone } from "react-icons/md";
+import React, { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import NavbarHome from "pages/components/NavbarHome";
 import Footer from "pages/components/footer";
+import StarRating from "./components/starRating";
+import Modal from "./components/payment";
+import { Timeline } from "react-responsive-timeline";
+import "./components/order.css";
+import { RouterPaths } from "router/routerConfig";
+import reservationService from "api/services/reservationService";
+import rideService from "api/services/rideService";
+import { decryptData, getLocalStorage } from "util/secure";
+import { useShowSuccessToast } from "pages/components/toast";
 
-export default function SocialProfileWithImage() {
+export default function OrderPageRide() {
   const navigate = useNavigate();
-  const rating = 4.5; // Set the rating value here
-  const reviews = 50; // Set the number of reviews here
+  const rating = 4.5;
+  const reviews = 50;
   const joinDate = "Joined 2024";
-  const email = "sayuru@gmail.com"; // User email
-  const phone = "0771234567"; // User phone number
-
+  const email = "test@gmail.com";
+  const phone = "0771234567";
+  const [price, setPrice] = useState(0);
+  const showSuccessToast = useShowSuccessToast();
+  const { id, passenger_count } = useParams();
+  const [rideDetails, setRideDetails] = useState(null);
   const [hasOpen, setHasOpen] = useState(false);
+
+  useEffect(() => {
+    const fetchRideDetails = async () => {
+      try {
+        const response = await rideService.getRideById(parseInt(id));
+        if (response.status === "success") {
+          setRideDetails(response.ride);
+          const price = getLocalStorage(id)
+          console.log(price)
+          setPrice(price)
+          console.log(response);
+        } else {
+          console.log("Error getting ride details:", response);
+        }
+      } catch (error) {
+        console.error("Error getting ride details:", error);
+      }
+    };
+
+    fetchRideDetails();
+  }, [id]);
 
   const openModal = () => setHasOpen(true);
   const closeModal = () => setHasOpen(false);
 
+  const placeOrder = async () => {
+    try {
+      const reservation = {
+        driver_id: rideDetails.driver_id,
+        ride_id: id,
+        status: "confirmed",
+        price: price,
+        passenger_count: 1,
+      };
+      const response = await reservationService.createReservation(reservation);
+      if (response.status === "success") {
+        console.log("Order placed successfully:", response);
+        showSuccessToast("Payment details added successfully");
+      } else {
+        console.log("Error placing order:", response);
+      }
+    } catch (error) {
+      console.error("Error placing order:", error);
+      throw error;
+    }
+  };
+
+
+
   return (
-    <Box>
+    <Box bgColor={"gray.50"}>
       <Box h={20}>
         <NavbarHome />
       </Box>
-      <Center py={6} bg="gray.50">
-        <Box
-          maxW={"700px"}
-          w={"full"}
-          bg={useColorModeValue("white", "gray.800")}
-          boxShadow={"xl"}
-          rounded={"md"}
-          overflow={"hidden"}
-        >
-          <Stack spacing={0} align={"center"} mt={5} ml={5} mb={5}>
-            <Heading
-              fontSize={"4xl"}
-              fontWeight={600}
-              fontFamily={"body"}
-              color={colors.primary[500]}
-            >
-              MON 5 JUNE
-            </Heading>
-          </Stack>
-
-          <Flex justify={"left"} ml={20} mt={12} >
-            <Avatar
-              size={"xl"}
-              src={
-                "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-1.2.1&q=80&fm=jpg&crop=faces&fit=crop&h=200&w=200&ixid=eyJhcHBfaWQiOjE3Nzg0fQ"
-              }
-              css={{
-                border: "2px solid white",
-              }}
-              cursor={"pointer"}
-              onClick={() => navigate(RouterPaths.PROFILE)}
-            />
-
-            <Stack spacing={0} align={"left"} mt={2} ml={5} mb={5}>
-              <Heading fontSize={"2xl"} fontWeight={500} fontFamily={"body"} onClick={() => navigate(RouterPaths.PROFILE)} cursor={"pointer"}>
-                Sayuru Sandaru
-              </Heading>
-              <Text color={"gray.500"}>
-                <StarRating rating={rating} reviews={reviews} />
-              </Text>
-              <Text color={"gray.500"}>{joinDate}</Text>{" "}
-              {/* Add the join date here */}
-            </Stack>
-          </Flex>
-
-          <Box p={6}>
-            <Stack ml={16}>
-              <div className="time">
-                <Timeline
-                  timelines={[
-                    {
-                      title: "Colombo, Sri Lanka",
-                      sub: "2.30 PM",
-                    },
-                    {
-                      title: "Kandy, Sri Lanka",
-                      sub: "4.30 PM",
-                    },
-                  ]}
-                />
-              </div>
-            </Stack>
-            <hr className="hr"></hr>
-
-            <Flex justify={"Center"}>
-              <Stack spacing={0} align={"left"} mt={10} ml={0} mb={5}>
-                <Heading fontSize={"2xl"} fontWeight={500} fontFamily={"body"}>
-                  Price Rs.500
+      {!rideDetails && (
+        <Box h={"80vh"}>
+          <Center>
+            <Spinner mt={20} size="xl" />
+          </Center>
+        </Box>
+      )}
+      {rideDetails && (
+        <Flex direction="row" justify="center" align="flex-start" p={4}>
+          <Box
+            maxW="700px"
+            w="full"
+            bg={"white"}
+            boxShadow="lg"
+            rounded="md"
+            overflow="hidden"
+            mx={4}
+          >
+            <Flex justify="left" align="center" mt={6} p={6}>
+              <Avatar
+                ml="14"
+                size="lg"
+                src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-1.2.1&q=80&fm=jpg&crop=faces&fit=crop&h=200&w=200&ixid=eyJhcHBfaWQiOjE3Nzg0fQ"
+                css={{
+                  border: "2px solid white",
+                }}
+                cursor="pointer"
+                onClick={() => navigate(RouterPaths.PROFILE)}
+              />
+              <Stack spacing={0} align="left" ml={5}>
+                <Heading
+                  fontSize="md"
+                  fontWeight={500}
+                  fontFamily="body"
+                  cursor="pointer"
+                  onClick={() => navigate(RouterPaths.PROFILE)}
+                >
+                  Sayuru Sandaru
                 </Heading>
+                <Flex align="center">
+                  <Box as={MdCheckCircle} mr={2} />
+                  <Text color="gray.500">Verified driver</Text>
+                </Flex>
               </Stack>
             </Flex>
-            <hr className="hr"></hr>
+            <Box p={6}>
+              <Stack ml={16}>
+                <div className="time">
+                  <Timeline
+                    timelines={[
+                      {
+                        title: rideDetails.start_location,
+                      },
+                      {
+                        title: rideDetails.end_location,
+                      },
+                    ]}
+                  />
+                </div>
+              </Stack>
+              <Box mt={10} />
+              <Stack spacing={3} align="left" ml={20} mt={5}>
+                <Flex align="center">
+                  <MdDateRange style={{ marginRight: "8px" }} />
+                  <Text color="gray.500">{rideDetails.start_time}</Text>
+                </Flex>
+                <Flex align="center">
+                  <MdEmail style={{ marginRight: "8px" }} />
+                  <Text color="gray.500">{email}</Text>
+                </Flex>
+                <Flex align="center">
+                  <MdPhone style={{ marginRight: "8px" }} />
+                  <Text color="gray.500">{phone}</Text>
+                </Flex>
+              </Stack>
 
-            <Stack spacing={3} align={'left'} ml={20} mt={5}> {/* Adding spacing and margin top */}
-              <Flex align={'center'}>
-                <MdEmail style={{ marginRight: '8px' }} />
-                <Text color={'gray.500'}>{email}</Text>
+              <hr className="hr" />
+              <Flex justify="center">
+                <Stack spacing={0} align="center" mt={10}>
+                  <Heading fontSize="2xl" fontWeight={500} fontFamily="body">
+                    {price} LKR
+                  </Heading>
+                </Stack>
               </Flex>
-              <Flex align={'center'}>
-                <MdPhone style={{ marginRight: '8px' }} />
-                <Text color={'gray.500'}>{phone}</Text>
-              </Flex>
-            </Stack>
-
-            <Stack align={"center"}>
-              <Button
-                onClick={openModal}
-                w={"full"}
-                maxW={"600px"}
-                mt={8}
-                height={"50px"}
-                fontSize={"25px"}
-                bg={useColorModeValue("#151f21", "gray.900")}
-                color={"white"}
-                rounded={"md"}
-                _hover={{
-                  transform: "translateY(-2px)",
-                  boxShadow: "lg",
-                }}
-              >
-                Book
-              </Button>
-            </Stack>
+              <hr className="hr" />
+            </Box>
           </Box>
-        </Box>
-        <Modal hasOpen={hasOpen} onCloseModal={closeModal} />
-      </Center>
+          <VStack align="stretch" w="30%" p={4} ml={12}>
+            <Box
+              bg="white"
+              p={4}
+              borderRadius="md"
+              boxShadow="md"
+              w="full"
+              textAlign="center"
+            >
+              <Image
+                src={rideDetails.vehicle_details.image_url}
+                alt="Passenger Image"
+                objectFit="cover"
+                borderRadius="md"
+                mb={4}
+              />
+            </Box>
+            <Button
+              onClick={openModal}
+              w="full"
+              height="50px"
+              fontSize="25px"
+              bg={"gray.900"}
+              color="white"
+              rounded="md"
+              _hover={{
+                transform: "translateY(-2px)",
+                boxShadow: "lg",
+              }}
+            >
+              Book
+            </Button>
+          </VStack>
+        </Flex>
+      )}
+      <Box h={20} />
       <Footer />
+      <Modal hasOpen={hasOpen} onCloseModal={closeModal} onAddPaymentMethod={placeOrder} />
     </Box>
   );
 }

@@ -26,36 +26,16 @@ interface CarInfoProps {
   availability: string;
   seatsLeft: string;
   price: string;
-  onClick: () => void;
+  onClick: () => void
+  onBook: () => void
   name: string;
   ride: any; 
 }
 
-const CarInfo: React.FC<CarInfoProps> = ({
-  imageUrl,
-  altText,
-  carName,
-  date,
-  from,
-  to,
-  availability,
-  seatsLeft,
-  price,
-  name,
-  onClick,
-  ride, 
-}) => {
+const CarInfo: React.FC<CarInfoProps> = ({ imageUrl, altText, carName, date, from, to, availability, seatsLeft, price, name, onClick }) => {
   const navigate = useNavigate();
 
-  const handleCardClick = () => {
-    onClick(); 
-    
-  };
-
-  const handleBookClick = (e: React.MouseEvent) => {
-    e.stopPropagation(); // Prevent the card click event from firing
-    navigate(RouterPaths.ORDERDELIVERY, { state: { selectedRide: ride } });
-  };
+const CarInfo: React.FC<CarInfoProps> = ({ imageUrl, altText, carName, date, from, to, availability, seatsLeft, price, name, onClick, onBook }) => {
   return (
     <Box
       borderRadius="md"
@@ -123,21 +103,8 @@ const CarInfo: React.FC<CarInfoProps> = ({
           </Stack>
         </Box>
         <Spacer />
-
-        <Flex direction={"column"}>
-          <Text fontSize="xl" fontWeight="bold" m={{ base: 4, md: 5 }}>
-            {price}
-          </Text>
-          <Spacer />
-          <Button
-            bg="black"
-            color={"white"}
-            m={4}
-            onClick={handleBookClick}
-          >
-            Book
-          </Button>
-        </Flex>
+        <Text fontSize="xl" fontWeight="bold" m={{ base: 4, md: 5 }}>{price}</Text>
+        <Button bg="black" color={"white"} m={4} onClick={onBook} >Book</Button>
       </Flex>
     </Box>
   );

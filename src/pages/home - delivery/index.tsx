@@ -218,7 +218,7 @@ const HomeDelivery = () => {
                   setPolylinePath(points);
                   // handleCardClick(ride);
                 }}
-                ride={ride}
+                onBook={() => { }}
               />
             ))}
           </Stack>
