@@ -4,9 +4,7 @@ import {
 } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
 import { RouterPaths } from 'router/routerConfig';
-import { useRecoilValue } from 'recoil';
 import { FaFilter, FaBox, FaBars } from "react-icons/fa";
-import { isDriverState } from 'state';
 import { driverByUser } from 'api/driver';
 
 
