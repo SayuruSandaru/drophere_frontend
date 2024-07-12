@@ -17,6 +17,7 @@ import HomeDelivery from 'pages/home - delivery';
 import LandingPage from 'pages/landing';
 import ContactUs from 'pages/contact';
 import OrderPageRide from 'pages/order/index';
+import DriverDashboard from 'pages/driver-dashboard';
 
 export enum RouterPaths {
     LANDING = "/",
@@ -33,6 +34,7 @@ export enum RouterPaths {
     CONTACT = "/contact",
     DRIVERREGISTER = "/drive/register",
     ORDERDELIVERY = "/delivery/order",
+    DRIVERDASHBOARD = "/driver/dashboard"
 }
 
 const RouterConfig: React.FC = () => {
@@ -55,6 +57,7 @@ const RouterConfig: React.FC = () => {
             <Route path={RouterPaths.LANDING} element={<LandingPage />} />
             <Route path={RouterPaths.CONTACT} element={<ContactUs />} />
             <Route path={RouterPaths.COMPLAIN} element={<Complain />} />
+            <Route path={RouterPaths.DRIVERDASHBOARD} element={<DriverDashboard />} />
         </Routes>
     );
 }
