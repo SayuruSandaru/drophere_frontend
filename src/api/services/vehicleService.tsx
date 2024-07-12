@@ -1,3 +1,4 @@
+import User from "model/user";
 import ApiService from "./apiService";
 
 class VehicleService extends ApiService {
@@ -35,6 +36,16 @@ class VehicleService extends ApiService {
     public async getVehicleById(id: string): Promise<any> {
         try {
             const response = await this.get(`/vehicle/${id}`);
+            return response;
+        } catch (error) {
+            console.error("Error getting vehicle: ", error);
+            throw error;
+        }
+    }
+
+    public async getVehicleByOwenerId(id: string): Promise<any> {
+        try {
+            const response = await this.get(`/vehicles/owner/${id}`);
             return response;
         } catch (error) {
             console.error("Error getting vehicle: ", error);

@@ -8,19 +8,32 @@ import Footer from "pages/components/footer";
 import { colors } from "theme/colors";
 import { login } from "api/auth";
 import { driverByUser } from "api/driver";
+import { useSetRecoilState } from "recoil";
+import { tokenState, userState } from '../../state';
+import User from "model/user";
+import CookieManager from "api/cookieManager";
 
 const Login: React.FC = () => {
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
   const [errorMessage, setErrorMessage] = React.useState('');
   const [loading, setLoading] = React.useState(false);
+  const setToken = useSetRecoilState(tokenState);
+  const setUser = useSetRecoilState(userState);
   const navigate = useNavigate();
 
   const handleLogin = async () => {
     try {
       setLoading(true);
       setErrorMessage('');
-      await login({ email, password });
+      const credentials = { email, password };
+      console.log("login process start");
+      const { user, token } = await login(credentials);
+      console.log("login process end");
+      console.log(`token: ${token}`);
+      setToken(token);
+      setUser(user);
+      const userId = User.getUserId();
       setLoading(false);
       navigate(RouterPaths.SEARCHRIDE);
     } catch (error) {

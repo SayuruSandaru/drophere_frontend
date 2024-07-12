@@ -13,7 +13,7 @@ const MapContainer = ({ polylinePath }) => {
 
     const mapStyles = {
         height: "80vh",
-        width: "100%"
+        width: "100%",
     };
 
     const defaultCenter = {
@@ -27,6 +27,11 @@ const MapContainer = ({ polylinePath }) => {
             center={defaultCenter}
             onLoad={map => {
                 mapRef.current = map;
+            }}
+            options={{
+                zoomControl: true,
+                fullscreenControl: true,
+                mapTypeControl: false,
             }}
         >
 
