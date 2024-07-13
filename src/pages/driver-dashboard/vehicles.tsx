@@ -4,13 +4,13 @@ import { Box, Text } from '@chakra-ui/react';
 import RideReqTable from './components/ride-requests';
 import RideListTable from './components/ride-list';
 
-const Rides = () => {
+const Vehicles = () => {
     return (
         <Box minH="100vh" p="4">
-            <Text>Rides Content</Text>
+            <Text>Vehicles</Text>
             <RideListTable />
         </Box>
     );
 };
 
-export default Rides;
+export default Vehicles;

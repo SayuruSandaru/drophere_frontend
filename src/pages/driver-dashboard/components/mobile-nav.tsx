@@ -1,5 +1,5 @@
-import { Avatar, Box, Flex, useColorModeValue, HStack, IconButton, Menu, MenuButton, MenuDivider, MenuItem, MenuList, Text, VStack, FlexProps } from "@chakra-ui/react"
-import { FiBell, FiChevronDown, FiMenu } from "react-icons/fi"
+import { Avatar, Button, Box, Flex, useColorModeValue, HStack, IconButton, Menu, MenuButton, MenuDivider, MenuItem, MenuList, Text, VStack, FlexProps } from "@chakra-ui/react"
+import { FiBell, FiChevronDown, FiMenu, FiPlus } from "react-icons/fi"
 
 interface MobileProps extends FlexProps {
     onOpen: () => void
@@ -35,8 +35,18 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
             </Text>
 
             <HStack spacing={{ base: '0', md: '6' }}>
-                <IconButton size="lg" variant="ghost" aria-label="open menu" icon={<FiBell />} />
                 <Flex alignItems={'center'}>
+                    <Box mr={'10'}>
+                        <Menu>
+                            <MenuButton fontSize="sm" fontWeight={"medium"} color="gray.600" as={Button} bgColor={"white"} rightIcon={<FiPlus />}>
+                                Add
+                            </MenuButton>
+                            <MenuList>
+                                <MenuItem>Add vehicle</MenuItem>
+                                <MenuItem>Add ride</MenuItem>
+                            </MenuList>
+                        </Menu>
+                    </Box>
                     <Menu>
                         <MenuButton py={2} transition="all 0.3s" _focus={{ boxShadow: 'none' }}>
                             <HStack>
@@ -52,15 +62,13 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
                                     spacing="1px"
                                     ml="2">
                                     <Text fontSize="sm">Justina Clark</Text>
-                                    <Text fontSize="xs" color="gray.600">
-                                        Admin
-                                    </Text>
                                 </VStack>
                                 <Box display={{ base: 'none', md: 'flex' }}>
                                     <FiChevronDown />
                                 </Box>
                             </HStack>
                         </MenuButton>
+
                         <MenuList
                             bg={useColorModeValue('white', 'gray.900')}
                             borderColor={useColorModeValue('gray.200', 'gray.700')}>
