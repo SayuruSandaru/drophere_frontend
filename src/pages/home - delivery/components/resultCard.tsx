@@ -13,7 +13,6 @@ import {
 } from "@chakra-ui/react";
 import { MdAirlineSeatReclineExtra } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
-import RouterConfig, { RouterPaths } from "router/routerConfig";
 
 interface CarInfoProps {
   imageUrl: string;
