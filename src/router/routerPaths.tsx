@@ -20,6 +20,7 @@ import DriverDashboard from 'pages/driver-dashboard';
 import Rides from 'pages/driver-dashboard/rides';
 import Requests from 'pages/driver-dashboard/requests';
 import DashboardHome from 'pages/driver-dashboard/dashboard-home';
+import MyRide from "pages/myride";
 
 const RouterConfig: React.FC = () => {
     return (
@@ -43,6 +44,7 @@ const RouterConfig: React.FC = () => {
                 <Route path={RouterPaths.DASHBOARDRIDES} element={<Rides />} />
                 <Route path={RouterPaths.DASHBOARDREQUESTS} element={<Requests />} />
             </Route>
+            <Route path={RouterPaths.MYRIDES} element={<MyRide />} />
         </Routes>
     );
 }
