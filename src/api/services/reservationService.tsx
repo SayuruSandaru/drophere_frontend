@@ -19,6 +19,18 @@ class ReservationService extends ApiService {
             throw error;
         }
     }
+
+    public async getReservationsByStatus(status: string): Promise<any> {
+        try {
+            const response = await this.post("/reservation/available", {
+                "status": status
+            });
+            return response;
+        } catch (error) {
+            console.error("Error getting reservations by status: ", error);
+            throw error;
+        }
+    }
 }
 
 export default new ReservationService();

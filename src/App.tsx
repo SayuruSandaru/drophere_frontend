@@ -1,9 +1,9 @@
 import { ChakraProvider } from "@chakra-ui/react";
 import "styles/global.css";
 import theme from "theme/theme";
-import RouterConfig from "router/routerConfig";
 import { BrowserRouter as Router } from "react-router-dom";
 import { Libraries, LoadScript } from "@react-google-maps/api";
+import RouterConfig from "router/routerPaths";
 const libraries: Libraries = ["places"];
 
 function App(): JSX.Element {
