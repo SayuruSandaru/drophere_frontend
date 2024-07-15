@@ -22,7 +22,7 @@ import {
   useDisclosure
 } from "@chakra-ui/react";
 import { MdCheckCircle, MdEmail, MdPhone, MdStar } from "react-icons/md";
-import { FaStar, FaPaperPlane } from 'react-icons/fa';
+import { FaPaperPlane } from 'react-icons/fa';
 import NavbarHome from "pages/components/NavbarHome";
 import Footer from "pages/components/footer";
 import Rating from "react-rating";
@@ -42,28 +42,28 @@ const Profile = () => {
 
   useEffect(() => {
     const fetchReviews = async () => {
-        try {
-            const fetchedReviews = await getReviews();
-            console.log("Fetched Reviews:", fetchedReviews); // Log fetched reviews
+      try {
+        const fetchedReviews = await getReviews();
+        console.log("Fetched Reviews:", fetchedReviews); // Log fetched reviews
 
-            if (Array.isArray(fetchedReviews)) {
-                setReviews(fetchedReviews);
-                const averageRating = fetchedReviews.reduce((acc, review) => acc + review.rating, 0) / fetchedReviews.length;
-                setRatingData({ rating: averageRating, reviews: fetchedReviews.length });
-            } else {
-                console.error("Fetched reviews is not an array");
-                setReviews([]);
-            }
-        } catch (error) {
-            console.error("Failed to fetch reviews", error);
-            setReviews([]); // Set reviews to empty array on error
-        } finally {
-            setIsLoading(false);
+        if (Array.isArray(fetchedReviews)) {
+          setReviews(fetchedReviews);
+          const averageRating = fetchedReviews.reduce((acc, review) => acc + review.rating, 0) / fetchedReviews.length;
+          setRatingData({ rating: averageRating, reviews: fetchedReviews.length });
+        } else {
+          console.error("Fetched reviews is not an array");
+          setReviews([]);
         }
+      } catch (error) {
+        console.error("Failed to fetch reviews", error);
+        setReviews([]); // Set reviews to empty array on error
+      } finally {
+        setIsLoading(false);
+      }
     };
 
     fetchReviews();
-}, []);
+  }, []);
 
 
 
@@ -109,27 +109,27 @@ const Profile = () => {
 
   const ReviewsAndComments = () => (
     <Box pl={isLargeScreen ? 10 : 0}>
-        <Box maxW={"500px"} borderRadius={10} padding={10} bg={"white"}>
-            <Heading size="md" mb={8}>Reviews and Comments</Heading>
-            {isLoading ? (
-                <Spinner />
-            ) : (
-                <Stack spacing={5}>
-                    {Array.isArray(reviews) && reviews.length > 0 ? reviews.map((review, index) => (
-                        <ReviewItem
-                            key={index}
-                            name={review.name || "Anonymous"} // Provide a fallback name if not present
-                            comment={review.comment || review.description || "No comment"} // Handle case where 'comment' might be under 'description'
-                            rating={review.rating}
-                        />
-                    )) : (
-                        <Text>No reviews available.</Text>
-                    )}
-                </Stack>
+      <Box maxW={"500px"} borderRadius={10} padding={10} bg={"white"}>
+        <Heading size="md" mb={8}>Reviews and Comments</Heading>
+        {isLoading ? (
+          <Spinner />
+        ) : (
+          <Stack spacing={5}>
+            {Array.isArray(reviews) && reviews.length > 0 ? reviews.map((review, index) => (
+              <ReviewItem
+                key={index}
+                name={review.username || "Anonymous"}
+                comment={review.comment || review.description || "No comment"}
+                rating={review.rating}
+              />
+            )) : (
+              <Text>No reviews available.</Text>
             )}
-        </Box>
+          </Stack>
+        )}
+      </Box>
     </Box>
-);
+  );
 
 
 

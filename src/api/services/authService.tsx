@@ -35,6 +35,16 @@ class AuthService extends ApiService {
       throw error;
     }
   }
+
+  public async getUser(): Promise<any> {  
+    try {
+      const response = await this.get("/user", true);
+      return response;
+    } catch (error) {
+      console.error("Error getting user: ", error);
+      throw error;
+    }
+  }
 }
 
 export default new AuthService();

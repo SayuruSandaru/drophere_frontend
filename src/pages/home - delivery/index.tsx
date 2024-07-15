@@ -1,51 +1,53 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import {
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalCloseButton,
-  ModalBody,
-  ModalFooter,
-
+  Box, Flex, Text, Icon, Button, IconButton, HStack, Tag, TagLabel, TagCloseButton, Stack, useDisclosure, useMediaQuery
 } from "@chakra-ui/react";
-import { FaLocationArrow, FaUser } from "react-icons/fa";
-import { Box, Flex, Text, Badge, Divider, Icon, Button, Spacer, useDisclosure, Image, IconButton, HStack, Tag, TagLabel, TagCloseButton, Avatar, Stack, useMediaQuery } from "@chakra-ui/react";
-import { FaLocationDot, FaCalendarDays } from "react-icons/fa6";
+import { FaLocationArrow, FaLocationDot, FaCalendarDays, FaBox, FaFilter } from "react-icons/fa6";
 import PlaceAutocompleteModal from "../components/placeModalbox";
 import CalendarComponent from "./components/calenderComponents";
 import CounterComponent from "./components/counterComponent";
 import CarInfo from "./components/resultCard";
-import { FaFilter, FaBox, FaBars } from "react-icons/fa";
-import MapContainer from "./components/googleMap";
 import FilterDrawer from "./components/filterDrawer";
+import FilterDrawerMobile from "./components/filterDrawerMobile";
+import MenuDrawer from "./components/menuDrawer";
+import NavbarHomeDelivery from "pages/components/NavbarHomeDelivery";
 import { useNavigate } from "react-router-dom";
 import { RouterPaths } from "router/routerConfig";
-import { is } from "@babel/types";
-import MenuDrawer from "./components/menuDrawer";
-import { set } from "lodash";
-import FilterDrawerMobile from "./components/filterDrawerMobile";
-import Footer from "pages/components/footer";
-import NavbarHome from "../components/NavbarHome";
-import NavbarHomeDelivery from "pages/components/NavbarHomeDelivery";
+import { useRecoilValue, useSetRecoilState } from "recoil";
+import { searchRideState } from "state";
+import { searchRides } from "api/ride";
+import { decodePolyline } from "util/map";
+import MapContainer from "pages/home/components/googleMap";
 
 const HomeDelivery = () => {
   const navigate = useNavigate();
+  const rideSearchData = useRecoilValue(searchRideState);
+  const setSearchRideState = useSetRecoilState(searchRideState);
+
   const { isOpen: isPickupPlaceOpen, onOpen: onPickupPlaceOpen, onClose: onPickupPlaceClose } = useDisclosure();
   const { isOpen: isDestinationPlaceOpen, onOpen: onDestinationPlaceOpen, onClose: onDestinationPlaceClose } = useDisclosure();
   const { isOpen: isCalendarOpen, onOpen: onCalendarOpen, onClose: onCalendarClose } = useDisclosure();
-  const { isOpen: isPassangerOpen, onOpen: onPassangerOpen, onClose: onPassangerClose } = useDisclosure();
   const [isFilterDrawerOpen, setIsFilterDrawerOpen] = useState(false);
   const [isFilterDrawerMobileOpen, setIsFilterDrawerMobileOpen] = useState(false);
   const [isMenuDrawerOpen, setIsMenuDrawerOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState("");
   const [selectedDate, setSelectedDate] = useState(new Date());
-  const [selectedPickupLocation, setSelectedPickupLocation] = useState("");
-  const [selectedDestinationLocation, setSelectedDestinationLocation] = useState("");
-  const [selectedPassangerCount, setPassangerCount] = useState("");
+  const [selectedPickupLocation, setSelectedPickupLocation] = useState(rideSearchData?.pickupName || "");
+  const [selectedDestinationLocation, setSelectedDestinationLocation] = useState(rideSearchData?.destinationName || "");
+  const [selectedWeight, setSelectedWeight] = useState(rideSearchData?.weight || "");
+  const [pickCordinate, setPickCordinate] = useState({
+    lat: rideSearchData?.pickup_lat || 0, // Provide default coordinates if null
+    lng: rideSearchData?.pickup_lng || 0,
+  });
+  const [destinationCordinate, setDestinationCordinate] = useState({
+    lat: rideSearchData?.destination_lat || 0, // Provide default coordinates if null
+    lng: rideSearchData?.destination_lng || 0,
+  });
+  const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
+  const [polylinePath, setPolylinePath] = useState([]);
 
   const [isLargeScreen] = useMediaQuery('(min-width: 992px)');
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   const handleItemClick = (item) => {
     setSelectedItem(item);
@@ -55,7 +57,8 @@ const HomeDelivery = () => {
       onPickupPlaceOpen();
     } else if (item === "Destination") {
       onDestinationPlaceOpen();
-    } else {
+    } else if (item === "Weight") {
+
     }
   };
 
@@ -64,17 +67,18 @@ const HomeDelivery = () => {
     onCalendarClose();
   };
 
-  const handleDestiantionSelect = (place) => {
-    setSelectedDestinationLocation(place);
+  const handleDestinationSelect = (place) => {
+    setSelectedDestinationLocation(place.name);
+    setDestinationCordinate({ lat: place.latitude, lng: place.longitude });
   };
 
   const handlePickupLocationSelect = (place) => {
-    setSelectedPickupLocation(place);
+    setSelectedPickupLocation(place.name);
+    setPickCordinate({ lat: place.latitude, lng: place.longitude });
   };
 
-  const handleCountChange = (count) => {
-    setPassangerCount(count);
-    onCalendarClose();
+  const handleWeightChange = (weight) => {
+    setSelectedWeight(weight);
   };
 
   const formatDateWithoutYear = (date) => {
@@ -82,130 +86,142 @@ const HomeDelivery = () => {
     return date.toLocaleDateString(undefined, options);
   };
 
+  const searchDelivery = async () => {
+    try {
+      setLoading(true);
+      setErrorMessage('');
+      const res = await searchRides({
+        pickup_lat: pickCordinate.lat,
+        pickup_lng: pickCordinate.lng,
+        destination_lat: destinationCordinate.lat,
+        destination_lng: destinationCordinate.lng,
+      });
+      const deliveryData = {
+        pickup_lat: pickCordinate.lat,
+        pickup_lng: pickCordinate.lng,
+        destination_lat: destinationCordinate.lat,
+        destination_lng: destinationCordinate.lng,
+        pickupName: selectedPickupLocation,
+        destinationName: selectedDestinationLocation,
+        date: selectedDate,
+        weight: selectedWeight,
+        response: res.rides,
+      };
+      setSearchRideState(deliveryData);
+      setLoading(false);
+    } catch (error) {
+      setLoading(false);
+      setErrorMessage(error.message);
+    }
+  };
+
   return (
     <Flex direction="column" h="100vh" bg="gray.50">
+      {errorMessage && (
+        <Box p={2} color="white" bg={"red.400"} textAlign="center">
+          {errorMessage}
+        </Box>
+      )}
       <NavbarHomeDelivery />
-      {
-        isLargeScreen && (
-          <Box bg="white" borderRadius="md" boxShadow="sm" mb={4} p={2}>
-            <Flex direction={{ base: "column", md: "row" }} align="center">
-              <Flex flex={1} align="center" onClick={() => handleItemClick("Pickup")} cursor="pointer" mb={{ base: 4, md: 0 }}>
-                <Icon as={FaLocationArrow} w={6} h={4} color={"gray.500"} mt={0} />
-                <Text ml={2} fontSize="md" fontWeight={"medium"}>{selectedPickupLocation}</Text>
-              </Flex>
-              <Flex flex={1} align="center" onClick={() => handleItemClick("Destination")} cursor="pointer" mb={{ base: 4, md: 0 }}>
-                <Icon as={FaLocationDot} w={6} h={4} color={"gray.500"} />
-                <Text ml={2} fontSize="md" fontWeight={"medium"}>{selectedDestinationLocation}</Text>
-              </Flex>
-              <Flex flex={1} align="center" onClick={() => handleItemClick("Calendar")} cursor="pointer" mb={{ base: 4, md: 0 }}>
-                <Icon as={FaCalendarDays} w={6} h={4} color={"gray.500"} />
-                <Text ml={2} fontSize="md" fontWeight={"medium"}>{formatDateWithoutYear(selectedDate)}</Text>
-              </Flex>
-              <Flex flex={1} align="center" onClick={() => handleItemClick("Passenger")} cursor="pointer" mb={{ base: 4, md: 0 }}>
-                <Icon as={FaBox} w={6} h={4} color={"gray.500"} />
-                <Text ml={2} fontSize="md" fontWeight={"medium"}>{`${selectedPassangerCount} Kg`}</Text>
-              </Flex>
-              <Button
-                bg="#2b8ab0"
-                color="white"
-                borderRadius="md"
-                _hover={{ bg: "#1a6c8e" }}
-                height="40px"
-                width={{ base: "100%", md: "200px" }}
-                fontWeight="medium"
-                mb={{ base: 4, md: 0 }}
-              >
-                Search
-              </Button>
-              <IconButton
-                icon={<Icon as={FaFilter} w={6} h={4} color={"gray.500"} />}
-                aria-label="Filter"
-                onClick={() => setIsFilterDrawerOpen(true)}
-                borderRadius="md"
-                _hover={{ bg: "gray.200" }}
-                height="40px"
-                width="40px"
-                ml={3}
-              />
+      {isLargeScreen && (
+        <Box bg="white" borderRadius="md" boxShadow="sm" mb={4} p={2}>
+          <Flex direction={{ base: "column", md: "row" }} align="center">
+            <Flex flex={1} align="center" onClick={() => handleItemClick("Pickup")} cursor="pointer" mb={{ base: 4, md: 0 }}>
+              <Icon as={FaLocationArrow} w={6} h={4} color={"gray.500"} mt={0} />
+              <Text ml={2} fontSize="md" fontWeight={"medium"}>{selectedPickupLocation}</Text>
             </Flex>
-
-          </Box>
-        )
-      }
-      {
-        isLargeScreen && (
-          <HStack spacing={4} mb={5}>
-            <Tag size="md" borderRadius='full' variant='solid' bg={'gray.200'}>
-              <TagLabel color={"gray.600"}>Available only</TagLabel>
-              <TagCloseButton color={"black"} />
-            </Tag>
-            <Tag size="md" borderRadius='full' variant='solid' bg={'gray.200'}>
-              <TagLabel color={"gray.600"}>Car</TagLabel>
-              <TagCloseButton color={"black"} />
-            </Tag>
-          </HStack>
-        )
-      }
+            <Flex flex={1} align="center" onClick={() => handleItemClick("Destination")} cursor="pointer" mb={{ base: 4, md: 0 }}>
+              <Icon as={FaLocationDot} w={6} h={4} color={"gray.500"} />
+              <Text ml={2} fontSize="md" fontWeight={"medium"}>{selectedDestinationLocation}</Text>
+            </Flex>
+            <Flex flex={1} align="center" onClick={() => handleItemClick("Calendar")} cursor="pointer" mb={{ base: 4, md: 0 }}>
+              <Icon as={FaCalendarDays} w={6} h={4} color={"gray.500"} />
+              <Text ml={2} fontSize="md" fontWeight={"medium"}>{formatDateWithoutYear(selectedDate)}</Text>
+            </Flex>
+            <Flex flex={1} align="center" onClick={() => handleItemClick("Weight")} cursor="pointer" mb={{ base: 4, md: 0 }}>
+              <Icon as={FaBox} w={6} h={4} color={"gray.500"} />
+              <Text ml={2} fontSize="md" fontWeight={"medium"}>{`${selectedWeight} Kg`}</Text>
+            </Flex>
+            <Button
+              bg="#2b8ab0"
+              color="white"
+              borderRadius="md"
+              _hover={{ bg: "#1a6c8e" }}
+              height="40px"
+              width={{ base: "100%", md: "200px" }}
+              fontWeight="medium"
+              mb={{ base: 4, md: 0 }}
+              onClick={searchDelivery}
+              isLoading={loading}
+            >
+              Search
+            </Button>
+            <IconButton
+              icon={<Icon as={FaFilter} w={6} h={4} color={"gray.500"} />}
+              aria-label="Filter"
+              onClick={() => setIsFilterDrawerOpen(true)}
+              borderRadius="md"
+              _hover={{ bg: "gray.200" }}
+              height="40px"
+              width="40px"
+              ml={3}
+            />
+          </Flex>
+        </Box>
+      )}
+      {isLargeScreen && (
+        <HStack spacing={4} mb={5}>
+          <Tag size="md" borderRadius='full' variant='solid' bg={'gray.200'}>
+            <TagLabel color={"gray.600"}>Available only</TagLabel>
+            <TagCloseButton color={"black"} />
+          </Tag>
+          <Tag size="md" borderRadius='full' variant='solid' bg={'gray.200'}>
+            <TagLabel color={"gray.600"}>Car</TagLabel>
+            <TagCloseButton color={"black"} />
+          </Tag>
+        </HStack>
+      )}
       <FilterDrawer isOpen={isFilterDrawerOpen} onClose={() => setIsFilterDrawerOpen(false)} />
       <FilterDrawerMobile isOpen={isFilterDrawerMobileOpen} onClose={() => setIsFilterDrawerMobileOpen(false)} />
       <MenuDrawer isOpen={isMenuDrawerOpen} onClose={() => setIsMenuDrawerOpen(false)} />
       <Flex flex={1} direction={{ base: "column", lg: "row" }}>
         <Box flex={1} bg="white" borderRadius="md" boxShadow="sm" mb={{ base: 4, lg: 0 }} mr={{ lg: 4 }} p={4}>
-          <MapContainer />
+          <MapContainer polylinePath={polylinePath} />
         </Box>
         <Box flex={1.5} bg="white" borderRadius="md" boxShadow="sm" p={4}>
           <Stack spacing={4}>
-            <CarInfo
-              imageUrl="https://images.pexels.com/photos/909907/pexels-photo-909907.jpeg?auto=compress&cs=tinysrgb&w=960&h=750&dpr=1"
-              altText="Kia Motors Subcompact car"
-              carName="Car"
-              date="2nd May 2024"
-              from="Kandy"
-              to="Badulla"
-              name="John"
-              availability="Available"
-              seatsLeft="2"
-              price="$382.25"
-              onClick={() => navigate(RouterPaths.ORDER)}
-            />
-            <CarInfo
-              imageUrl="https://images.pexels.com/photos/909907/pexels-photo-909907.jpeg?auto=compress&cs=tinysrgb&w=960&h=750&dpr=1"
-              altText="Kia Motors Subcompact car"
-              carName="Car"
-              date="2nd May 2024"
-              from="Colombo"
-              to="Badulla"
-              availability="Available"
-              name="John"
-              seatsLeft="2"
-              price="$382.25"
-              onClick={() => navigate(RouterPaths.ORDER)}
-            />
-            <CarInfo
-              imageUrl="https://images.pexels.com/photos/909907/pexels-photo-909907.jpeg?auto=compress&cs=tinysrgb&w=960&h=750&dpr=1"
-              altText="Kia Motors Subcompact car"
-              carName="Car"
-              date="2nd May 2024"
-              from="Colombo"
-              to="Badulla"
-              name="John"
-              availability="Available"
-              seatsLeft="2"
-              price="$382.25"
-              onClick={() => navigate(RouterPaths.ORDER)}
-            />
+            {rideSearchData && rideSearchData.response && rideSearchData.response.map(ride => (
+              <CarInfo
+                key={ride.ride_id}
+                imageUrl={ride.vehicle_details.image_url}
+                altText={ride.vehicle_details.model}
+                carName={`${ride.vehicle_details.type} ${ride.vehicle_details.model}`}
+                date={new Date(ride.start_time).toLocaleDateString()}
+                from={ride.start_location}
+                to={ride.end_location}
+                name={ride.owner_details.city}
+                availability={ride.status}
+                seatsLeft={ride.vehicle_details.capacity}
+                price={`Rs ${ride.fee}`}
+                onClick={() => {
+                  const points = decodePolyline(ride.route)
+                  setPolylinePath(points);
+                }}
+                onBook={() => { }}
+              />
+            ))}
           </Stack>
         </Box>
       </Flex>
       <PlaceAutocompleteModal isOpen={isPickupPlaceOpen} onClose={onPickupPlaceClose} onPlaceSelect={handlePickupLocationSelect} />
-      <PlaceAutocompleteModal isOpen={isDestinationPlaceOpen} onClose={onDestinationPlaceClose} onPlaceSelect={handleDestiantionSelect} />
+      <PlaceAutocompleteModal isOpen={isDestinationPlaceOpen} onClose={onDestinationPlaceClose} onPlaceSelect={handleDestinationSelect} />
       <CalendarComponent
         isOpen={isCalendarOpen}
         onClose={onCalendarClose}
         selectedDate={selectedDate}
         handleDateChange={handleDateChange}
       />
-      <CounterComponent isOpen={selectedItem === "Passenger"} onClose={() => setSelectedItem("")} handleCountChange={handleCountChange} />
+      <CounterComponent isOpen={selectedItem === "Weight"} onClose={() => setSelectedItem("")} handleCountChange={handleWeightChange} />
     </Flex>
   );
 };

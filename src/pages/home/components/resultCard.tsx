@@ -13,7 +13,6 @@ import {
 } from "@chakra-ui/react";
 import { MdAirlineSeatReclineExtra } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
-import RouterConfig, { RouterPaths } from "router/routerConfig";
 
 interface CarInfoProps {
   imageUrl: string;
@@ -26,10 +25,11 @@ interface CarInfoProps {
   seatsLeft: string;
   price: string;
   onClick: () => void
+  onBook: () => void
   name: string;
 }
 
-const CarInfo: React.FC<CarInfoProps> = ({ imageUrl, altText, carName, date, from, to, availability, seatsLeft, price, name, onClick }) => {
+const CarInfo: React.FC<CarInfoProps> = ({ imageUrl, altText, carName, date, from, to, availability, seatsLeft, price, name, onClick, onBook }) => {
   const navigate = useNavigate();
   return (
 
@@ -86,7 +86,7 @@ const CarInfo: React.FC<CarInfoProps> = ({ imageUrl, altText, carName, date, fro
         <Flex direction={"column"}>
           <Text fontSize="xl" fontWeight="bold" m={{ base: 4, md: 5 }}>{price}</Text>
           <Spacer />
-          <Button bg="black" color={"white"} m={4} onClick={() => navigate(RouterPaths.ORDER)} >Book</Button>
+          <Button bg="black" color={"white"} m={4} onClick={onBook} >Book</Button>
         </Flex>
       </Flex>
     </Box>

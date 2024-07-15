@@ -120,7 +120,7 @@ const VehicleDetails: React.FC<VehicleDetailsProps> = ({ onBack, onError }) => {
         capacity: parseInt(capacity),
         license_plate: licensePlate,
         model: vehicleModel,
-        type: type,
+        type: type.toLowerCase(),
         year: parseInt(year),
         image_url: imageurl,
       });

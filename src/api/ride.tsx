@@ -1,15 +1,35 @@
 import { start } from "repl";
 import rideService from "./services/rideService";
 
-export const searchRides = async (search: { pickup_lat: number; pickup_lng: number; destination_lat: number; destination_lng: number }): Promise<any> => {
+export const searchRides = async (search: {
+    pickup_lat: number;
+    pickup_lng: number;
+    destination_lat: number;
+    destination_lng: number;
+    date?: string;
+    passenger_count?: number
+}): Promise<any> => {
     try {
         console.log(search);
-        const response = await rideService.searchRides({
+        const requestPayload: any = {
             "pickup_lat": search.pickup_lat,
             "pickup_lng": search.pickup_lng,
             "destination_lat": search.destination_lat,
             "destination_lng": search.destination_lng,
-        });
+            "date": search.date,
+            "passenger_count": search.passenger_count,
+        };
+
+        if (search.date) {
+            requestPayload.date = search.date;
+        }
+
+        if (search.passenger_count) {
+            requestPayload.passenger_count = search.passenger_count;
+        }
+
+        const response = await rideService.searchRides(requestPayload);
+
         if (response.status === "error") {
             throw new Error("Failed to search rides");
         }
@@ -19,6 +39,7 @@ export const searchRides = async (search: { pickup_lat: number; pickup_lng: numb
         throw error;
     }
 };
+
 
 export const createRide = async (ride: {
     driver_id: number;

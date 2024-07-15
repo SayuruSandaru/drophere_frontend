@@ -48,7 +48,7 @@ const Register: React.FC = () => {
         }
       );
       setLoading(false);
-      navigate(RouterPaths.RIDE);
+      navigate(RouterPaths.LOGIN);
     } catch (error) {
       setLoading(false);
       setErrorMessage(error.message);
