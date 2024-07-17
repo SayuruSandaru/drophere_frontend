@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Flex,
@@ -11,39 +11,40 @@ import {
   Text,
   Stack,
   useBreakpointValue,
+  ResponsiveValue,
 } from "@chakra-ui/react";
+import { Property } from "csstype";
 import { FaMapMarkerAlt, FaUser } from "react-icons/fa";
-import { useRecoilValue } from "recoil";
-import { selectedRideState } from "state";
-import { useLocation } from "react-router-dom";
-import { reservationState } from 'state';
-import { useSetRecoilState } from 'recoil';
-
+import { useRecoilValue, useSetRecoilState } from "recoil";
+import { selectedRideState, reservationState } from "state";
+import { useLocation, useParams } from "react-router-dom";
 import { createDeliveryOrder } from "../../api/reservation";
-import { useState } from "react";
+import { decryptData, getLocalStorage } from "util/secure";
+import rideService from "api/services/rideService";
 
 const OrderDelivery = () => {
   const location = useLocation();
-  const selectedRide = location.state?.selectedRide;
-  const flexDirection = useBreakpointValue({ base: "column", lg: "row" }) as
-    | "column"
-    | "row";
+  const { id } = useParams();
+  const { selectedRide: initialSelectedRide, price: initialPrice } = location.state || {};
+
+  const [rideDetails, setRideDetails] = useState(initialSelectedRide || null);
+  const flexDirection = useBreakpointValue<ResponsiveValue<Property.FlexDirection>>({
+    base: "column",
+    lg: "row"
+  });
   const containerWidth = useBreakpointValue({
     base: "100%",
     md: "90%",
     lg: "80%",
   });
   const inputWidth = useBreakpointValue({ base: "100%", md: "350px" });
-
-  // const selectedRide = useRecoilValue(selectedRideState);
-  const startLocation = selectedRide?.start_location ?? "N/A";
-  const endLocation = selectedRide?.end_location ?? "N/A";
-  const startTime = selectedRide?.start_time
-    ? new Date(selectedRide.start_time).toLocaleString()
+  const startLocation = rideDetails?.start_location ?? "N/A";
+  const endLocation = rideDetails?.end_location ?? "N/A";
+  const startTime = rideDetails?.start_time
+    ? new Date(rideDetails.start_time).toLocaleString()
     : "N/A";
-  const fee = selectedRide?.fee ?? "N/A";
   const imageUrl =
-    selectedRide?.vehicle_details?.image_url ??
+    rideDetails?.vehicle_details?.image_url ??
     "https://via.placeholder.com/150";
 
   const [recipientName, setRecipientName] = useState("");
@@ -52,41 +53,79 @@ const OrderDelivery = () => {
 
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
+  const [price, setPrice] = useState(initialPrice || 0);
 
   const setReservation = useSetRecoilState(reservationState);
 
+  useEffect(() => {
+    const fetchRideDetails = async () => {
+      try {
+        const response = await rideService.getRideById(parseInt(id));
+        if (response.status === "success") {
+          setRideDetails(response.ride);
+          const storedPrice = getLocalStorage(id);
+          if (storedPrice) {
+            setPrice(storedPrice);
+          } else if (response.ride.fee) {
+            setPrice(response.ride.fee);
+          }
+          console.log(response);
+        } else {
+          console.log("Error getting ride details:", response);
+        }
+      } catch (error) {
+        console.error("Error getting ride details:", error);
+      }
+    };
+  
+    fetchRideDetails();
+  }, [id]);
+
+  const validateOrderData = (orderData) => {
+    const requiredFields = ['driver_id', 'ride_id', 'status', 'price', 'recipient_name', 'recipient_address', 'recipient_phone', 'weight'];
+    for (const field of requiredFields) {
+      if (orderData[field] === undefined || orderData[field] === null || orderData[field] === '') {
+        throw new Error(`Missing required field: ${field}`);
+      }
+    }
+    if (typeof orderData.price !== 'number' || orderData.price <= 0) {
+      throw new Error('Invalid price');
+    }
+    if (typeof orderData.weight !== 'number' || orderData.weight <= 0) {
+      throw new Error('Invalid weight');
+    }
+  };
 
   const handleBooking = async () => {
     try {
       setError(""); 
       setSuccess(false); 
 
-      
       if (!recipientName || !recipientAddress || !recipientPhone) {
         setError("Please fill in all recipient details.");
         return;
       }
 
-      if (!selectedRide) {
-        console.error("selectedRide is undefined:", selectedRide);
+      if (!rideDetails) {
+        console.error("rideDetails is undefined:", rideDetails);
         setError("Ride information is missing. Please try selecting the ride again.");
         return;
       }
 
-      console.log("Selected ride:", selectedRide);
-      const hardcodedDriverId = "1";
-      const hardcodedRideId = "2";
+      console.log("Selected ride:", rideDetails);
 
       const orderData = {
-        driver_id: hardcodedDriverId,
-        ride_id: hardcodedRideId,
-        status: "pending",
-        price: parseFloat(fee),
+        driver_id: rideDetails.driver_id,
+        ride_id: rideDetails.ride_id,
+        status: "confirmed",
+        price: parseFloat(price),
         recipient_name: recipientName,
         recipient_address: recipientAddress,
         recipient_phone: recipientPhone,
-        weight: selectedRide.weight || 0,
+        weight: rideDetails.weight || 1, // Ensure this is not 0 or null
       };
+
+      validateOrderData(orderData);
       console.log("Sending order data:", orderData); 
 
       const result = await createDeliveryOrder(orderData);
@@ -94,11 +133,10 @@ const OrderDelivery = () => {
         console.log("Delivery order created successfully");
         setReservation(result);
         setSuccess(true);
-        // Handle successful booking (e.g., show success message, navigate to confirmation page)
       }
     } catch (error) {
-      console.error("Error creating delivery order: ", error);
-      setError("Failed to create delivery order. Please try again.");
+      console.error("Complete error object:", error);
+      setError(error.message || "Failed to create delivery order. Please try again.");
     }
   };
 
@@ -205,7 +243,7 @@ const OrderDelivery = () => {
             <Box bg="white" p={4} borderRadius="md" boxShadow="md" w="100%">
               <Flex justifyContent="center">
                 <Image
-                  src="https://images.pexels.com/photos/112460/pexels-photo-112460.jpeg?auto=compress&cs=tinysrgb&w=860&h=750&dpr=1"
+                  src={imageUrl}
                   alt="Passenger Image"
                   objectFit="cover"
                   borderRadius="md"
@@ -222,7 +260,7 @@ const OrderDelivery = () => {
                 <strong>Date and Time:</strong> {startTime}
               </Text>
               <Text>
-                <strong>Price:</strong> Rs {fee}
+                <strong>Price:</strong> Rs {price}
               </Text>
             </Box>
 

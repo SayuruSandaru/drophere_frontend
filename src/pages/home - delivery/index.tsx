@@ -1,8 +1,26 @@
 import React, { useState } from "react";
 import {
-  Box, Flex, Text, Icon, Button, IconButton, HStack, Tag, TagLabel, TagCloseButton, Stack, useDisclosure, useMediaQuery
+  Box,
+  Flex,
+  Text,
+  Icon,
+  Button,
+  IconButton,
+  HStack,
+  Tag,
+  TagLabel,
+  TagCloseButton,
+  Stack,
+  useDisclosure,
+  useMediaQuery,
 } from "@chakra-ui/react";
-import { FaLocationArrow, FaLocationDot, FaCalendarDays, FaBox, FaFilter } from "react-icons/fa6";
+import {
+  FaLocationArrow,
+  FaLocationDot,
+  FaCalendarDays,
+  FaBox,
+  FaFilter,
+} from "react-icons/fa6";
 import PlaceAutocompleteModal from "../components/placeModalbox";
 import CalendarComponent from "./components/calenderComponents";
 import CounterComponent from "./components/counterComponent";
@@ -18,9 +36,8 @@ import { searchRideState } from "state";
 import { searchRides } from "api/ride";
 import { decodePolyline } from "util/map";
 import MapContainer from "pages/home/components/googleMap";
-import { selectedRideState } from 'state';
+import { selectedRideState } from "state";
 import { encryptData, getLocalStorage, setLocalStorage } from "util/secure";
-
 
 const HomeDelivery = () => {
   const setSelectedRide = useSetRecoilState(selectedRideState);
@@ -29,17 +46,35 @@ const HomeDelivery = () => {
   const rideSearchData = useRecoilValue(searchRideState);
   const setSearchRideState = useSetRecoilState(searchRideState);
 
-  const { isOpen: isPickupPlaceOpen, onOpen: onPickupPlaceOpen, onClose: onPickupPlaceClose } = useDisclosure();
-  const { isOpen: isDestinationPlaceOpen, onOpen: onDestinationPlaceOpen, onClose: onDestinationPlaceClose } = useDisclosure();
-  const { isOpen: isCalendarOpen, onOpen: onCalendarOpen, onClose: onCalendarClose } = useDisclosure();
+  const {
+    isOpen: isPickupPlaceOpen,
+    onOpen: onPickupPlaceOpen,
+    onClose: onPickupPlaceClose,
+  } = useDisclosure();
+  const {
+    isOpen: isDestinationPlaceOpen,
+    onOpen: onDestinationPlaceOpen,
+    onClose: onDestinationPlaceClose,
+  } = useDisclosure();
+  const {
+    isOpen: isCalendarOpen,
+    onOpen: onCalendarOpen,
+    onClose: onCalendarClose,
+  } = useDisclosure();
   const [isFilterDrawerOpen, setIsFilterDrawerOpen] = useState(false);
-  const [isFilterDrawerMobileOpen, setIsFilterDrawerMobileOpen] = useState(false);
+  const [isFilterDrawerMobileOpen, setIsFilterDrawerMobileOpen] =
+    useState(false);
   const [isMenuDrawerOpen, setIsMenuDrawerOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState("");
   const [selectedDate, setSelectedDate] = useState(new Date());
-  const [selectedPickupLocation, setSelectedPickupLocation] = useState(rideSearchData?.pickupName || "");
-  const [selectedDestinationLocation, setSelectedDestinationLocation] = useState(rideSearchData?.destinationName || "");
-  const [selectedWeight, setSelectedWeight] = useState(rideSearchData?.weight || "");
+  const [selectedPickupLocation, setSelectedPickupLocation] = useState(
+    rideSearchData?.pickupName || ""
+  );
+  const [selectedDestinationLocation, setSelectedDestinationLocation] =
+    useState(rideSearchData?.destinationName || "");
+  const [selectedWeight, setSelectedWeight] = useState(
+    rideSearchData?.weight || ""
+  );
   const [pickCordinate, setPickCordinate] = useState({
     lat: rideSearchData?.pickup_lat || 0, // Provide default coordinates if null
     lng: rideSearchData?.pickup_lng || 0,
@@ -49,10 +84,10 @@ const HomeDelivery = () => {
     lng: rideSearchData?.destination_lng || 0,
   });
   const [loading, setLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState("");
   const [polylinePath, setPolylinePath] = useState([]);
 
-  const [isLargeScreen] = useMediaQuery('(min-width: 992px)');
+  const [isLargeScreen] = useMediaQuery("(min-width: 992px)");
 
   const handleItemClick = (item) => {
     setSelectedItem(item);
@@ -63,7 +98,6 @@ const HomeDelivery = () => {
     } else if (item === "Destination") {
       onDestinationPlaceOpen();
     } else if (item === "Weight") {
-
     }
   };
 
@@ -120,21 +154,17 @@ const HomeDelivery = () => {
     }
   };
 
-
   const handleCardClick = (ride) => {
     setSelectedRide(ride);
     navigate(RouterPaths.ORDERDELIVERY);
-  }
+  };
 
-  const setdata = (id, price) => {
-    console.log(id, price);
-    setLocalStorage(id, price);
-
-    console.log("success");
-    getLocalStorage(id);
-  }
-
-  
+ const setdata = (id, price) => {
+  console.log(id, price);
+  setLocalStorage(id, price.toString()); // Ensure price is stored as a string
+  console.log("success");
+  console.log(getLocalStorage(id)); // Log the retrieved value to verify
+};
 
   return (
     <Flex direction="column" h="100vh" bg="gray.50">
@@ -147,21 +177,61 @@ const HomeDelivery = () => {
       {isLargeScreen && (
         <Box bg="white" borderRadius="md" boxShadow="sm" mb={4} p={2}>
           <Flex direction={{ base: "column", md: "row" }} align="center">
-            <Flex flex={1} align="center" onClick={() => handleItemClick("Pickup")} cursor="pointer" mb={{ base: 4, md: 0 }}>
-              <Icon as={FaLocationArrow} w={6} h={4} color={"gray.500"} mt={0} />
-              <Text ml={2} fontSize="md" fontWeight={"medium"}>{selectedPickupLocation}</Text>
+            <Flex
+              flex={1}
+              align="center"
+              onClick={() => handleItemClick("Pickup")}
+              cursor="pointer"
+              mb={{ base: 4, md: 0 }}
+            >
+              <Icon
+                as={FaLocationArrow}
+                w={6}
+                h={4}
+                color={"gray.500"}
+                mt={0}
+              />
+              <Text ml={2} fontSize="md" fontWeight={"medium"}>
+                {selectedPickupLocation}
+              </Text>
             </Flex>
-            <Flex flex={1} align="center" onClick={() => handleItemClick("Destination")} cursor="pointer" mb={{ base: 4, md: 0 }}>
+            <Flex
+              flex={1}
+              align="center"
+              onClick={() => handleItemClick("Destination")}
+              cursor="pointer"
+              mb={{ base: 4, md: 0 }}
+            >
               <Icon as={FaLocationDot} w={6} h={4} color={"gray.500"} />
-              <Text ml={2} fontSize="md" fontWeight={"medium"}>{selectedDestinationLocation}</Text>
+              <Text ml={2} fontSize="md" fontWeight={"medium"}>
+                {selectedDestinationLocation}
+              </Text>
             </Flex>
-            <Flex flex={1} align="center" onClick={() => handleItemClick("Calendar")} cursor="pointer" mb={{ base: 4, md: 0 }}>
+            <Flex
+              flex={1}
+              align="center"
+              onClick={() => handleItemClick("Calendar")}
+              cursor="pointer"
+              mb={{ base: 4, md: 0 }}
+            >
               <Icon as={FaCalendarDays} w={6} h={4} color={"gray.500"} />
-              <Text ml={2} fontSize="md" fontWeight={"medium"}>{formatDateWithoutYear(selectedDate)}</Text>
+              <Text ml={2} fontSize="md" fontWeight={"medium"}>
+                {formatDateWithoutYear(selectedDate)}
+              </Text>
             </Flex>
-            <Flex flex={1} align="center" onClick={() => handleItemClick("Weight")} cursor="pointer" mb={{ base: 4, md: 0 }}>
+            <Flex
+              flex={1}
+              align="center"
+              onClick={() => handleItemClick("Weight")}
+              cursor="pointer"
+              mb={{ base: 4, md: 0 }}
+            >
               <Icon as={FaBox} w={6} h={4} color={"gray.500"} />
-              <Text ml={2} fontSize="md" fontWeight={"medium"}>{`${selectedWeight} Kg`}</Text>
+              <Text
+                ml={2}
+                fontSize="md"
+                fontWeight={"medium"}
+              >{`${selectedWeight} Kg`}</Text>
             </Flex>
             <Button
               bg="#2b8ab0"
@@ -192,64 +262,93 @@ const HomeDelivery = () => {
       )}
       {isLargeScreen && (
         <HStack spacing={4} mb={5}>
-          <Tag size="md" borderRadius='full' variant='solid' bg={'gray.200'}>
+          <Tag size="md" borderRadius="full" variant="solid" bg={"gray.200"}>
             <TagLabel color={"gray.600"}>Available only</TagLabel>
             <TagCloseButton color={"black"} />
           </Tag>
-          <Tag size="md" borderRadius='full' variant='solid' bg={'gray.200'}>
+          <Tag size="md" borderRadius="full" variant="solid" bg={"gray.200"}>
             <TagLabel color={"gray.600"}>Car</TagLabel>
             <TagCloseButton color={"black"} />
           </Tag>
         </HStack>
       )}
-      <FilterDrawer isOpen={isFilterDrawerOpen} onClose={() => setIsFilterDrawerOpen(false)} />
-      <FilterDrawerMobile isOpen={isFilterDrawerMobileOpen} onClose={() => setIsFilterDrawerMobileOpen(false)} />
-      <MenuDrawer isOpen={isMenuDrawerOpen} onClose={() => setIsMenuDrawerOpen(false)} />
+      <FilterDrawer
+        isOpen={isFilterDrawerOpen}
+        onClose={() => setIsFilterDrawerOpen(false)}
+      />
+      <FilterDrawerMobile
+        isOpen={isFilterDrawerMobileOpen}
+        onClose={() => setIsFilterDrawerMobileOpen(false)}
+      />
+      <MenuDrawer
+        isOpen={isMenuDrawerOpen}
+        onClose={() => setIsMenuDrawerOpen(false)}
+      />
       <Flex flex={1} direction={{ base: "column", lg: "row" }}>
-        <Box flex={1} bg="white" borderRadius="md" boxShadow="sm" mb={{ base: 4, lg: 0 }} mr={{ lg: 4 }} p={4}>
+        <Box
+          flex={1}
+          bg="white"
+          borderRadius="md"
+          boxShadow="sm"
+          mb={{ base: 4, lg: 0 }}
+          mr={{ lg: 4 }}
+          p={4}
+        >
           <MapContainer polylinePath={polylinePath} />
         </Box>
         <Box flex={1.5} bg="white" borderRadius="md" boxShadow="sm" p={4}>
           <Stack spacing={4}>
-            {rideSearchData && rideSearchData.response && rideSearchData.response.map(ride => (
-              <CarInfo
-                key={ride.ride_id}
-                imageUrl={ride.vehicle_details.image_url}
-                altText={ride.vehicle_details.model}
-                carName={`${ride.vehicle_details.type} ${ride.vehicle_details.model}`}
-                date={new Date(ride.start_time).toLocaleDateString()}
-                from={ride.start_location}
-                to={ride.end_location}
-                name={ride.owner_details.city}
-                availability={ride.status}
-                seatsLeft={ride.vehicle_details.capacity}
-                price={`Rs ${ride.fee}`}
-                onClick={() => {
-                  const points = decodePolyline(ride.route)
-                  setPolylinePath(points);
-                  // handleCardClick(ride);
-                }}
-                onBook={() => { 
-                  const rideId = ride.ride_id;
-                  setdata(rideId, ride.fee);
-                  navigate(`/order/${rideId}`);
-
-
-                }}
-              />
-            ))}
+            {rideSearchData &&
+              rideSearchData.response &&
+              rideSearchData.response.map((ride) => (
+                <CarInfo
+                  key={ride.ride_id}
+                  imageUrl={ride.vehicle_details.image_url}
+                  altText={ride.vehicle_details.model}
+                  carName={`${ride.vehicle_details.type} ${ride.vehicle_details.model}`}
+                  date={new Date(ride.start_time).toLocaleDateString()}
+                  from={ride.start_location}
+                  to={ride.end_location}
+                  name={ride.owner_details.city}
+                  availability={ride.status}
+                  seatsLeft={ride.vehicle_details.capacity}
+                  price={`Rs ${ride.fee}`}
+                  onClick={() => {
+                    const points = decodePolyline(ride.route);
+                    setPolylinePath(points);
+                  }}
+                  onBook={() => {
+                    setSelectedRide(ride);
+                    navigate(`/delivery/order/${ride.ride_id}`, {
+                      state: { selectedRide: ride, price: ride.fee },
+                    });
+                  }}
+                />
+              ))}
           </Stack>
         </Box>
       </Flex>
-      <PlaceAutocompleteModal isOpen={isPickupPlaceOpen} onClose={onPickupPlaceClose} onPlaceSelect={handlePickupLocationSelect} />
-      <PlaceAutocompleteModal isOpen={isDestinationPlaceOpen} onClose={onDestinationPlaceClose} onPlaceSelect={handleDestinationSelect} />
+      <PlaceAutocompleteModal
+        isOpen={isPickupPlaceOpen}
+        onClose={onPickupPlaceClose}
+        onPlaceSelect={handlePickupLocationSelect}
+      />
+      <PlaceAutocompleteModal
+        isOpen={isDestinationPlaceOpen}
+        onClose={onDestinationPlaceClose}
+        onPlaceSelect={handleDestinationSelect}
+      />
       <CalendarComponent
         isOpen={isCalendarOpen}
         onClose={onCalendarClose}
         selectedDate={selectedDate}
         handleDateChange={handleDateChange}
       />
-      <CounterComponent isOpen={selectedItem === "Weight"} onClose={() => setSelectedItem("")} handleCountChange={handleWeightChange} />
+      <CounterComponent
+        isOpen={selectedItem === "Weight"}
+        onClose={() => setSelectedItem("")}
+        handleCountChange={handleWeightChange}
+      />
     </Flex>
   );
 };

@@ -9,7 +9,7 @@ import Order from 'pages/order/index';
 import SearchDelivery from 'pages/search - delivery';
 import Ride from 'pages/ride - search';
 import Profile from 'pages/owner_profile';
-import OrderDelivery from 'pages/order - delivery';
+import OrderDelivery from 'pages/order - delivery/';
 import DriverRegister from 'pages/register_driver/index';
 import PrivateRoute from 'pages/components/privateRoute';
 import Cride from 'pages/Create-ride/Create/create-ride';
@@ -32,7 +32,8 @@ export enum RouterPaths {
     CREATERIDE = "/ride/create",
     CONTACT = "/contact",
     DRIVERREGISTER = "/drive/register",
-    ORDERDELIVERY = "/delivery/order",
+    ORDERDELIVERY = "/delivery/order/:id",
+
 }
 
 const RouterConfig: React.FC = () => {
