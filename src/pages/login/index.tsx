@@ -29,8 +29,6 @@ const Login: React.FC = () => {
       const credentials = { email, password };
       console.log("login process start");
       const { user, token } = await login(credentials);
-      console.log("login process end");
-      console.log(`token: ${token}`);
       setToken(token);
       setUser(user);
       const userId = User.getUserId();
@@ -85,6 +83,7 @@ const Login: React.FC = () => {
         )}
         <LoginForm email={email} password={password} setEmail={setEmail} setPassword={setPassword} onLogin={handleLogin} loading={loading} />
       </Flex>
+      <Footer />
     </Flex>
   );
 };
