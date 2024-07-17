@@ -16,7 +16,6 @@ class CookieManager {
             let c = ca[i].trim();
             if (c.startsWith(nameEQ)) {
                 const cookieValue = decodeURIComponent(c.substring(nameEQ.length));
-                console.log(`Found Cookie: ${name}=${cookieValue}`);
                 return cookieValue;
             }
         }
