@@ -20,6 +20,30 @@ class ReservationService extends ApiService {
         }
     }
 
+    public async createDeliveryOrder(order: any): Promise<any> {
+        try {
+            const response = await this.post("/reservation/create/delivery", {
+                driver_id: order.driver_id,
+                ride_id: order.ride_id,
+                status: order.status,
+                price: order.price,
+                recipient_name: order.recipient_name,
+                recipient_address: order.recipient_address,
+                recipient_phone: order.recipient_phone,
+                weight: order.weight,
+            });
+            return response;
+        } catch (error) {
+            console.error("Error creating delivery order: ", error);
+            throw error;
+        }
+    }
+
+
+
+
+
+
     public async getReservationsByStatus(status: string): Promise<any> {
         try {
             const response = await this.post("/reservation/available", {
