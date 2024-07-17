@@ -1,6 +1,6 @@
 import {
     Box, Flex, FormControl, FormLabel, Input, Textarea, Button,
-    Text, Icon, useToast, useMediaQuery
+    Text, Icon, useToast, useMediaQuery, useBreakpointValue
 } from "@chakra-ui/react";
 import React, { useState } from "react";
 import { FaEnvelope, FaPhone } from 'react-icons/fa';
@@ -57,7 +57,7 @@ const ContactUs: React.FC = () => {
 
     const [isLargeScreen] = useMediaQuery('(min-width: 992px)');
     const navBarStyle = {
-        position: 'fixed',
+        position: 'sticky',
         width: '100%',
         top: 0,
         zIndex: 10,
@@ -69,9 +69,9 @@ const ContactUs: React.FC = () => {
                 <NavBarLanding />
             </Box>
 
-            <Flex direction={isLargeScreen ? "row" : "column"} h="100vh">
-                <Flex w={isLargeScreen ? "50%" : "100%"} h="100vh" bg="teal.100" alignItems="center" justifyContent="center">
-                    <Box padding={isLargeScreen ? 20 : 8}>
+            <Flex direction={useBreakpointValue({ base: "column", md: "row" })} h="auto">
+                <Flex w={useBreakpointValue({ base: "100%", md: "50%" })} h="auto" bg="teal.100" alignItems="center" justifyContent="center">
+                    <Box padding={useBreakpointValue({ base: 8, md: 20 })}>
                         <Text fontSize="5xl" fontWeight={500} mb={6} textAlign="left" fontFamily="Red Hat Display">
                             Contact us
                         </Text>
@@ -95,39 +95,41 @@ const ContactUs: React.FC = () => {
                     </Box>
                 </Flex>
 
-                <Flex w={isLargeScreen ? "50%" : "100%"} h="100vh" alignItems="center" justifyContent="center">
-                    <Box w={isLargeScreen ? "80%" : "90%"} padding={isLargeScreen ? 10 : 4}>
-                        <FormControl mb={4}>
-                            <FormLabel fontSize="sm" color="gray.600">Name</FormLabel>
-                            <Input
-                                placeholder="Your name"
-                                name="name"
-                                value={input.name}
-                                onChange={handleChange}
-                                width="100%"
-                            />
-                        </FormControl>
-                        <FormControl mb={4}>
-                            <FormLabel fontSize="sm" color="gray.600">Email</FormLabel>
-                            <Input
-                                placeholder="Your email"
-                                name="email"
-                                value={input.email}
-                                onChange={handleChange}
-                                width="100%"
-                            />
-                        </FormControl>
-                        <FormControl mb={4}>
-                            <FormLabel fontSize="sm" color="gray.600">Message</FormLabel>
-                            <Textarea
-                                placeholder="Your message"
-                                name="message"
-                                value={input.message}
-                                onChange={handleChange}
-                                width="100%"
-                            />
-                        </FormControl>
-                        <Button color={"white"} bg="black" width="100%" mb={4} onClick={handleSubmit}>Send</Button>
+                <Flex w={useBreakpointValue({ base: "100%", md: "50%" })} h="auto" alignItems="center" justifyContent="center">
+                    <Box w={useBreakpointValue({ base: "90%", md: "80%" })} padding={useBreakpointValue({ base: 4, md: 10 })}>
+                        <form onSubmit={handleSubmit}>
+                            <FormControl mb={4}>
+                                <FormLabel fontSize="sm" color="gray.600">Name</FormLabel>
+                                <Input
+                                    placeholder="Your name"
+                                    name="name"
+                                    value={input.name}
+                                    onChange={handleChange}
+                                    width="100%"
+                                />
+                            </FormControl>
+                            <FormControl mb={4}>
+                                <FormLabel fontSize="sm" color="gray.600">Email</FormLabel>
+                                <Input
+                                    placeholder="Your email"
+                                    name="email"
+                                    value={input.email}
+                                    onChange={handleChange}
+                                    width="100%"
+                                />
+                            </FormControl>
+                            <FormControl mb={4}>
+                                <FormLabel fontSize="sm" color="gray.600">Message</FormLabel>
+                                <Textarea
+                                    placeholder="Your message"
+                                    name="message"
+                                    value={input.message}
+                                    onChange={handleChange}
+                                    width="100%"
+                                />
+                            </FormControl>
+                            <Button type="submit" color={"white"} bg="black" width="100%" mb={4}>Send</Button>
+                        </form>
                     </Box>
                 </Flex>
             </Flex>
