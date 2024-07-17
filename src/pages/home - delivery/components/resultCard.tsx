@@ -1,3 +1,4 @@
+import React from "react";
 import {
   Box,
   Stack,
@@ -13,7 +14,7 @@ import {
 } from "@chakra-ui/react";
 import { MdAirlineSeatReclineExtra } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
-import RouterConfig, { RouterPaths } from "router/routerConfig";
+import { RouterPaths } from "router/routerConfig";
 
 interface CarInfoProps {
   imageUrl: string;
@@ -28,12 +29,21 @@ interface CarInfoProps {
   onClick: () => void
   onBook: () => void
   name: string;
+
 }
 
 
 const CarInfo: React.FC<CarInfoProps> = ({ imageUrl, altText, carName, date, from, to, availability, seatsLeft, price, name, onClick, onBook }) => {
+  const navigate = useNavigate();
+
   return (
-    <Box borderRadius="md" borderWidth="1px" p={1} onClick={onClick} _hover={{ bg: "gray.50", cursor: "pointer", borderRadius: "md" }}>
+    <Box
+      borderRadius="md"
+      borderWidth="1px"
+      p={1}
+      onClick={onClick}
+      _hover={{ bg: "gray.50", cursor: "pointer", borderRadius: "md" }}
+    >
       <Flex direction={{ base: "column", md: "row" }}>
         <Image
           boxSize={{ base: "100%", md: "144px" }}
@@ -46,7 +56,9 @@ const CarInfo: React.FC<CarInfoProps> = ({ imageUrl, altText, carName, date, fro
         <Box m={4}>
           <Stack spacing={2}>
             <Text fontSize="lg">
-              <Box as="span" fontWeight="bold">{carName}</Box>{" "}
+              <Box as="span" fontWeight="bold">
+                {carName}
+              </Box>{" "}
             </Text>
 
             <Text fontSize="sm">{date}</Text>
@@ -58,9 +70,17 @@ const CarInfo: React.FC<CarInfoProps> = ({ imageUrl, altText, carName, date, fro
             </Text>
 
             <Flex align="center">
-              <Badge colorScheme="green" w={75}>{availability}</Badge>
+              <Badge colorScheme="green" w={75}>
+                {availability}
+              </Badge>
               <Box ml={2} />
-              <Icon as={MdAirlineSeatReclineExtra} w={4} h={4} color="gray.500" mt={0} />
+              <Icon
+                as={MdAirlineSeatReclineExtra}
+                w={4}
+                h={4}
+                color="gray.500"
+                mt={0}
+              />
               <Text ml={2}>{seatsLeft} seats left</Text>
             </Flex>
             <Divider
@@ -70,7 +90,7 @@ const CarInfo: React.FC<CarInfoProps> = ({ imageUrl, altText, carName, date, fro
                 backgroundColor: "gray.200",
               }}
             />
-            <Box  >
+            <Box>
               <Flex align={"center"}>
                 <Avatar
                   size="sm"
@@ -91,4 +111,3 @@ const CarInfo: React.FC<CarInfoProps> = ({ imageUrl, altText, carName, date, fro
 };
 
 export default CarInfo;
-
