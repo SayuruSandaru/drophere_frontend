@@ -9,11 +9,6 @@ const OrderHistoryTable = ({ data }) => {
     const [selectedData, setSelectedData] = useState(null);
     const [driver, setDriver] = useState(null);
 
-    const dataPa = {
-        id: 1,
-        name: "John Doe",
-        email: "john.doe@example.com",
-    };
 
     const header = ["Reservation No", "From", "To", "Status", "Type"];
 

@@ -17,6 +17,8 @@ import { decodePolyline } from 'util/map';
 import { database } from '../../../firebase';
 import RideTrackerMap from './ride-tracker-map';
 import { GoogleMap, LoadScript, Marker, Polyline } from '@react-google-maps/api';
+import MapLive from './map';
+
 
 interface MapPopupProps {
     isOpen: boolean;
@@ -71,35 +73,7 @@ const MapPopup: React.FC<MapPopupProps> = ({ isOpen, onClose, data, databasePath
                 <ModalHeader>Ride Location</ModalHeader>
                 <ModalCloseButton />
                 <ModalBody>
-                    <GoogleMap
-                        mapContainerStyle={mapStyles}
-                        zoom={15}
-                        onLoad={map => {
-                            mapRef.current = map;
-                        }}
-                        options={{
-                            zoomControl: true,
-                            fullscreenControl: true,
-                            mapTypeControl: false,
-                        }}
-                    >
-
-                        {polylinePath && (
-                            <Polyline
-                                path={polylinePath}
-                                options={{
-                                    strokeColor: "#0000FF",
-                                    strokeOpacity: 0.8,
-                                    strokeWeight: 5,
-                                }}
-                            />
-                        )}
-                        {location !== null && (
-                            <Marker
-                                position={location}
-                            />
-                        )}
-                    </GoogleMap>
+                    <MapLive polylinePath={polylinePath} path={databasePath} />
                 </ModalBody>
                 <ModalFooter>
                     <Button color="white" bgColor="black" mr={3} onClick={onClose}>
