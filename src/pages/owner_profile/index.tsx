@@ -16,6 +16,7 @@ import {
   ModalOverlay,
   ModalContent,
   ModalHeader,
+  Icon,
   ModalBody,
   ModalFooter,
   ModalCloseButton,
@@ -27,7 +28,8 @@ import NavbarHome from "pages/components/NavbarHome";
 import Footer from "pages/components/footer";
 import Rating from "react-rating";
 import ReviewItem from "./review_card";
-import { getReviews, createReview } from "api/review"; // Ensure to import these functions
+import { getReviews, createReview } from "api/review";
+import { FaCamera } from 'react-icons/fa';
 
 const Profile = () => {
   const [ratingData, setRatingData] = useState({ rating: 0, reviews: 0 });
@@ -71,11 +73,11 @@ const Profile = () => {
   const handleAddReview = async () => {
     try {
       setIsLoading(true);
-      console.log("Submitting review:", { description: newReview.comment, rating: newReview.rating, driver_id: 1 }); // Log the data being sent
-      const response = await createReview({ description: newReview.comment, rating: newReview.rating, driver_id: 1 }); // Replace with appropriate driver_id
-      console.log("Response from createReview:", response); // Log the response
+      console.log("Submitting review:", { description: newReview.comment, rating: newReview.rating, driver_id: 1 });
+      const response = await createReview({ description: newReview.comment, rating: newReview.rating, driver_id: 1 });
+      console.log("Response from createReview:", response);
       const updatedReviews = await getReviews();
-      console.log("Updated Reviews:", updatedReviews); // Log updated reviews
+      console.log("Updated Reviews:", updatedReviews);
       if (Array.isArray(updatedReviews)) {
         setReviews(updatedReviews);
         const averageRating = updatedReviews.reduce((acc, review) => acc + review.rating, 0) / updatedReviews.length;
@@ -101,7 +103,6 @@ const Profile = () => {
       // Close the modal programmatically if needed
       // onClose();
     }
-    // Keep the modal open after file selection
   };
 
 
@@ -133,151 +134,163 @@ const Profile = () => {
 
 
 
-return (
-  <Box>
-    <Box h={20}>
-      <NavbarHome />
-    </Box>
-    <Flex
-      position="relative"
-      justifyContent="center"
-      alignItems="start"
-      bg={"gray.50"}
-      padding={10}
-    >
-      <Flex maxW={"1200px"} w="full">
-        <Box borderRadius={10}>
-          <Stack spacing="4">
-            <Box>
-              <Flex>
-                <Avatar
-                  size="lg"
-                  name="John"
-                  src="https://bit.ly/prosper-baba"
-                  cursor="pointer"
-                  position="relative" 
-                  onClick={onOpen}
-                />
-              
-              <VStack align="start" pl="2">
-                <Text as="b" fontSize="xl">
-                  John
-                </Text>
-                <Text>Working Year: 2</Text>
-              </VStack>
-              </Flex>
-            </Box>
-            <Text pt="6" fontSize="sm" color={"gray"}>
-              <b>{ratingData.rating.toFixed(1)}</b> ({ratingData.reviews} reviews)
-            </Text>
-            <Divider />
-            <Box>
-              <Flex align="center" pt="2">
-                <MdCheckCircle color="green" />
-                <Text fontSize="sm" ml="2">
-                  Verified ID
-                </Text>
-              </Flex>
-              <Flex align="center" pt="2">
-                <MdCheckCircle color="green" />
-                <Text fontSize="sm" ml="2">
-                  Confirmed email
-                </Text>
-              </Flex>
-              <Flex align="center" pt="2">
-                <MdCheckCircle color="green" />
-                <Text fontSize="sm" ml="2">
-                  Confirmed phone number
-                </Text>
-              </Flex>
-            </Box>
-            <Divider />
-            <Box>
-              <Heading size="xs">About John</Heading>
-              <Text pt="2" fontSize="sm">
-                I am a professional driver with 2 years of experience. I have a 5-star rating and I am a verified driver.
-              </Text>
-            </Box>
-            <Divider />
-            <Box>
-              <Heading size="xs">Contact</Heading>
-              <Flex align="center" pt="2">
-                <MdEmail />
-                <Text fontSize="sm" ml="2">
-                  john@gmail.com
-                </Text>
-              </Flex>
-              <Flex align="center" pt="2">
-                <MdPhone />
-                <Text fontSize="sm" ml="2">
-                  0771234567
-                </Text>
-              </Flex>
-            </Box>
-            <Divider />
-            <Box>
-              <Heading size="xs" mb={3} mt={3}>Add a New Review</Heading>
-              <Flex>
-                <Text fontSize="sm" mr={2}>Rating: </Text>
-                <Rating
-                  initialRating={newReview.rating}
-                  emptySymbol={<MdStar size={20} color="gray" />}
-                  fullSymbol={<MdStar size={20} color="gold" />}
-                  onClick={(rate) => setNewReview({ ...newReview, rating: rate })}
-                />
-              </Flex>
-              <Flex>
-                <Input
-                  placeholder="Comment"
-                  value={newReview.comment}
-                  onChange={(e) => setNewReview({ ...newReview, comment: e.target.value })}
-                  mb={3}
-                  mr={2}
-                  borderRadius={5}
-                />
-                <Button onClick={handleAddReview} bg={"transparent"}>
-                  <FaPaperPlane />
-                </Button>
-              </Flex>
-            </Box>
-          </Stack>
-        </Box>
-        {isLargeScreen && <ReviewsAndComments />}
-      </Flex>
-    </Flex>
-    {!isLargeScreen && <ReviewsAndComments />}
-    <Footer />
+  return (
+    <Box>
+      <Box h={20}>
+        <NavbarHome />
+      </Box>
+      <Flex
+        position="relative"
+        justifyContent="center"
+        alignItems="start"
+        bg={"gray.50"}
+        padding={10}
+      >
+        <Flex maxW={"1200px"} w="full">
+          <Box borderRadius={10}>
+            <Stack spacing="4">
+              <Box>
+                <Flex>
+                  <Box position="relative" display="inline-block">
+                    <Avatar
+                      size="lg"
+                      name="John"
+                      src="https://bit.ly/prosper-baba"
+                      cursor="pointer"
+                      onClick={onOpen}
+                    />
+                    <Icon
+                      as={FaCamera}
+                      boxSize={6}
+                      position="absolute"
+                      bottom={0}
+                      right={0}
+                      bg="white"
+                      borderRadius="full"
+                      p={1}
+                      color="gray.700"
+                    />
+                  </Box>
 
-    <Modal isOpen={isOpen} onClose={onClose}>
-      <ModalOverlay />
-      <ModalContent>
-        <ModalHeader>Add a profile picture</ModalHeader>
-        <ModalCloseButton />
-        <ModalBody>
-          <Input type="file" accept="image/*" onChange={handleFileChange} borderStyle="none"/>
-          <Button
-            mt={4}
-            bg="#2b8ab0"
-            color="white"
-            width="full"
-            _hover={{ bg: "#1a688b" }}
-            _active={{ bg: "#1a688b" }}
-            _focus={{ boxShadow: "none" }}
-            borderRadius="md"
-            boxShadow="md"
-            py={3}
-            onClick={() => {
-              // Handle file upload logic here (e.g., send to server)
-              // onClose(); // Close the modal after file selection
-            }}
-          >
-            Upload
-          </Button>
-        </ModalBody>
-      </ModalContent>
-    </Modal>
-  </Box>
-);
+                  <VStack align="start" pl="2">
+                    <Text as="b" fontSize="xl">
+                      John
+                    </Text>
+                    <Text>Working Year: 2</Text>
+                  </VStack>
+                </Flex>
+              </Box>
+              <Text pt="6" fontSize="sm" color={"gray"}>
+                <b>{ratingData.rating.toFixed(1)}</b> ({ratingData.reviews} reviews)
+              </Text>
+              <Divider />
+              <Box>
+                <Flex align="center" pt="2">
+                  <MdCheckCircle color="green" />
+                  <Text fontSize="sm" ml="2">
+                    Verified ID
+                  </Text>
+                </Flex>
+                <Flex align="center" pt="2">
+                  <MdCheckCircle color="green" />
+                  <Text fontSize="sm" ml="2">
+                    Confirmed email
+                  </Text>
+                </Flex>
+                <Flex align="center" pt="2">
+                  <MdCheckCircle color="green" />
+                  <Text fontSize="sm" ml="2">
+                    Confirmed phone number
+                  </Text>
+                </Flex>
+              </Box>
+              <Divider />
+              <Box>
+                <Heading size="xs">About John</Heading>
+                <Text pt="2" fontSize="sm">
+                  I am a professional driver with 2 years of experience. I have a 5-star rating and I am a verified driver.
+                </Text>
+              </Box>
+              <Divider />
+              <Box>
+                <Heading size="xs">Contact</Heading>
+                <Flex align="center" pt="2">
+                  <MdEmail />
+                  <Text fontSize="sm" ml="2">
+                    john@gmail.com
+                  </Text>
+                </Flex>
+                <Flex align="center" pt="2">
+                  <MdPhone />
+                  <Text fontSize="sm" ml="2">
+                    0771234567
+                  </Text>
+                </Flex>
+              </Box>
+              <Divider />
+              <Box>
+                <Heading size="xs" mb={3} mt={3}>Add a New Review</Heading>
+                <Flex>
+                  <Text fontSize="sm" mr={2}>Rating: </Text>
+                  <Rating
+                    initialRating={newReview.rating}
+                    emptySymbol={<MdStar size={20} color="gray" />}
+                    fullSymbol={<MdStar size={20} color="gold" />}
+                    onClick={(rate) => setNewReview({ ...newReview, rating: rate })}
+                  />
+                </Flex>
+                <Flex>
+                  <Input
+                    placeholder="Comment"
+                    value={newReview.comment}
+                    onChange={(e) => setNewReview({ ...newReview, comment: e.target.value })}
+                    mb={3}
+                    mr={2}
+                    borderRadius={5}
+                  />
+                  <Button onClick={handleAddReview} bg={"transparent"}>
+                    <FaPaperPlane />
+                  </Button>
+                </Flex>
+              </Box>
+            </Stack>
+          </Box>
+          {isLargeScreen && <ReviewsAndComments />}
+        </Flex>
+      </Flex>
+      {!isLargeScreen && <ReviewsAndComments />}
+      <Footer />
+
+      <Modal isOpen={isOpen} onClose={onClose}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Add a profile picture</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <Input type="file" accept="image/*" onChange={handleFileChange} borderStyle="none" />
+            <Button
+              mt={4}
+              bg="#2b8ab0"
+              color="white"
+              width="full"
+              _hover={{ bg: "#1a688b" }}
+              _active={{ bg: "#1a688b" }}
+              _focus={{ boxShadow: "none" }}
+              borderRadius="md"
+              boxShadow="md"
+              py={3}
+              onClick={() => {
+                // Handle file upload logic here (e.g., send to server)
+                // onClose(); // Close the modal after file selection
+              }}
+            >
+              Upload
+            </Button>
+          </ModalBody>
+        </ModalContent>
+      </Modal>
+    </Box>
+  );
 };
 
 export default Profile;
