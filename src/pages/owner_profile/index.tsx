@@ -12,6 +12,15 @@ import {
   Button,
   useMediaQuery,
   Spinner,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  Icon,
+  ModalBody,
+  ModalFooter,
+  ModalCloseButton,
+  useDisclosure
 } from "@chakra-ui/react";
 import { MdCheckCircle, MdEmail, MdPhone, MdStar } from "react-icons/md";
 import { FaPaperPlane } from 'react-icons/fa';
@@ -21,6 +30,7 @@ import Rating from "react-rating";
 import ReviewItem from "./review_card";
 import { getReviews, createReview } from "api/review";
 import { getUserDetails } from "api/user";
+import { FaCamera } from 'react-icons/fa';
 
 const Profile = () => {
   const [ratingData, setRatingData] = useState({ rating: 0, reviews: 0 });
@@ -29,6 +39,13 @@ const Profile = () => {
   const [newReview, setNewReview] = useState({ rating: 0, comment: "" });
 
   const [userDetails, setUserDetails] = useState(null);
+
+
+  const { isOpen, onOpen, onClose } = useDisclosure();
+
+
+
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   const [isLargeScreen] = useMediaQuery("(min-width: 992px)");
 
@@ -98,6 +115,20 @@ const Profile = () => {
     }
   };
 
+
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      // Handle file upload logic here (e.g., send to server)
+      console.log("Selected file:", file);
+      // Close the modal programmatically if needed
+      // onClose();
+    }
+  };
+
+
+
+
   const ReviewsAndComments = () => (
     <Box pl={isLargeScreen ? 10 : 0}>
       <Box maxW={"500px"} borderRadius={10} padding={10}>
@@ -148,11 +179,27 @@ const Profile = () => {
                 <Stack spacing="4" bgColor={"white"} paddingX={"30px"} paddingY={"20px"} borderRadius={"10px"}>
                   <Box>
                     <Flex>
-                      <Avatar
-                        size="lg"
-                        name={userDetails.user.username}
-                        src={userDetails.user.proof_document}
-                      />
+                      <Box position="relative" display="inline-block">
+                        <Avatar
+                          size="lg"
+                          name={userDetails.user.username}
+                          src={userDetails.user.proof_document}
+                          cursor="pointer"
+                          onClick={onOpen}
+                        />
+                        <Icon
+                          as={FaCamera}
+                          boxSize={6}
+                          position="absolute"
+                          bottom={0}
+                          right={0}
+                          bg="white"
+                          borderRadius="full"
+                          p={1}
+                          color="gray.700"
+                        />
+                      </Box>
+
                       {/* <VStack align="start" pl="2"> */}
                       <Text as="b" fontSize="xl" ml={"10px"} mt={4}>
                         {userDetails.user.username}
@@ -160,10 +207,10 @@ const Profile = () => {
                       {/* <Text>Working Year: {userDetails?.workingYears || 2}</Text> */}
                       {/* </VStack> */}
                     </Flex>
-                    <Text pt="6" fontSize="sm" color={"gray"}>
-                      <b>{ratingData.rating.toFixed(1)}</b> ({ratingData.reviews} reviews)
-                    </Text>
                   </Box>
+                  <Text pt="6" fontSize="sm" color={"gray"}>
+                    <b>{ratingData.rating.toFixed(1)}</b> ({ratingData.reviews} reviews)
+                  </Text>
                   <Divider />
                   <Box>
                     <Flex align="center" pt="2">
@@ -236,6 +283,35 @@ const Profile = () => {
       )}
       {!isLargeScreen && <ReviewsAndComments />}
       <Footer />
+
+      <Modal isOpen={isOpen} onClose={onClose}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Add a profile picture</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <Input type="file" accept="image/*" onChange={handleFileChange} borderStyle="none" />
+            <Button
+              mt={4}
+              bg="#2b8ab0"
+              color="white"
+              width="full"
+              _hover={{ bg: "#1a688b" }}
+              _active={{ bg: "#1a688b" }}
+              _focus={{ boxShadow: "none" }}
+              borderRadius="md"
+              boxShadow="md"
+              py={3}
+              onClick={() => {
+                // Handle file upload logic here (e.g., send to server)
+                // onClose(); // Close the modal after file selection
+              }}
+            >
+              Upload
+            </Button>
+          </ModalBody>
+        </ModalContent>
+      </Modal>
     </Box>
   );
 

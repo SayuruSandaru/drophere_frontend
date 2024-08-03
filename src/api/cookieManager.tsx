@@ -1,10 +1,9 @@
 class CookieManager {
-
     static setCookie(name: string, value: string, days?: number): void {
         let expires = "";
         if (days) {
             const date = new Date();
-            date.setTime(date.getTime() + days * 86400000);
+            date.setTime(date.getTime() + days * 86400000); // 86400000 is the number of milliseconds in a day
             expires = `; expires=${date.toUTCString()}`;
         }
         document.cookie = `${name}=${encodeURIComponent(value)}${expires}; path=/; Secure; SameSite=Strict`;
@@ -16,7 +15,8 @@ class CookieManager {
         for (let i = 0; i < ca.length; i++) {
             let c = ca[i].trim();
             if (c.startsWith(nameEQ)) {
-                return decodeURIComponent(c.substring(nameEQ.length));
+                const cookieValue = decodeURIComponent(c.substring(nameEQ.length));
+                return cookieValue;
             }
         }
         return undefined;

@@ -44,6 +44,16 @@ class RideService extends ApiService {
         }
     }
 
+    public async getRideById(id: number): Promise<any> {
+        try {
+            const response = await this.get(`/ride/${id}`);
+            return response;
+        } catch (error) {
+            console.error("Error getting ride by id: ", error);
+            throw error;
+        }
+    }
+
     public async getDirections(start: any, end: any): Promise<any> {
         try {
             const data = {
