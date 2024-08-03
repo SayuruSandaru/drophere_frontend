@@ -5,7 +5,6 @@ import {
   Text,
   Stack,
   Avatar,
-  VStack,
   Heading,
   Divider,
   Input,
@@ -23,30 +22,21 @@ import {
   useDisclosure
 } from "@chakra-ui/react";
 import { MdCheckCircle, MdEmail, MdPhone, MdStar } from "react-icons/md";
-import { FaPaperPlane } from 'react-icons/fa';
+import { FaPaperPlane, FaCamera } from 'react-icons/fa';
 import NavbarHome from "pages/components/NavbarHome";
 import Footer from "pages/components/footer";
 import Rating from "react-rating";
 import ReviewItem from "./review_card";
 import { getReviews, createReview } from "api/review";
 import { getUserDetails } from "api/user";
-import { FaCamera } from 'react-icons/fa';
 
 const Profile = () => {
   const [ratingData, setRatingData] = useState({ rating: 0, reviews: 0 });
   const [reviews, setReviews] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [newReview, setNewReview] = useState({ rating: 0, comment: "" });
-
   const [userDetails, setUserDetails] = useState(null);
-
-
   const { isOpen, onOpen, onClose } = useDisclosure();
-
-
-
-  const { isOpen, onOpen, onClose } = useDisclosure();
-
   const [isLargeScreen] = useMediaQuery("(min-width: 992px)");
 
   useEffect(() => {
@@ -54,7 +44,6 @@ const Profile = () => {
       try {
         const fetchedReviews = await getReviews();
         console.log("Fetched Reviews:", fetchedReviews);
-
         if (Array.isArray(fetchedReviews)) {
           setReviews(fetchedReviews);
           const averageRating = fetchedReviews.reduce((acc, review) => acc + review.rating, 0) / fetchedReviews.length;
@@ -65,17 +54,15 @@ const Profile = () => {
         }
       } catch (error) {
         console.error("Failed to fetch reviews", error);
-        setReviews([]); // Set reviews to empty array on error
+        setReviews([]);
       } finally {
         setIsLoading(false);
       }
     };
 
     fetchReviews();
-
   }, []);
 
-  ////sam
   useEffect(() => {
     const fetchUserDetails = async () => {
       try {
@@ -89,7 +76,6 @@ const Profile = () => {
 
     fetchUserDetails();
   }, []);
-
 
   const handleAddReview = async () => {
     try {
@@ -115,19 +101,12 @@ const Profile = () => {
     }
   };
 
-
   const handleFileChange = (event) => {
     const file = event.target.files[0];
     if (file) {
-      // Handle file upload logic here (e.g., send to server)
       console.log("Selected file:", file);
-      // Close the modal programmatically if needed
-      // onClose();
     }
   };
-
-
-
 
   const ReviewsAndComments = () => (
     <Box pl={isLargeScreen ? 10 : 0}>
@@ -153,133 +132,127 @@ const Profile = () => {
     </Box>
   );
 
-
+  const UserDetailsCard = () => (
+    <Box borderRadius={10} maxWidth={"700px"}>
+      <Stack spacing="4" bgColor={"white"} paddingX={"30px"} paddingY={"20px"} borderRadius={"10px"}>
+        <Box>
+          <Flex>
+            <Box position="relative" display="inline-block">
+              <Avatar
+                size="lg"
+                name={userDetails.user.username}
+                src={userDetails.user.proof_document}
+                cursor="pointer"
+                onClick={onOpen}
+              />
+              <Icon
+                as={FaCamera}
+                boxSize={6}
+                position="absolute"
+                bottom={0}
+                right={0}
+                bg="white"
+                borderRadius="full"
+                p={1}
+                color="gray.700"
+              />
+            </Box>
+            <Text as="b" fontSize="xl" ml={"10px"} mt={4}>
+              {userDetails.user.username}
+            </Text>
+          </Flex>
+        </Box>
+        <Text pt="6" fontSize="sm" color={"gray"}>
+          <b>{ratingData.rating.toFixed(1)}</b> ({ratingData.reviews} reviews)
+        </Text>
+        <Divider />
+        <Box>
+          <Flex align="center" pt="2">
+            <MdCheckCircle color="green" />
+            <Text fontSize="sm" ml="2">
+              Verified ID
+            </Text>
+          </Flex>
+          <Flex align="center" pt="2">
+            <MdCheckCircle color="green" />
+            <Text fontSize="sm" ml="2">
+              Confirmed email
+            </Text>
+          </Flex>
+          <Flex align="center" pt="2">
+            <MdCheckCircle color="green" />
+            <Text fontSize="sm" ml="2">
+              Confirmed phone number
+            </Text>
+          </Flex>
+        </Box>
+        <Divider />
+        <Box>
+          <Heading size="xs">Contact</Heading>
+          <Flex align="center" pt="2">
+            <MdEmail />
+            <Text fontSize="sm" ml="2">
+              {userDetails?.user.email}
+            </Text>
+          </Flex>
+          <Flex align="center" pt="2">
+            <MdPhone />
+            <Text fontSize="sm" ml="2">
+              {userDetails.user.phone}
+            </Text>
+          </Flex>
+        </Box>
+        <Divider />
+        <Box>
+          <Heading size="xs" mb={3} mt={3}>Add a New Review</Heading>
+          <Flex>
+            <Text fontSize="sm" mr={2}>Rating: </Text>
+            <Rating
+              initialRating={newReview.rating}
+              emptySymbol={<MdStar size={20} color="gray" />}
+              fullSymbol={<MdStar size={20} color="gold" />}
+              onClick={(rate) => setNewReview({ ...newReview, rating: rate })}
+            />
+          </Flex>
+          <Flex>
+            <Input
+              placeholder="Comment"
+              value={newReview.comment}
+              onChange={(e) => setNewReview({ ...newReview, comment: e.target.value })}
+              mb={3}
+              mr={2}
+              borderRadius={5}
+            />
+            <Button onClick={handleAddReview} bg={"transparent"}>
+              <FaPaperPlane />
+            </Button>
+          </Flex>
+        </Box>
+      </Stack>
+    </Box>
+  );
 
   return (
     <Box>
       <Box h={20}>
         <NavbarHome />
       </Box>
-      {userDetails === null && (
+      {userDetails === null ? (
         <Flex justifyContent="center" alignItems="center" h="90vh">
           <Spinner />
         </Flex>
-      )}
-      {userDetails !== null && (
-        <>
-          <Flex
-            position="relative"
-            justifyContent="center"
-            alignItems="start"
-            bg={"gray.50"}
-            padding={10}
-          >
-            <Flex>
-              <Box borderRadius={10} maxWidth={"700px"} >
-                <Stack spacing="4" bgColor={"white"} paddingX={"30px"} paddingY={"20px"} borderRadius={"10px"}>
-                  <Box>
-                    <Flex>
-                      <Box position="relative" display="inline-block">
-                        <Avatar
-                          size="lg"
-                          name={userDetails.user.username}
-                          src={userDetails.user.proof_document}
-                          cursor="pointer"
-                          onClick={onOpen}
-                        />
-                        <Icon
-                          as={FaCamera}
-                          boxSize={6}
-                          position="absolute"
-                          bottom={0}
-                          right={0}
-                          bg="white"
-                          borderRadius="full"
-                          p={1}
-                          color="gray.700"
-                        />
-                      </Box>
-
-                      {/* <VStack align="start" pl="2"> */}
-                      <Text as="b" fontSize="xl" ml={"10px"} mt={4}>
-                        {userDetails.user.username}
-                      </Text>
-                      {/* <Text>Working Year: {userDetails?.workingYears || 2}</Text> */}
-                      {/* </VStack> */}
-                    </Flex>
-                  </Box>
-                  <Text pt="6" fontSize="sm" color={"gray"}>
-                    <b>{ratingData.rating.toFixed(1)}</b> ({ratingData.reviews} reviews)
-                  </Text>
-                  <Divider />
-                  <Box>
-                    <Flex align="center" pt="2">
-                      <MdCheckCircle color="green" />
-                      <Text fontSize="sm" ml="2">
-                        Verified ID
-                      </Text>
-                    </Flex>
-                    <Flex align="center" pt="2">
-                      <MdCheckCircle color="green" />
-                      <Text fontSize="sm" ml="2">
-                        Confirmed email
-                      </Text>
-                    </Flex>
-                    <Flex align="center" pt="2">
-                      <MdCheckCircle color="green" />
-                      <Text fontSize="sm" ml="2">
-                        Confirmed phone number
-                      </Text>
-                    </Flex>
-                  </Box>
-                  <Divider />
-                  <Box>
-                    <Heading size="xs">Contact</Heading>
-                    <Flex align="center" pt="2">
-                      <MdEmail />
-                      <Text fontSize="sm" ml="2">
-                        {userDetails?.user.email}
-                      </Text>
-                    </Flex>
-                    <Flex align="center" pt="2">
-                      <MdPhone />
-                      <Text fontSize="sm" ml="2">
-                        {userDetails.user.phone}
-                      </Text>
-                    </Flex>
-                  </Box>
-                  <Divider />
-                  <Box>
-                    <Heading size="xs" mb={3} mt={3}>Add a New Review</Heading>
-                    <Flex>
-                      <Text fontSize="sm" mr={2}>Rating: </Text>
-                      <Rating
-                        initialRating={newReview.rating}
-                        emptySymbol={<MdStar size={20} color="gray" />}
-                        fullSymbol={<MdStar size={20} color="gold" />}
-                        onClick={(rate) => setNewReview({ ...newReview, rating: rate })}
-                      />
-                    </Flex>
-                    <Flex>
-                      <Input
-                        placeholder="Comment"
-                        value={newReview.comment}
-                        onChange={(e) => setNewReview({ ...newReview, comment: e.target.value })}
-                        mb={3}
-                        mr={2}
-                        borderRadius={5}
-                      />
-                      <Button onClick={handleAddReview} bg={"transparent"}>
-                        <FaPaperPlane />
-                      </Button>
-                    </Flex>
-                  </Box>
-                </Stack>
-              </Box>
-              {isLargeScreen && <ReviewsAndComments />}
-            </Flex>
-          </Flex>
-        </>
+      ) : (
+        <Flex
+          position="relative"
+          justifyContent="center"
+          alignItems="start"
+          bg={"gray.50"}
+          padding={10}
+          flexDirection={isLargeScreen ? "row" : "column"}
+        >
+          <UserDetailsCard />
+          {isLargeScreen && <ReviewsAndComments />}
+        </Flex>
       )}
       {!isLargeScreen && <ReviewsAndComments />}
       <Footer />
@@ -302,10 +275,6 @@ const Profile = () => {
               borderRadius="md"
               boxShadow="md"
               py={3}
-              onClick={() => {
-                // Handle file upload logic here (e.g., send to server)
-                // onClose(); // Close the modal after file selection
-              }}
             >
               Upload
             </Button>
@@ -314,7 +283,6 @@ const Profile = () => {
       </Modal>
     </Box>
   );
-
 };
 
 export default Profile;
