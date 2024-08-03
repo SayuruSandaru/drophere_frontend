@@ -32,6 +32,7 @@ const MapContainer = ({ polylinePath }) => {
                 zoomControl: true,
                 fullscreenControl: true,
                 mapTypeControl: false,
+                streetViewControl: false,
             }}
         >
 
@@ -41,7 +42,7 @@ const MapContainer = ({ polylinePath }) => {
                     options={{
                         strokeColor: "#0000FF",
                         strokeOpacity: 0.8,
-                        strokeWeight: 2,
+                        strokeWeight: 4,
                     }}
                 />
             )}
