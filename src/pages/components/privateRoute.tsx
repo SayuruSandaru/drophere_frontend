@@ -4,13 +4,14 @@ import { useRecoilValue } from 'recoil';
 import { RouterPaths } from 'router/routerConfig';
 import { tokenState } from 'state';
 import { Box, Text } from '@chakra-ui/react';
+import CookieManager from 'api/cookieManager';
 
 interface PrivateRouteProps {
     element: React.ReactElement;
 }
 
 const PrivateRoute: React.FC<PrivateRouteProps> = ({ element }) => {
-    const token = useRecoilValue(tokenState);
+    const token = CookieManager.getCookie("token");
     const [showMessage, setShowMessage] = useState(false);
     const [redirect, setRedirect] = useState(false);
 
