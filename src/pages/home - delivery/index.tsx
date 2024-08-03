@@ -159,12 +159,12 @@ const HomeDelivery = () => {
     navigate(RouterPaths.ORDERDELIVERY);
   };
 
- const setdata = (id, price) => {
-  console.log(id, price);
-  setLocalStorage(id, price.toString()); // Ensure price is stored as a string
-  console.log("success");
-  console.log(getLocalStorage(id)); // Log the retrieved value to verify
-};
+  const setdata = (id, price) => {
+    console.log(id, price);
+    setLocalStorage(id, price.toString()); // Ensure price is stored as a string
+    console.log("success");
+    console.log(getLocalStorage(id)); // Log the retrieved value to verify
+  };
 
   return (
     <Flex direction="column" h="100vh" bg="gray.50">
@@ -247,7 +247,7 @@ const HomeDelivery = () => {
             >
               Search
             </Button>
-            <IconButton
+            {/* <IconButton
               icon={<Icon as={FaFilter} w={6} h={4} color={"gray.500"} />}
               aria-label="Filter"
               onClick={() => setIsFilterDrawerOpen(true)}
@@ -256,11 +256,11 @@ const HomeDelivery = () => {
               height="40px"
               width="40px"
               ml={3}
-            />
+            /> */}
           </Flex>
         </Box>
       )}
-      {isLargeScreen && (
+      {/* {isLargeScreen && (
         <HStack spacing={4} mb={5}>
           <Tag size="md" borderRadius="full" variant="solid" bg={"gray.200"}>
             <TagLabel color={"gray.600"}>Available only</TagLabel>
@@ -271,15 +271,15 @@ const HomeDelivery = () => {
             <TagCloseButton color={"black"} />
           </Tag>
         </HStack>
-      )}
-      <FilterDrawer
+      )} */}
+      {/* <FilterDrawer
         isOpen={isFilterDrawerOpen}
         onClose={() => setIsFilterDrawerOpen(false)}
       />
       <FilterDrawerMobile
         isOpen={isFilterDrawerMobileOpen}
         onClose={() => setIsFilterDrawerMobileOpen(false)}
-      />
+      /> */}
       <MenuDrawer
         isOpen={isMenuDrawerOpen}
         onClose={() => setIsMenuDrawerOpen(false)}
