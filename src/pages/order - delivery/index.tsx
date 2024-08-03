@@ -12,15 +12,20 @@ import {
   Stack,
   useBreakpointValue,
   ResponsiveValue,
+  Spinner,
+  Grid,
+  GridItem,
 } from "@chakra-ui/react";
 import { Property } from "csstype";
-import { FaMapMarkerAlt, FaUser } from "react-icons/fa";
+import { FaMapMarkerAlt, FaUser, FaCalendarAlt, FaMoneyBillWave, FaArrowRight, FaClock } from "react-icons/fa";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { selectedRideState, reservationState } from "state";
 import { useLocation, useParams } from "react-router-dom";
 import { createDeliveryOrder } from "../../api/reservation";
 import { decryptData, getLocalStorage } from "util/secure";
 import rideService from "api/services/rideService";
+import { useShowErrorToast, useShowSuccessToast } from "pages/components/toast";
+import Modal from "./payment";
 
 const OrderDelivery = () => {
   const location = useLocation();
@@ -40,9 +45,11 @@ const OrderDelivery = () => {
   const inputWidth = useBreakpointValue({ base: "100%", md: "350px" });
   const startLocation = rideDetails?.start_location ?? "N/A";
   const endLocation = rideDetails?.end_location ?? "N/A";
-  const startTime = rideDetails?.start_time
-    ? new Date(rideDetails.start_time).toLocaleString()
-    : "N/A";
+
+  const startDateTime = rideDetails?.start_time ? new Date(rideDetails.start_time) : null;
+  const startDate = startDateTime ? startDateTime.toLocaleDateString() : "N/A";
+  const startTime = startDateTime ? startDateTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "N/A";
+
   const imageUrl =
     rideDetails?.vehicle_details?.image_url ??
     "https://via.placeholder.com/150";
@@ -54,8 +61,15 @@ const OrderDelivery = () => {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
   const [price, setPrice] = useState(initialPrice || 0);
+  const showSuccessToast = useShowSuccessToast();
+  const showErrorToast = useShowErrorToast();
+  const [loading, setLoading] = useState(false);
+  const [hasOpen, setHasOpen] = useState(false);
 
   const setReservation = useSetRecoilState(reservationState);
+
+  const openModal = () => setHasOpen(true);
+  const closeModal = () => setHasOpen(false);
 
   useEffect(() => {
     const fetchRideDetails = async () => {
@@ -77,7 +91,7 @@ const OrderDelivery = () => {
         console.error("Error getting ride details:", error);
       }
     };
-  
+
     fetchRideDetails();
   }, [id]);
 
@@ -98,17 +112,20 @@ const OrderDelivery = () => {
 
   const handleBooking = async () => {
     try {
-      setError(""); 
-      setSuccess(false); 
+      setError("");
+      setSuccess(false);
+      setLoading(true);
 
       if (!recipientName || !recipientAddress || !recipientPhone) {
-        setError("Please fill in all recipient details.");
+        showErrorToast("Please fill in all recipient details.");
+        setLoading(false);
         return;
       }
 
       if (!rideDetails) {
         console.error("rideDetails is undefined:", rideDetails);
-        setError("Ride information is missing. Please try selecting the ride again.");
+        showErrorToast("Ride information is missing. Please try selecting the ride again.");
+        setLoading(false);
         return;
       }
 
@@ -122,31 +139,41 @@ const OrderDelivery = () => {
         recipient_name: recipientName,
         recipient_address: recipientAddress,
         recipient_phone: recipientPhone,
-        weight: rideDetails.weight || 1, // Ensure this is not 0 or null
+        weight: rideDetails.weight || 1,
       };
 
       validateOrderData(orderData);
-      console.log("Sending order data:", orderData); 
+      console.log("Sending order data:", orderData);
 
       const result = await createDeliveryOrder(orderData);
       if (result) {
         console.log("Delivery order created successfully");
         setReservation(result);
         setSuccess(true);
+        setLoading(false);
+        showSuccessToast("Delivery order created successfully");
       }
     } catch (error) {
       console.error("Complete error object:", error);
-      setError(error.message || "Failed to create delivery order. Please try again.");
+      showErrorToast("Failed to create delivery order. Please try again.");
     }
   };
 
+  const handleValidateAndOpenModal = () => {
+    if (!recipientName || !recipientAddress || !recipientPhone) {
+      showErrorToast("Please fill in all recipient details.");
+      return;
+    }
+
+    openModal();
+  };
+
   return (
-    <Box>
-      <Flex direction="column" bg="gray.100" p={[4, 6]} alignItems="center">
-        <Heading as="h3" size="lg" textAlign="center" mb={6}>
+    <Box bg="gray.100" minH="100vh">
+      <Flex direction="column" p={[4, 6]} alignItems="center">
+        <Heading as="h3" size="lg" textAlign="left" mb={"50px"} mt={"10px"}>
           Review your delivery
         </Heading>
-
         <Flex
           w={containerWidth}
           direction={flexDirection}
@@ -240,8 +267,8 @@ const OrderDelivery = () => {
           </Stack>
 
           <VStack align="stretch" w={["100%", "100%", "40%"]} mt={[4, 4, 0]}>
-            <Box bg="white" p={4} borderRadius="md" boxShadow="md" w="100%">
-              <Flex justifyContent="center">
+            <Box bg="white" p={6} borderRadius="md" boxShadow="md" w="100%">
+              <Flex justifyContent="center" mb={4}>
                 <Image
                   src={imageUrl}
                   alt="Passenger Image"
@@ -250,18 +277,36 @@ const OrderDelivery = () => {
                   maxH="200px"
                 />
               </Flex>
-              <Text>
-                <strong>From:</strong> {startLocation}
-              </Text>
-              <Text>
-                <strong>To:</strong> {endLocation}
-              </Text>
-              <Text>
-                <strong>Date and Time:</strong> {startTime}
-              </Text>
-              <Text>
-                <strong>Price:</strong> Rs {price}
-              </Text>
+              <Grid templateColumns="repeat(2, 1fr)" gap={4}>
+                <GridItem>
+                  <Flex align="center">
+                    <Icon as={FaMapMarkerAlt} w={5} h={5} color="gray.600" mr={2} />
+                    <Text fontSize="md" color="gray.800">
+                      <Text as="span" fontWeight="bold" color="gray.800">From:</Text> {startLocation}
+                    </Text>
+                  </Flex>
+                  <Flex align="center" mt={"20px"}>
+                    <Icon as={FaArrowRight} w={5} h={5} color="gray.600" mr={2} />
+                    <Text fontSize="md" color="gray.800">
+                      <Text as="span" fontWeight="bold">To:</Text> {endLocation}
+                    </Text>
+                  </Flex>
+                </GridItem>
+                <GridItem>
+                  <Flex align="center">
+                    <Icon as={FaCalendarAlt} w={5} h={5} color="gray.600" mr={2} />
+                    <Text fontSize="md" color="gray.800">
+                      <Text as="span" fontWeight="bold">Date:</Text> {startDate}
+                    </Text>
+                  </Flex>
+                  <Flex align="center" mt={"20px"}>
+                    <Icon as={FaClock} w={5} h={5} color="gray.500" mr={2} />
+                    <Text fontSize="md" color="gray.800">
+                      <Text as="span" fontWeight="bold">Time:</Text> {startTime}
+                    </Text>
+                  </Flex>
+                </GridItem>
+              </Grid>
             </Box>
 
             <Button
@@ -269,23 +314,18 @@ const OrderDelivery = () => {
               variant="solid"
               color="white"
               mt={4}
-              onClick={handleBooking}
+              onClick={handleValidateAndOpenModal}
+              size="lg"
+              _hover={{ bg: "gray.800" }}
             >
-              Book
+              {loading ? "" : `Book for Rs. ${price}`}
+              {loading && <Spinner size="md" ml={2} />}
             </Button>
-            {error && (
-              <Text color="red.500" mt={2}>
-                {error}
-              </Text>
-            )}
-            {success && (
-              <Text color="green.500" mt={2}>
-                Delivery order created successfully!
-              </Text>
-            )}
           </VStack>
+
         </Flex>
       </Flex>
+      <Modal hasOpen={hasOpen} onCloseModal={closeModal} onAddPaymentMethod={handleBooking} />
     </Box>
   );
 };
