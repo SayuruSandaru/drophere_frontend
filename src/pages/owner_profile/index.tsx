@@ -19,8 +19,8 @@ import NavbarHome from "pages/components/NavbarHome";
 import Footer from "pages/components/footer";
 import Rating from "react-rating";
 import ReviewItem from "./review_card";
-import { getReviews, createReview } from "api/review"; // Ensure to import these functions
-import { getUserDetails } from "api/user"; // Ensure to import this function
+import { getReviews, createReview } from "api/review";
+import { getUserDetails } from "api/user";
 
 const Profile = () => {
   const [ratingData, setRatingData] = useState({ rating: 0, reviews: 0 });
@@ -28,7 +28,7 @@ const Profile = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [newReview, setNewReview] = useState({ rating: 0, comment: "" });
 
-  const [userDetails, setUserDetails] = useState(null);////samm
+  const [userDetails, setUserDetails] = useState(null);
 
   const [isLargeScreen] = useMediaQuery("(min-width: 992px)");
 
@@ -36,7 +36,7 @@ const Profile = () => {
     const fetchReviews = async () => {
       try {
         const fetchedReviews = await getReviews();
-        console.log("Fetched Reviews:", fetchedReviews); // Log fetched reviews
+        console.log("Fetched Reviews:", fetchedReviews);
 
         if (Array.isArray(fetchedReviews)) {
           setReviews(fetchedReviews);
@@ -55,15 +55,16 @@ const Profile = () => {
     };
 
     fetchReviews();
-    
+
   }, []);
-  
-////sam
+
+  ////sam
   useEffect(() => {
     const fetchUserDetails = async () => {
       try {
         const fetchedUserDetails = await getUserDetails();
         setUserDetails(fetchedUserDetails);
+        console.log("Fetched User Details:", fetchedUserDetails);
       } catch (error) {
         console.error("Failed to fetch user details", error);
       }
@@ -72,17 +73,15 @@ const Profile = () => {
     fetchUserDetails();
   }, []);
 
-//sam
-
 
   const handleAddReview = async () => {
     try {
       setIsLoading(true);
-      console.log("Submitting review:", { description: newReview.comment, rating: newReview.rating, driver_id: 1 }); // Log the data being sent
-      const response = await createReview({ description: newReview.comment, rating: newReview.rating, driver_id: 1 }); // Replace with appropriate driver_id
-      console.log("Response from createReview:", response); // Log the response
+      console.log("Submitting review:", { description: newReview.comment, rating: newReview.rating, driver_id: 1 });
+      const response = await createReview({ description: newReview.comment, rating: newReview.rating, driver_id: 1 });
+      console.log("Response from createReview:", response);
       const updatedReviews = await getReviews();
-      console.log("Updated Reviews:", updatedReviews); // Log updated reviews
+      console.log("Updated Reviews:", updatedReviews);
       if (Array.isArray(updatedReviews)) {
         setReviews(updatedReviews);
         const averageRating = updatedReviews.reduce((acc, review) => acc + review.rating, 0) / updatedReviews.length;
@@ -101,7 +100,7 @@ const Profile = () => {
 
   const ReviewsAndComments = () => (
     <Box pl={isLargeScreen ? 10 : 0}>
-      <Box maxW={"500px"} borderRadius={10} padding={10} bg={"white"}>
+      <Box maxW={"500px"} borderRadius={10} padding={10}>
         <Heading size="md" mb={8}>Reviews and Comments</Heading>
         {isLoading ? (
           <Spinner />
@@ -130,109 +129,111 @@ const Profile = () => {
       <Box h={20}>
         <NavbarHome />
       </Box>
-      <Flex
-        position="relative"
-        justifyContent="center"
-        alignItems="start"
-        bg={"gray.50"}
-        padding={10}
-      >
-        <Flex maxW={"1200px"} w="full">
-          <Box borderRadius={10}>
-            <Stack spacing="4">
-              <Box>
-                <Flex>
-                  <Avatar
-                    size="lg"
-                    name={userDetails?.name || "John"}
-                    src={userDetails?.avatar || "https://bit.ly/prosper-baba"}
-                  />
-                  <VStack align="start" pl="2">
-                    <Text as="b" fontSize="xl">
-                      {userDetails?.name || "John"}
-                    </Text>
-                    <Text>Working Year: {userDetails?.workingYears || 2}</Text>
-                  </VStack>
-                </Flex>
-                <Text pt="6" fontSize="sm" color={"gray"}>
-                  <b>{ratingData.rating.toFixed(1)}</b> ({ratingData.reviews} reviews)
-                </Text>
-              </Box>
-              <Divider />
-              <Box>
-                <Flex align="center" pt="2">
-                  <MdCheckCircle color="green" />
-                  <Text fontSize="sm" ml="2">
-                    Verified ID
-                  </Text>
-                </Flex>
-                <Flex align="center" pt="2">
-                  <MdCheckCircle color="green" />
-                  <Text fontSize="sm" ml="2">
-                    Confirmed email
-                  </Text>
-                </Flex>
-                <Flex align="center" pt="2">
-                  <MdCheckCircle color="green" />
-                  <Text fontSize="sm" ml="2">
-                    Confirmed phone number
-                  </Text>
-                </Flex>
-              </Box>
-              <Divider />
-              <Box>
-                <Heading size="xs">About {userDetails?.name || "John"}</Heading>
-                <Text pt="2" fontSize="sm">
-                  {userDetails?.about || "I am a professional driver with 2 years of experience. I have a 5-star rating and I am a verified driver."}
-                </Text>
-              </Box>
-              <Divider />
-              <Box>
-                <Heading size="xs">Contact</Heading>
-                <Flex align="center" pt="2">
-                  <MdEmail />
-                  <Text fontSize="sm" ml="2">
-                    {userDetails?.email || "john@gmail.com"}
-                  </Text>
-                </Flex>
-                <Flex align="center" pt="2">
-                  <MdPhone />
-                  <Text fontSize="sm" ml="2">
-                    {userDetails?.phone || "0771234567"}
-                  </Text>
-                </Flex>
-              </Box>
-              <Divider />
-              <Box>
-                <Heading size="xs" mb={3} mt={3}>Add a New Review</Heading>
-                <Flex>
-                  <Text fontSize="sm" mr={2}>Rating: </Text>
-                  <Rating
-                    initialRating={newReview.rating}
-                    emptySymbol={<MdStar size={20} color="gray" />}
-                    fullSymbol={<MdStar size={20} color="gold" />}
-                    onClick={(rate) => setNewReview({ ...newReview, rating: rate })}
-                  />
-                </Flex>
-                <Flex>
-                  <Input
-                    placeholder="Comment"
-                    value={newReview.comment}
-                    onChange={(e) => setNewReview({ ...newReview, comment: e.target.value })}
-                    mb={3}
-                    mr={2}
-                    borderRadius={5}
-                  />
-                  <Button onClick={handleAddReview} bg={"transparent"}>
-                    <FaPaperPlane />
-                  </Button>
-                </Flex>
-              </Box>
-            </Stack>
-          </Box>
-          {isLargeScreen && <ReviewsAndComments />}
+      {userDetails === null && (
+        <Flex justifyContent="center" alignItems="center" h="90vh">
+          <Spinner />
         </Flex>
-      </Flex>
+      )}
+      {userDetails !== null && (
+        <>
+          <Flex
+            position="relative"
+            justifyContent="center"
+            alignItems="start"
+            bg={"gray.50"}
+            padding={10}
+          >
+            <Flex>
+              <Box borderRadius={10} maxWidth={"700px"} >
+                <Stack spacing="4" bgColor={"white"} paddingX={"30px"} paddingY={"20px"} borderRadius={"10px"}>
+                  <Box>
+                    <Flex>
+                      <Avatar
+                        size="lg"
+                        name={userDetails.user.username}
+                        src={userDetails.user.proof_document}
+                      />
+                      {/* <VStack align="start" pl="2"> */}
+                      <Text as="b" fontSize="xl" ml={"10px"} mt={4}>
+                        {userDetails.user.username}
+                      </Text>
+                      {/* <Text>Working Year: {userDetails?.workingYears || 2}</Text> */}
+                      {/* </VStack> */}
+                    </Flex>
+                    <Text pt="6" fontSize="sm" color={"gray"}>
+                      <b>{ratingData.rating.toFixed(1)}</b> ({ratingData.reviews} reviews)
+                    </Text>
+                  </Box>
+                  <Divider />
+                  <Box>
+                    <Flex align="center" pt="2">
+                      <MdCheckCircle color="green" />
+                      <Text fontSize="sm" ml="2">
+                        Verified ID
+                      </Text>
+                    </Flex>
+                    <Flex align="center" pt="2">
+                      <MdCheckCircle color="green" />
+                      <Text fontSize="sm" ml="2">
+                        Confirmed email
+                      </Text>
+                    </Flex>
+                    <Flex align="center" pt="2">
+                      <MdCheckCircle color="green" />
+                      <Text fontSize="sm" ml="2">
+                        Confirmed phone number
+                      </Text>
+                    </Flex>
+                  </Box>
+                  <Divider />
+                  <Box>
+                    <Heading size="xs">Contact</Heading>
+                    <Flex align="center" pt="2">
+                      <MdEmail />
+                      <Text fontSize="sm" ml="2">
+                        {userDetails?.user.email}
+                      </Text>
+                    </Flex>
+                    <Flex align="center" pt="2">
+                      <MdPhone />
+                      <Text fontSize="sm" ml="2">
+                        {userDetails.user.phone}
+                      </Text>
+                    </Flex>
+                  </Box>
+                  <Divider />
+                  <Box>
+                    <Heading size="xs" mb={3} mt={3}>Add a New Review</Heading>
+                    <Flex>
+                      <Text fontSize="sm" mr={2}>Rating: </Text>
+                      <Rating
+                        initialRating={newReview.rating}
+                        emptySymbol={<MdStar size={20} color="gray" />}
+                        fullSymbol={<MdStar size={20} color="gold" />}
+                        onClick={(rate) => setNewReview({ ...newReview, rating: rate })}
+                      />
+                    </Flex>
+                    <Flex>
+                      <Input
+                        placeholder="Comment"
+                        value={newReview.comment}
+                        onChange={(e) => setNewReview({ ...newReview, comment: e.target.value })}
+                        mb={3}
+                        mr={2}
+                        borderRadius={5}
+                      />
+                      <Button onClick={handleAddReview} bg={"transparent"}>
+                        <FaPaperPlane />
+                      </Button>
+                    </Flex>
+                  </Box>
+                </Stack>
+              </Box>
+              {isLargeScreen && <ReviewsAndComments />}
+            </Flex>
+          </Flex>
+        </>
+      )}
       {!isLargeScreen && <ReviewsAndComments />}
       <Footer />
     </Box>
