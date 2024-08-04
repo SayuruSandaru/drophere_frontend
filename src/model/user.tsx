@@ -15,7 +15,16 @@ class User {
     }
 
     static getUserId() {
-        return this.userDetail.user.id;
+        const user = localStorage.getItem('user');
+        if (!user) return null;
+        const userData = JSON.parse(user);
+        return userData.id;
+    }
+
+    static setUserId(id: string) {
+        const user = localStorage.setItem('user', id);
+        return user;
+
     }
 
     static getUserEmail() {
