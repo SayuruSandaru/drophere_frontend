@@ -38,15 +38,16 @@ const Register: React.FC = () => {
   const uploadProofDocument = async () => {
     try {
       if (!profileImage) {
-        return;
+        throw new Error('Please upload a profile image');
       }
       setLoading(true);
       const res = await fileUpload(profileImage);
       setImageUrl(res);
+      return res;
     } catch (error: any) {
       setLoading(false);
       const errorMessage = error.message || 'Failed to upload document. Please try again.';
-      showErrorToast(errorMessage);
+      showErrorToast("Failed to upload document. Please try again.");
     }
   };
 
@@ -56,7 +57,8 @@ const Register: React.FC = () => {
       setErrorMessage('');
       console.log("Registering user");
       console.log("email: ", email);
-      await uploadProofDocument();
+      const url = await uploadProofDocument();
+
       await registerUser(
         {
           email: email,
@@ -65,7 +67,7 @@ const Register: React.FC = () => {
           lastname: lastName,
           username: username,
           phone: mobileNumber,
-          profile_image: imageurl,
+          profile_image: url,
         }
       );
       setLoading(false);
