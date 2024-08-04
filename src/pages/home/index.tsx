@@ -72,9 +72,8 @@ const Home = () => {
     }
   };
 
-  const getSearchData = () => {
+  const getSearchData = () => { }
 
-  }
   const handleDateChange = (date) => {
     setSelectedDate(date);
     onCalendarClose();
@@ -134,6 +133,7 @@ const Home = () => {
       setErrorMessage(e.message);
     }
   }
+
   const setdata = (id, prce) => {
     console.log(id, prce);
     setLocalStorage(id, prce);
@@ -186,7 +186,7 @@ const Home = () => {
               >
                 Search
               </Button>
-              <IconButton
+              {/* <IconButton
                 icon={<Icon as={FaFilter} w={6} h={4} color={"gray.500"} />}
                 aria-label="Filter"
                 onClick={() => setIsFilterDrawerOpen(true)}
@@ -195,7 +195,7 @@ const Home = () => {
                 height="40px"
                 width="40px"
                 ml={3}
-              />
+              /> */}
             </Flex>
 
           </Box>
@@ -203,22 +203,22 @@ const Home = () => {
       }
 
       {
-        isLargeScreen && (
-          <HStack spacing={4} mb={5}>
-            <Tag size="md" borderRadius='full' variant='solid' bg={'gray.200'}>
-              <TagLabel color={"gray.600"}>Available only</TagLabel>
-              <TagCloseButton color={"black"} />
-            </Tag>
-            <Tag size="md" borderRadius='full' variant='solid' bg={'gray.200'}>
-              <TagLabel color={"gray.600"}>Car</TagLabel>
-              <TagCloseButton color={"black"} />
-            </Tag>
-          </HStack>
-        )
+        // isLargeScreen && (
+        //   <HStack spacing={4} mb={5}>
+        //     <Tag size="md" borderRadius='full' variant='solid' bg={'gray.200'}>
+        //       <TagLabel color={"gray.600"}>Available only</TagLabel>
+        //       <TagCloseButton color={"black"} />
+        //     </Tag>
+        //     <Tag size="md" borderRadius='full' variant='solid' bg={'gray.200'}>
+        //       <TagLabel color={"gray.600"}>Car</TagLabel>
+        //       <TagCloseButton color={"black"} />
+        //     </Tag>
+        //   </HStack>
+        // )
       }
-      <FilterDrawer isOpen={isFilterDrawerOpen} onClose={() => setIsFilterDrawerOpen(false)} />
-      <FilterDrawerMobile isOpen={isFilterDrawerMobileOpen} onClose={() => setIsFilterDrawerMobileOpen(false)} />
-      <MenuDrawer isOpen={isMenuDrawerOpen} onClose={() => setIsMenuDrawerOpen(false)} />
+      {/* <FilterDrawer isOpen={isFilterDrawerOpen} onClose={() => setIsFilterDrawerOpen(false)} /> */}
+      {/* <FilterDrawerMobile isOpen={isFilterDrawerMobileOpen} onClose={() => setIsFilterDrawerMobidsdleOpen(false)} /> */}
+      {/* <MenuDrawer isOpen={isMenuDrawerOpen} onClose={() => setIsMenuDrawerOpen(false)} /> */}
       <Flex flex={1} direction={{ base: "column", lg: "row" }}>
         <Box flex={1} bg="white" borderRadius="md" boxShadow="sm" mb={{ base: 4, lg: 0 }} mr={{ lg: 4 }} p={4}>
           <MapContainer polylinePath={polylinePath} />
@@ -246,7 +246,7 @@ const Home = () => {
                   const rideId = ride.ride_id;
                   setdata(rideId, ride.fee);
                   navigate(`/order/${rideId}`);
-                  // navigate(`${RouterPaths}`);
+
                 }}
               />
             ))}

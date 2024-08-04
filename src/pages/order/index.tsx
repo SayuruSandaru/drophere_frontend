@@ -27,6 +27,8 @@ import rideService from "api/services/rideService";
 import { decryptData, getLocalStorage } from "util/secure";
 import { useShowSuccessToast } from "pages/components/toast";
 import User from "model/user";
+import { set } from "date-fns";
+
 
 export default function OrderPageRide() {
   const navigate = useNavigate();
@@ -40,10 +42,12 @@ export default function OrderPageRide() {
   const { id, passenger_count } = useParams();
   const [rideDetails, setRideDetails] = useState(null);
   const [hasOpen, setHasOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchRideDetails = async () => {
       try {
+        setLoading(true);
         const response = await rideService.getRideById(parseInt(id));
         if (response.status === "success") {
           setRideDetails(response.ride);
@@ -51,10 +55,14 @@ export default function OrderPageRide() {
           console.log(price);
           setPrice(price);
           console.log(response);
+          setLoading(false);
+
         } else {
+          setLoading(false);
           console.log("Error getting ride details:", response);
         }
       } catch (error) {
+        setLoading(false);
         console.error("Error getting ride details:", error);
       }
     };
@@ -78,6 +86,7 @@ export default function OrderPageRide() {
       if (response.status === "success") {
         console.log("Order placed successfully:", response);
         showSuccessToast("Payment details added successfully");
+        navigate(RouterPaths.MYRIDES);
       } else {
         console.log("Error placing order:", response);
       }
@@ -200,7 +209,7 @@ export default function OrderPageRide() {
               textAlign="center"
             >
               <Image
-                src={rideDetails.vehicle_details.image_url}
+                src={rideDetails.owner_details.image_url}
                 alt="Passenger Image"
                 objectFit="cover"
                 borderRadius="md"

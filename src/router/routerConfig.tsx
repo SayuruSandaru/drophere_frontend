@@ -12,11 +12,11 @@ export enum RouterPaths {
     CREATERIDE = "/ride/create",
     CONTACT = "/contact",
     DRIVERREGISTER = "/drive/register",
-    ORDERDELIVERY = "/delivery/order",
     DRIVERDASHBOARD = "/dashboard",
     DASHBOARDRIDES = "/dashboard/rides",
     DASHBOARDREQUESTS = "/dashboard/requests",
     DASHBOARDHOME = "/dashboard/home",
-    MYRIDES = "/myrides",
+    MYRIDES = "/reservations",
+    ORDERDELIVERY = "/delivery/order/:id",
 }
 

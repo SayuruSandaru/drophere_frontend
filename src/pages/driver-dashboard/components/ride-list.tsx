@@ -33,6 +33,7 @@ const RideListTable = () => {
     const color2 = useColorModeValue("gray.400", "gray.400");
     return (
         <Box >
+
             <Flex
                 w="full"
                 bg="#edf3f8"
