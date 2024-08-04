@@ -24,25 +24,19 @@ import "./components/order.css";
 import { RouterPaths } from "router/routerConfig";
 import reservationService from "api/services/reservationService";
 import rideService from "api/services/rideService";
+import { getUserById } from "api/user";
 import { decryptData, getLocalStorage } from "util/secure";
 import { useShowSuccessToast } from "pages/components/toast";
-import User from "model/user";
-import { set } from "date-fns";
-
 
 export default function OrderPageRide() {
   const navigate = useNavigate();
-  const rating = 4.5;
-  const reviews = 50;
-  const joinDate = "Joined 2024";
-  const email = User.getUserEmail();
-  const phone = User.getUserPhone();
-  const [price, setPrice] = useState(0);
-  const showSuccessToast = useShowSuccessToast();
   const { id, passenger_count } = useParams();
   const [rideDetails, setRideDetails] = useState(null);
+  const [userData, setUserData] = useState(null);
+  const [price, setPrice] = useState(0);
   const [hasOpen, setHasOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const showSuccessToast = useShowSuccessToast();
 
   useEffect(() => {
     const fetchRideDetails = async () => {
@@ -52,11 +46,11 @@ export default function OrderPageRide() {
         if (response.status === "success") {
           setRideDetails(response.ride);
           const price = getLocalStorage(id);
-          console.log(price);
           setPrice(price);
-          console.log(response);
+          const userId = response.ride.driver_id; // Assuming driver_id is the user ID
+          const userResponse = await getUserById(userId);
+          setUserData(userResponse.user);
           setLoading(false);
-
         } else {
           setLoading(false);
           console.log("Error getting ride details:", response);
@@ -130,12 +124,12 @@ export default function OrderPageRide() {
               <Avatar
                 ml="14"
                 size="lg"
-                src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-1.2.1&q=80&fm=jpg&crop=faces&fit=crop&h=200&w=200&ixid=eyJhcHBfaWQiOjE3Nzg0fQ"
+                src={userData?.profile_image || "https://via.placeholder.com/150"}
                 css={{
                   border: "2px solid white",
                 }}
                 cursor="pointer"
-                onClick={() => navigate(RouterPaths.PROFILE)}
+                onClick={() => navigate(`/profile/${rideDetails.driver_id}`)}
               />
               <Stack spacing={0} align="left" ml={5}>
                 <Heading
@@ -143,9 +137,9 @@ export default function OrderPageRide() {
                   fontWeight={500}
                   fontFamily="body"
                   cursor="pointer"
-                  onClick={() => navigate(RouterPaths.PROFILE)}
+                  onClick={() => navigate(`/profile/${rideDetails.driver_id}`)}
                 >
-                  {User.getUserName()}
+                  {userData?.username || "Unknown User"}
                 </Heading>
                 <Flex align="center">
                   <Box as={MdCheckCircle} mr={2} />
@@ -180,11 +174,11 @@ export default function OrderPageRide() {
                 </Flex>
                 <Flex align="center">
                   <MdEmail style={{ marginRight: "8px" }} />
-                  <Text color="gray.500">{email}</Text>
+                  <Text color="gray.500">{userData?.email || "N/A"}</Text>
                 </Flex>
                 <Flex align="center">
                   <MdPhone style={{ marginRight: "8px" }} />
-                  <Text color="gray.500">{phone}</Text>
+                  <Text color="gray.500">{userData?.phone || "N/A"}</Text>
                 </Flex>
               </Stack>
 
