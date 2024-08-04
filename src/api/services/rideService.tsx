@@ -24,9 +24,31 @@ class RideService extends ApiService {
         }
     }
 
+    // public async searchRides(search: any): Promise<any> {
+    //     try {
+    //         const data = {
+    //             "pickup_lat": search.pickup_lat,
+    //             "pickup_lng": search.pickup_lng,
+    //             "destination_lat": search.destination_lat,
+    //             "destination_lng": search.destination_lng,
+    //             "date": search.date,
+    //             "passenger_count": search.passenger_count,
+    //         };
+    //         const response = await this.post("/rides/search",
+    //             data
+    //         );
+    //         return response;
+    //     } catch (error) {
+    //         console.error("Error searching for rides: ", error);
+    //         throw error;
+    //     }
+    // }
+
     public async searchRides(search: any): Promise<any> {
         try {
             const data = {
+                "pickup_name": search.pickup_name,
+                "destination_name": search.destination_name,
                 "pickup_lat": search.pickup_lat,
                 "pickup_lng": search.pickup_lng,
                 "destination_lat": search.destination_lat,
@@ -34,7 +56,8 @@ class RideService extends ApiService {
                 "date": search.date,
                 "passenger_count": search.passenger_count,
             };
-            const response = await this.post("/rides/search",
+            console.log(data);
+            const response = await this.post("/rides/search/v1",
                 data
             );
             return response;
@@ -100,7 +123,7 @@ class RideService extends ApiService {
 
 
 
-    
+
 
 }
 
