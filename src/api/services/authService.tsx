@@ -1,7 +1,24 @@
 import { AnyFunction } from "@chakra-ui/utils";
 import ApiService from "./apiService";
 
+
 class AuthService extends ApiService {
+
+
+  public async logout(): Promise<any> {
+    try {
+      const response = await this.post("/logout", {}, true);
+      // Clear any local storage or state here
+      localStorage.removeItem('token');
+      
+      // Assuming you store the token in localStorage
+      return response;
+    } catch (error) {
+      console.error("Error logging out: ", error);
+      throw error;
+    }
+  }
+
   public async login(email: string, password: string): Promise<any> {
     try {
       const response = await this.post("/login", {
@@ -61,6 +78,11 @@ class AuthService extends ApiService {
       throw error;
     }
   }
+
+
+
+
+
 }
 
 export default new AuthService();

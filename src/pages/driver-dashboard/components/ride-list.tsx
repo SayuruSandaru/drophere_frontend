@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import {
   Box,
   Button,
@@ -29,7 +29,8 @@ import {
 import RideService from "api/services/rideService";
 
 const RideListPage = () => {
-  const [rides, setRides] = useState([]);
+  const [ride, setRide] = useState(null);
+  const [currentId, setCurrentId] = useState(1);
   const [loading, setLoading] = useState(false);
   const [selectedRide, setSelectedRide] = useState(null);
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -39,32 +40,33 @@ const RideListPage = () => {
     onClose: onErrorModalClose 
   } = useDisclosure();
   const toast = useToast();
+  const cancelRef = useRef();
   
   const headers = ["From", "To", "Date", "Status", "Passengers", "Actions"];
 
   useEffect(() => {
-    fetchRides();
-  }, []);
+    fetchRide();
+  }, [currentId]);
 
-  const fetchRides = async () => {
+  const fetchRide = async () => {
     try {
       setLoading(true);
-      const response = await RideService.getRides();
+      const response = await RideService.getRideByIdfor("1");
       if (response.status === "success") {
-        setRides(response.rides || []);
+        setRide(response.ride);
       } else {
-        console.error("Failed to fetch rides:", response);
+        console.error("Failed to fetch ride:", response);
         toast({
-          title: "Failed to fetch rides",
+          title: "Failed to fetch ride",
           status: "error",
           duration: 3000,
           isClosable: true,
         });
       }
     } catch (error) {
-      console.error("Error fetching rides:", error);
+      console.error("Error fetching ride:", error);
       toast({
-        title: "Error fetching rides",
+        title: "Error fetching ride",
         description: error.message,
         status: "error",
         duration: 3000,
@@ -82,7 +84,7 @@ const RideListPage = () => {
       setLoading(true);
       const response = await RideService.deleteRide(selectedRide.ride_id);
       if (response.status === "success") {
-        setRides(rides.filter(ride => ride.ride_id !== selectedRide.ride_id));
+        setRide(null);
         toast({
           title: "Ride deleted successfully",
           status: "success",
@@ -116,7 +118,13 @@ const RideListPage = () => {
     return date.toISOString().split('T')[0];
   };
 
-  const cancelRef = React.useRef();
+  const nextRide = () => {
+    setCurrentId(prevId => prevId + 1);
+  };
+
+  const prevRide = () => {
+    setCurrentId(prevId => Math.max(1, prevId - 1));
+  };
 
   return (
     <Box>
@@ -130,7 +138,7 @@ const RideListPage = () => {
       >
         {loading ? (
           <Spinner size="xl" />
-        ) : (
+        ) : ride ? (
           <Table
             w="full"
             bg="white"
@@ -152,48 +160,51 @@ const RideListPage = () => {
               display={{ base: "block", lg: "table-row-group" }}
               sx={{ "@media print": { display: "table-row-group" } }}
             >
-              {rides.map((ride) => (
-                <Tr
-                  key={ride.ride_id}
-                  display={{ base: "grid", md: "table-row" }}
-                  sx={{
-                    "@media print": { display: "table-row" },
-                    gridTemplateColumns: "minmax(0px, 35%) minmax(0px, 65%)",
-                    gridGap: "10px",
-                  }}
-                >
-                  <Td color={"gray.500"} fontSize="md" fontWeight="light">
-                    {ride.start_location}
-                  </Td>
-                  <Td color={"gray.500"} fontSize="md" fontWeight="light">
-                    {ride.end_location}
-                  </Td>
-                  <Td color={"gray.500"} fontSize="md" fontWeight="light">
-                    {formatDate(ride.start_time)}
-                  </Td>
-                  <Td color={"gray.500"} fontSize="md" fontWeight="light">
-                    {ride.status}
-                  </Td>
-                  <Td color={"gray.500"} fontSize="md" fontWeight="light">
-                    {ride.passenger_count}
-                  </Td>
-                  <Td>
-                    <Button
-                      colorScheme="red"
-                      size="sm"
-                      onClick={() => {
-                        setSelectedRide(ride);
-                        onOpen();
-                      }}
-                    >
-                      Delete
-                    </Button>
-                  </Td>
-                </Tr>
-              ))}
+              <Tr
+                display={{ base: "grid", md: "table-row" }}
+                sx={{
+                  "@media print": { display: "table-row" },
+                  gridTemplateColumns: "minmax(0px, 35%) minmax(0px, 65%)",
+                  gridGap: "10px",
+                }}
+              >
+                <Td color={"gray.500"} fontSize="md" fontWeight="light">
+                  {ride.start_location}
+                </Td>
+                <Td color={"gray.500"} fontSize="md" fontWeight="light">
+                  {ride.end_location}
+                </Td>
+                <Td color={"gray.500"} fontSize="md" fontWeight="light">
+                  {formatDate(ride.start_time)}
+                </Td>
+                <Td color={"gray.500"} fontSize="md" fontWeight="light">
+                  {ride.status}
+                </Td>
+                <Td color={"gray.500"} fontSize="md" fontWeight="light">
+                  {ride.passenger_count}
+                </Td>
+                <Td>
+                  <Button
+                    colorScheme="red"
+                    size="sm"
+                    onClick={() => {
+                      setSelectedRide(ride);
+                      onOpen();
+                    }}
+                  >
+                    Delete
+                  </Button>
+                </Td>
+              </Tr>
             </Tbody>
           </Table>
+        ) : (
+          <Box>No ride found</Box>
         )}
+      </Flex>
+      <Flex justifyContent="space-between" mt={4}>
+        <Button onClick={prevRide} disabled={currentId === 1}>Previous Ride</Button>
+        <Button onClick={nextRide}>Next Ride</Button>
       </Flex>
       <AlertDialog
         isOpen={isOpen}
