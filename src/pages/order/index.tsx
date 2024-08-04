@@ -1,3 +1,4 @@
+import React, { useEffect, useState } from "react";
 import {
   Heading,
   Avatar,
@@ -11,9 +12,9 @@ import {
   Image,
   Spinner,
 } from "@chakra-ui/react";
-import { MdCheckCircle, MdDateRange, MdEmail, MdPhone } from "react-icons/md";
-import React, { useEffect, useState } from "react";
+import { MdCheckCircle, MdDateRange, MdEmail, MdPhone, MdAccessTime } from "react-icons/md";
 import { useNavigate, useParams } from "react-router-dom";
+import { format, parseISO } from "date-fns";
 import NavbarHome from "pages/components/NavbarHome";
 import Footer from "pages/components/footer";
 import StarRating from "./components/starRating";
@@ -25,15 +26,17 @@ import reservationService from "api/services/reservationService";
 import rideService from "api/services/rideService";
 import { decryptData, getLocalStorage } from "util/secure";
 import { useShowSuccessToast } from "pages/components/toast";
+import User from "model/user";
 import { set } from "date-fns";
+
 
 export default function OrderPageRide() {
   const navigate = useNavigate();
   const rating = 4.5;
   const reviews = 50;
   const joinDate = "Joined 2024";
-  const email = "test@gmail.com";
-  const phone = "0771234567";
+  const email = User.getUserEmail();
+  const phone = User.getUserPhone();
   const [price, setPrice] = useState(0);
   const showSuccessToast = useShowSuccessToast();
   const { id, passenger_count } = useParams();
@@ -48,10 +51,12 @@ export default function OrderPageRide() {
         const response = await rideService.getRideById(parseInt(id));
         if (response.status === "success") {
           setRideDetails(response.ride);
-          const price = getLocalStorage(id)
-          console.log(price)
+          const price = getLocalStorage(id);
+          console.log(price);
           setPrice(price);
+          console.log(response);
           setLoading(false);
+
         } else {
           setLoading(false);
           console.log("Error getting ride details:", response);
@@ -91,7 +96,12 @@ export default function OrderPageRide() {
     }
   };
 
-
+  const formattedDate = rideDetails
+    ? format(parseISO(rideDetails.start_time), "PPP")
+    : "";
+  const formattedTime = rideDetails
+    ? format(parseISO(rideDetails.start_time), "p")
+    : "";
 
   return (
     <Box bgColor={"gray.50"}>
@@ -135,7 +145,7 @@ export default function OrderPageRide() {
                   cursor="pointer"
                   onClick={() => navigate(RouterPaths.PROFILE)}
                 >
-                  {rideDetails.owner_details.first_name}
+                  {User.getUserName()}
                 </Heading>
                 <Flex align="center">
                   <Box as={MdCheckCircle} mr={2} />
@@ -162,7 +172,11 @@ export default function OrderPageRide() {
               <Stack spacing={3} align="left" ml={20} mt={5}>
                 <Flex align="center">
                   <MdDateRange style={{ marginRight: "8px" }} />
-                  <Text color="gray.500">{rideDetails.start_time}</Text>
+                  <Text color="gray.500">{formattedDate}</Text>
+                </Flex>
+                <Flex align="center">
+                  <MdAccessTime style={{ marginRight: "8px" }} />
+                  <Text color="gray.500">{formattedTime}</Text>
                 </Flex>
                 <Flex align="center">
                   <MdEmail style={{ marginRight: "8px" }} />
