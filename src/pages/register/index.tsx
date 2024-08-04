@@ -30,7 +30,6 @@ const Register: React.FC = () => {
   const [errorMessage, setErrorMessage] = React.useState('');
   const [loading, setLoading] = React.useState(false);
   const [profileImage, setProfileImage] = React.useState<File | null>(null);
-  const [imageurl, setImageUrl] = React.useState('');
   const navigate = useNavigate();
   const showErrorToast = useShowErrorToast();
 
@@ -42,7 +41,6 @@ const Register: React.FC = () => {
       }
       setLoading(true);
       const res = await fileUpload(profileImage);
-      setImageUrl(res);
       return res;
     } catch (error: any) {
       setLoading(false);
