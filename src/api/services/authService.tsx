@@ -7,7 +7,6 @@ class AuthService extends ApiService {
       const response = await this.post("/login", {
         email,
         password
-
       }, false);
       return response;
     } catch (error) {
@@ -36,12 +35,29 @@ class AuthService extends ApiService {
     }
   }
 
-  public async getUser(): Promise<any> {  
+  public async getUser(): Promise<any> {
     try {
       const response = await this.get("/user", true);
       return response;
     } catch (error) {
       console.error("Error getting user: ", error);
+      throw error;
+    }
+  }
+
+  public async updateUserImg(email: string, url: string): Promise<any> {
+    try {
+      console.log('Updating user image. Email:', email, 'URL:', url);
+      const response = await this.post("/update", 
+        {
+          "email":email,
+          "profile_image": url
+      }
+    );
+      console.log('Update user image response:', response);
+      return response;
+    } catch (error) {
+      console.error("Error updating user image: ", error);
       throw error;
     }
   }
