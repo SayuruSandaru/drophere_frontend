@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Flex, Table, Tbody, Td, Th, Thead, Tr, Tag, useDisclosure } from "@chakra-ui/react";
+import { Box, Flex, Table, Tbody, Td, Th, Thead, Tr, Tag, useDisclosure, IconButton } from "@chakra-ui/react";
 import ActionMenu from './action-menu';
 import DataPopup from './data-popup';
 import driverService from 'api/services/driverService';
+import { FaEye } from 'react-icons/fa';
 
 const OrderHistoryTable = ({ data }) => {
     const { isOpen, onOpen, onClose } = useDisclosure();
@@ -89,13 +90,18 @@ const OrderHistoryTable = ({ data }) => {
                                 <Td>{item.ride.start_location}</Td>
                                 <Td>{item.ride.end_location}</Td>
                                 <Td>
-                                    <Tag colorScheme={item.status === 'ongoing' ? 'green' : item.status === 'completed' ? 'teal' : 'red'}>
-                                        {item.status}
-                                    </Tag>
+                                    <StatusTag key={item.id} status={item.status} />
                                 </Td>
                                 <Td>{item.type}</Td>
                                 <Td>
-                                    <ActionMenu onStart={() => handleStart(item)} onDecline={handleDecline} />
+                                    {/* <ActionMenu onStart={() => handleStart(item)} onDecline={handleDecline} /> */}
+                                    <IconButton
+                                        aria-label="View item"
+                                        icon={<FaEye />}
+                                        onClick={() => handleStart(item)}
+                                        colorScheme="gray"
+                                        ml={2}
+                                    />
                                 </Td>
                             </Tr>
                         ))}
@@ -110,3 +116,29 @@ const OrderHistoryTable = ({ data }) => {
 };
 
 export default OrderHistoryTable;
+
+
+
+const StatusTag = ({ status }) => {
+    const getColorScheme = (status) => {
+        switch (status) {
+            case 'ongoing':
+                return 'green';
+            case 'completed':
+                return 'teal';
+            case 'confirmed':
+                return 'blue';
+            case 'cancelled':
+                return 'red';
+            default:
+                return 'gray';
+        }
+    };
+
+    return (
+        <Tag colorScheme={getColorScheme(status)}>
+            {status}
+        </Tag>
+    );
+};
+

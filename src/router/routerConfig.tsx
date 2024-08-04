@@ -16,7 +16,7 @@ export enum RouterPaths {
     DASHBOARDRIDES = "/dashboard/rides",
     DASHBOARDREQUESTS = "/dashboard/requests",
     DASHBOARDHOME = "/dashboard/home",
-    MYRIDES = "/myrides",
+    MYRIDES = "/reservations",
     ORDERDELIVERY = "/delivery/order/:id",
 }
 

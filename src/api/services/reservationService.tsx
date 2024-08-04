@@ -37,8 +37,6 @@ class ReservationService extends ApiService {
         }
     }
 
-
-
     public async getReservationsByStatus(status: string): Promise<any> {
         try {
             console.log("Fetching reservations with status: ", status);
@@ -59,9 +57,9 @@ class ReservationService extends ApiService {
                 "reservation_id": reservationId,  // Ensure using "reservation_id"
                 "status": status
             };
-    
+
             console.log("Updating reservation status with request data: ", requestData); // Log request data
-    
+
             const response = await this.post(`/reservation/update`, requestData);
             console.log("Response from server: ", response); // Log server response
             return response;

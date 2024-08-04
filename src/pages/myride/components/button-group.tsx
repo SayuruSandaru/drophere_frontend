@@ -5,12 +5,14 @@ interface OrderStatusTabsProps {
     onOngoingSelect: () => void;
     onCompletedSelect: () => void;
     onCancelledSelect: () => void;
+    onConfirmedSelect: () => void;
 }
 
 const OrderStatusTabs: React.FC<OrderStatusTabsProps> = ({
     onOngoingSelect,
     onCompletedSelect,
     onCancelledSelect,
+    onConfirmedSelect,
 }) => {
     const [selected, setSelected] = useState('Orders');
 
@@ -27,6 +29,13 @@ const OrderStatusTabs: React.FC<OrderStatusTabsProps> = ({
                 isActive={selected === 'Orders'}
             >
                 <Text fontWeight="medium">Ongoing</Text>
+            </Button>
+            <Button
+                colorScheme={selected === 'Confirmed' ? 'blue' : 'gray'}
+                onClick={() => handleSelect('Confirmed', onConfirmedSelect)}
+                isActive={selected === 'Confirmed'}
+            >
+                <Text fontWeight="medium">Confirmed</Text>
             </Button>
             <Button
                 colorScheme={selected === 'Completed' ? 'blue' : 'gray'}

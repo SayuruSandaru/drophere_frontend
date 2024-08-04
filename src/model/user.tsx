@@ -1,38 +1,52 @@
-import { UserModal } from "./userModal";
-
 class User {
-    static userDetail: UserModal;
+    static userDetail = null;
 
-    static setUserDetail(userDetail: UserModal, updateStateFunction = null) {
+    static setUserDetail(userDetail, updateStateFunction = null) {
         this.userDetail = userDetail;
+        localStorage.setItem('userDetail', JSON.stringify(userDetail));
         if (updateStateFunction) {
             updateStateFunction(userDetail);
         }
     }
 
     static getUserDetail() {
+        if (!this.userDetail) {
+            const storedUserDetail = localStorage.getItem('userDetail');
+            if (storedUserDetail) {
+                this.userDetail = JSON.parse(storedUserDetail);
+            }
+        }
         return this.userDetail;
     }
 
     static getUserId() {
-        const user = localStorage.getItem('user');
-        if (!user) return null;
-        const userData = JSON.parse(user);
-        return userData.id;
+        const userDetail = this.getUserDetail();
+        return userDetail ? userDetail.user.id : null;
     }
 
-    static setUserId(id: string) {
-        const user = localStorage.setItem('user', id);
-        return user;
-
+    static getUserPhone() {
+        const userDetail = this.getUserDetail();
+        return userDetail ? userDetail.user.phone : null;
     }
 
     static getUserEmail() {
-        return this.userDetail.user.email;
+        const userDetail = this.getUserDetail();
+        return userDetail ? userDetail.user.email : null;
+    }
+
+    static getUserName() {
+        const userDetail = this.getUserDetail();
+        return userDetail ? userDetail.user.username : null;
     }
 
     static getDriverDetails() {
-        return this.userDetail.driverDetails;
+        const userDetail = this.getUserDetail();
+        return userDetail ? userDetail.driverDetails : null;
+    }
+
+    static isDriver() {
+        const userDetail = this.getUserDetail();
+        return userDetail ? userDetail.isDriver : false;
     }
 }
 
