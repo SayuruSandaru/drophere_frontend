@@ -23,7 +23,6 @@ const DashboardHome = () => {
             const result = await ReservationService.getReservationsByStatus(status, User.getUserId());
             const reservations = result.data || result;
 
-            // Fetch vehicle details for each reservation
             const reservationsWithVehicles = await Promise.all(
                 reservations.map(async (reservation) => {
                     const vehicle = await getVehicleById(reservation.ride.vehicle_id);
