@@ -27,16 +27,18 @@ interface SignUpProps {
   email: string;
   password: string;
   loading: boolean;
+  profileImage: File | null;
   setFirstName: (value: string) => void;
   setLastName: (value: string) => void;
   setUsername: (value: string) => void;
   setMobileNumber: (value: string) => void;
   setEmail: (value: string) => void;
   setPassword: (value: string) => void;
-  onSignUp: () => void;
+  onSignUp: (formData: FormData) => void;
+  setProfileImage: (value: File) => void;
 }
 
-export const Sing_Up: React.FC<SignUpProps> = ({
+export const Sign_Up: React.FC<SignUpProps> = ({
   firstName,
   lastName,
   username,
@@ -44,12 +46,14 @@ export const Sing_Up: React.FC<SignUpProps> = ({
   email,
   password,
   loading,
+  profileImage,
   setFirstName,
   setLastName,
   setUsername,
   setMobileNumber,
   setEmail,
   setPassword,
+  setProfileImage,
   onSignUp,
 }) => {
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
@@ -85,15 +89,25 @@ export const Sing_Up: React.FC<SignUpProps> = ({
 
     if (!password) newErrors.password = "Password is required";
 
+    if (!profileImage) newErrors.profileImage = "Profile image is required";
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
-
-
   const handleSignUp = () => {
     if (validateForm()) {
-      onSignUp();
+      const formData = new FormData();
+      formData.append("firstName", firstName);
+      formData.append("lastName", lastName);
+      formData.append("username", username);
+      formData.append("mobileNumber", mobileNumber);
+      formData.append("email", email);
+      formData.append("password", password);
+      if (profileImage) {
+        formData.append("profileImage", profileImage);
+      }
+      onSignUp(formData);
     }
   };
 
@@ -191,6 +205,18 @@ export const Sing_Up: React.FC<SignUpProps> = ({
                   isInvalid={!!errors.password}
                   errorMessage={errors.password}
                 />
+                <FormControl isInvalid={!!errors.profileImage}>
+                  <FormLabel htmlFor="profileImage">Profile Image</FormLabel>
+                  <Input
+                    id="profileImage"
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => setProfileImage(e.target.files[0])}
+                  />
+                  {errors.profileImage && (
+                    <FormErrorMessage>{errors.profileImage}</FormErrorMessage>
+                  )}
+                </FormControl>
               </Stack>
               <Stack spacing="6">
                 <Button

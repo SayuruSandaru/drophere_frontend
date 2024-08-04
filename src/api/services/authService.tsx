@@ -24,7 +24,7 @@ class AuthService extends ApiService {
         "lastname": user.lastname,
         "username": user.username,
         "phone": user.phone,
-        "profile_image": "NOT AVAILABLE"
+        "profile_image": user.profile_image
       };
       console.log(r);
       const response = await this.post("/register", r, false);
@@ -48,12 +48,12 @@ class AuthService extends ApiService {
   public async updateUserImg(email: string, url: string): Promise<any> {
     try {
       console.log('Updating user image. Email:', email, 'URL:', url);
-      const response = await this.post("/update", 
+      const response = await this.post("/update",
         {
-          "email":email,
+          "email": email,
           "profile_image": url
-      }
-    );
+        }
+      );
       console.log('Update user image response:', response);
       return response;
     } catch (error) {
