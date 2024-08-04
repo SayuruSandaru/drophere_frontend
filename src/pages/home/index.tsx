@@ -32,7 +32,7 @@ import { searchRides } from "api/ride";
 import React from "react";
 import { decodePolyline } from "util/map";
 import { encryptData, getLocalStorage, setLocalStorage } from "util/secure";
-import { setDate } from "date-fns";
+import { format, setDate } from "date-fns";
 
 const Home = () => {
   const rideSearchData = useRecoilValue(searchRideState);
@@ -47,7 +47,7 @@ const Home = () => {
   const [isFilterDrawerMobileOpen, setIsFilterDrawerMobileOpen] = useState(false);
   const [isMenuDrawerOpen, setIsMenuDrawerOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState("");
-  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [selectedDate, setSelectedDate] = useState(rideSearchData.date || new Date());
 
   const [selectedPickupLocation, setSelectedPickupLocation] = useState(rideSearchData?.pickupName || '');
   const [pickCordinate, setPickCordinate] = useState({ "lat": rideSearchData?.pickup_lat || 0, "lng": rideSearchData?.pickup_lng || 0 });
@@ -104,14 +104,17 @@ const Home = () => {
       setLoading(true);
       setErrorMessage('');
       console.log(pickCordinate['lat']);
+      const formattedDate = format(selectedDate, 'yyyy-MM-dd');
       const res = await searchRides(
         {
           pickup_lat: pickCordinate['lat'],
           pickup_lng: pickCordinate['lng'],
           destination_lat: destinationCordinate['lat'],
           destination_lng: destinationCordinate['lng'],
-          date: selectedDate.toISOString(),
+          date: formattedDate,
           passenger_count: parseInt(selectedPassangerCount),
+          pickup_name: selectedPickupLocation,
+          destination_name: selectedDestinationLocation,
         }
       );
       const rideData = {
@@ -123,6 +126,7 @@ const Home = () => {
         destinationName: selectedDestinationLocation,
         passengerCount: selectedPassangerCount,
         response: res.rides,
+        date: selectedDate,
       };
       setSearchRideState(rideData);
       console.log(res);
@@ -204,7 +208,7 @@ const Home = () => {
                 to={ride.end_location}
                 name={ride.owner_details.city}
                 availability={ride.status}
-                seatsLeft={ride.vehicle_details.capacity}
+                seatsLeft={ride.passenger_count}
                 price={`Rs ${ride.fee}`}
                 onClick={() => {
                   const points = decodePolyline(ride.route)

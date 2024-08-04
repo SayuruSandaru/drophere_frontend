@@ -32,6 +32,7 @@ import { getReviews, createReview } from "api/review";
 import { getUserDetails } from "api/user";
 import { fileUpload } from "api/common";
 import authService from "api/services/authService";
+import User from "model/user";
 
 const Profile = () => {
   const [ratingData, setRatingData] = useState({ rating: 0, reviews: 0 });
@@ -83,10 +84,10 @@ const Profile = () => {
   const handleAddReview = async () => {
     try {
       setIsLoading(true);
-      const response = await createReview({ 
-        description: newReviewComment, 
-        rating: newReviewRating, 
-        driver_id: 1 
+      const response = await createReview({
+        description: newReviewComment,
+        rating: newReviewRating,
+        driver_id: 1
       });
       const updatedReviews = await getReviews();
       if (Array.isArray(updatedReviews)) {
@@ -124,17 +125,17 @@ const Profile = () => {
       });
       return;
     }
-  
+
     try {
       setIsLoading(true);
-      
+
       console.log('Uploading document for user:', userDetails.user.email);
       const url = await fileUpload(selectedFile);
       console.log('File uploaded, received URL:', url);
-  
+
       const response = await authService.updateUserImg(userDetails.user.email, url);
       console.log('Profile update response:', response);
-  
+
       if (response && response.status === "success") {
         toast({
           title: "Profile image updated",
@@ -143,7 +144,7 @@ const Profile = () => {
           duration: 5000,
           isClosable: true,
         });
-  
+
         // Update the local state immediately
         setUserDetails(prevDetails => ({
           ...prevDetails,
@@ -155,7 +156,7 @@ const Profile = () => {
       } else {
         throw new Error(response.message || "Failed to update profile image");
       }
-  
+
       setIsLoading(false);
       onClose();
     } catch (error) {
@@ -169,7 +170,7 @@ const Profile = () => {
         isClosable: true,
       });
     }
-  };  
+  };
 
   const handleChange = useCallback((e) => {
     const { value } = e.target;
@@ -211,19 +212,21 @@ const Profile = () => {
                 name={userDetails.user.username}
                 src={userDetails.user.profile_image}
               />
-              <Icon
-                as={FaCamera}
-                boxSize={6}
-                position="absolute"
-                bottom={0}
-                right={0}
-                bg="white"
-                borderRadius="full"
-                p={1}
-                color="gray.700"                
-                cursor="pointer"
-                onClick={onOpen}
-              />
+              {User.isDriver() && User.getUserId() === userDetails.user.id && (
+                <Icon
+                  as={FaCamera}
+                  boxSize={6}
+                  position="absolute"
+                  bottom={0}
+                  right={0}
+                  bg="white"
+                  borderRadius="full"
+                  p={1}
+                  color="gray.700"
+                  cursor="pointer"
+                  onClick={onOpen}
+                />
+              )}
             </Box>
             <Text as="b" fontSize="xl" ml={"10px"} mt={4}>
               {userDetails.user.username}
