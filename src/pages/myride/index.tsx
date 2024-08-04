@@ -27,7 +27,7 @@ const MyRide: React.FC = () => {
     const getReservationByStatus = async (status: string) => {
         try {
             setLoading(true);
-            const response = await reservationService.getReservationsByStatus(status);
+            const response = await reservationService.getReservationsByStatus(status, User.getUserId());
             console.log(response);
             setData(response.data);
             setLoading(false);
