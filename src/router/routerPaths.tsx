@@ -40,6 +40,7 @@ const RouterConfig: React.FC = () => {
             <Route path={RouterPaths.SEARCHDELIVERY} element={<SearchDelivery />} />
             <Route path={RouterPaths.SEARCHRIDE} element={<PrivateRoute element={<Ride />} />} />
             <Route path={RouterPaths.PROFILE} element={<Profile />} />
+            <Route path={RouterPaths.DRIVERPROFILE} element={<Profile />} />
             <Route path={RouterPaths.CREATERIDE} element={<Cride />} />
             <Route path={RouterPaths.HOMEDELIVERY} element={<HomeDelivery />} />
             <Route path={RouterPaths.LANDING} element={<LandingPage />} />
@@ -58,6 +59,7 @@ const RouterConfig: React.FC = () => {
                 <Route path={RouterPaths.ADMINDRIVERREGREQUEST} element={<AdminDriverRegRequest />} />
                 <Route path={RouterPaths.ADMINANALYTICS} element={<AdminAnalytics />} />
             </Route>
+            
         </Routes>
     );
 }

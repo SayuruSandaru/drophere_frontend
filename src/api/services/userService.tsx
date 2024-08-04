@@ -1,4 +1,3 @@
-// services/userService.tsx
 import ApiService from "./apiService";
 
 class UserService extends ApiService {
@@ -8,6 +7,17 @@ class UserService extends ApiService {
       return response;
     } catch (error) {
       console.error("Error getting user details: ", error);
+      throw error;
+    }
+  }
+
+  // get user by id
+  public async getUserById(userId: string): Promise<any> {
+    try {
+      const response = await this.get(`/users/${userId}`);
+      return response;
+    } catch (error) {
+      console.error(`Error getting user by ID ${userId}: `, error);
       throw error;
     }
   }
