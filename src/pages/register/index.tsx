@@ -12,10 +12,12 @@ import React, { useState } from "react";
 import { colors } from "theme/colors";
 import { LoginForm } from "../login/login_form";
 import { useNavigate } from "react-router-dom";
-import { Sing_Up } from "./Sign_Up";
+import { Sign_Up } from "./Sign_Up";
 import { RouterPaths } from "router/routerConfig";
 import { register } from "module";
 import { registerUser } from "api/auth";
+import { fileUpload } from "api/common";
+import { useShowErrorToast } from "pages/components/toast";
 
 
 const Register: React.FC = () => {
@@ -27,8 +29,26 @@ const Register: React.FC = () => {
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = React.useState('');
   const [loading, setLoading] = React.useState(false);
+  const [profileImage, setProfileImage] = React.useState<File | null>(null);
+  const [imageurl, setImageUrl] = React.useState('');
   const navigate = useNavigate();
+  const showErrorToast = useShowErrorToast();
 
+
+  const uploadProofDocument = async () => {
+    try {
+      if (!profileImage) {
+        return;
+      }
+      setLoading(true);
+      const res = await fileUpload(profileImage);
+      setImageUrl(res);
+    } catch (error: any) {
+      setLoading(false);
+      const errorMessage = error.message || 'Failed to upload document. Please try again.';
+      showErrorToast(errorMessage);
+    }
+  };
 
   const handleRegister = async () => {
     try {
@@ -36,6 +56,7 @@ const Register: React.FC = () => {
       setErrorMessage('');
       console.log("Registering user");
       console.log("email: ", email);
+      await uploadProofDocument();
       await registerUser(
         {
           email: email,
@@ -44,14 +65,15 @@ const Register: React.FC = () => {
           lastname: lastName,
           username: username,
           phone: mobileNumber,
-          profile_image: "NOT AVAILABLE",
+          profile_image: imageurl,
         }
       );
       setLoading(false);
       navigate(RouterPaths.LOGIN);
     } catch (error) {
       setLoading(false);
-      setErrorMessage(error.message);
+      // setErrorMessage(error.message);
+      showErrorToast(error.message);
     }
   };
 
@@ -61,11 +83,11 @@ const Register: React.FC = () => {
   return (
     <Box>
       <Flex direction="column" h="100vh">
-        {errorMessage && (
+        {/* {errorMessage && (
           <Box p={2} color="white" bg={"red.400"} textAlign="center">
             {errorMessage}
           </Box>
-        )}
+        )} */}
         {!isLargeScreen && (
           <Flex direction="row" bg="#2bb07b" p="5">
             <Heading m={"auto"} color={"white"}>
@@ -96,20 +118,23 @@ const Register: React.FC = () => {
               </Stack>
             </Box>
           )}
-          <Sing_Up
+          <Sign_Up
             firstName={firstName}
             lastName={lastName}
             username={username}
             mobileNumber={mobileNumber}
             email={email}
             password={password}
+            profileImage={profileImage}
             setFirstName={setFirstName}
             setLastName={setLastName}
             setUsername={setUsername}
             setMobileNumber={setMobileNumber}
             setEmail={setEmail}
             setPassword={setPassword}
+            setProfileImage={setProfileImage}
             onSignUp={handleRegister}
+
             loading={loading}
           />
         </Flex>

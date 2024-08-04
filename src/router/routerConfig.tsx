@@ -9,6 +9,7 @@ export enum RouterPaths {
     SEARCHDELIVERY = "/delivery/search",
     SEARCHRIDE = "/ride/search",
     PROFILE = "/profile",
+    DRIVERPROFILE = "/profile/:driver_id",
     CREATERIDE = "/ride/create",
     CONTACT = "/contact",
     DRIVERREGISTER = "/drive/register",

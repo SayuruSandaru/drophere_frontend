@@ -33,6 +33,8 @@ import { getUserDetails } from "api/user";
 import { fileUpload } from "api/common";
 import authService from "api/services/authService";
 import User from "model/user";
+import { useParams } from "react-router-dom";
+import { getUserById } from "api/user";
 
 const Profile = () => {
   const [ratingData, setRatingData] = useState({ rating: 0, reviews: 0 });
@@ -45,15 +47,22 @@ const Profile = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [isLargeScreen] = useMediaQuery("(min-width: 992px)");
   const toast = useToast();
+  const { driver_id } = useParams();
+  const [isCurrentUser, setIsCurrentUser] = useState(true);
 
   useEffect(() => {
     const fetchReviews = async () => {
       try {
         const fetchedReviews = await getReviews();
         if (Array.isArray(fetchedReviews)) {
-          setReviews(fetchedReviews);
-          const averageRating = fetchedReviews.reduce((acc, review) => acc + review.rating, 0) / fetchedReviews.length;
-          setRatingData({ rating: averageRating, reviews: fetchedReviews.length });
+          // Filter reviews if driver_id is provided
+          const filteredReviews = driver_id 
+            ? fetchedReviews.filter(review => review.driver_id === parseInt(driver_id))
+            : fetchedReviews;
+          
+          setReviews(filteredReviews);
+          const averageRating = filteredReviews.reduce((acc, review) => acc + review.rating, 0) / filteredReviews.length;
+          setRatingData({ rating: averageRating, reviews: filteredReviews.length });
         } else {
           setReviews([]);
         }
@@ -66,20 +75,29 @@ const Profile = () => {
     };
 
     fetchReviews();
-  }, []);
+  }, [driver_id]);  
 
   useEffect(() => {
     const fetchUserDetails = async () => {
       try {
-        const fetchedUserDetails = await getUserDetails();
-        setUserDetails(fetchedUserDetails);
+        if (driver_id) {
+          const response = await getUserById(driver_id); // Pass driver_id directly as a string
+          if (response.status === "success") {
+            setUserDetails({ user: response.user });
+            setIsCurrentUser(User.getUserId().toString() === driver_id);
+          }
+        } else {
+          const fetchedUserDetails = await getUserDetails();
+          setUserDetails(fetchedUserDetails);
+          setIsCurrentUser(true);
+        }
       } catch (error) {
         console.error("Failed to fetch user details", error);
       }
     };
 
     fetchUserDetails();
-  }, []);
+  }, [driver_id]);
 
   const handleAddReview = async () => {
     try {
@@ -87,24 +105,29 @@ const Profile = () => {
       const response = await createReview({
         description: newReviewComment,
         rating: newReviewRating,
-        driver_id: 1
+        driver_id: driver_id || User.getUserId().toString() // Ensure driver_id is a string
       });
-      const updatedReviews = await getReviews();
-      if (Array.isArray(updatedReviews)) {
-        setReviews(updatedReviews);
-        const averageRating = updatedReviews.reduce((acc, review) => acc + review.rating, 0) / updatedReviews.length;
-        setRatingData({ rating: averageRating, reviews: updatedReviews.length });
-        setNewReviewRating(0);
-        setNewReviewComment("");
-      } else {
-        setReviews([]);
+       // Fetch reviews again after adding a new one
+       const updatedReviews = await getReviews();
+       if (Array.isArray(updatedReviews)) {
+         const filteredReviews = driver_id 
+           ? updatedReviews.filter(review => review.driver_id === parseInt(driver_id))
+           : updatedReviews;
+         
+         setReviews(filteredReviews);
+         const averageRating = filteredReviews.reduce((acc, review) => acc + review.rating, 0) / filteredReviews.length;
+         setRatingData({ rating: averageRating, reviews: filteredReviews.length });
+         setNewReviewRating(0);
+         setNewReviewComment("");
+       } else {
+         setReviews([]);
+       }
+      } catch (error) {
+        console.error("Failed to add review", error);
+      } finally {
+        setIsLoading(false);
       }
-    } catch (error) {
-      console.error("Failed to add review", error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+    };
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
@@ -212,21 +235,21 @@ const Profile = () => {
                 name={userDetails.user.username}
                 src={userDetails.user.profile_image}
               />
-              {User.isDriver() && User.getUserId() === userDetails.user.id && (
-                <Icon
-                  as={FaCamera}
-                  boxSize={6}
-                  position="absolute"
-                  bottom={0}
-                  right={0}
-                  bg="white"
-                  borderRadius="full"
-                  p={1}
-                  color="gray.700"
-                  cursor="pointer"
-                  onClick={onOpen}
-                />
-              )}
+               {User.isDriver() && User.getUserId() === parseInt(driver_id) && (
+    <Icon
+      as={FaCamera}
+      boxSize={6}
+      position="absolute"
+      bottom={0}
+      right={0}
+      bg="white"
+      borderRadius="full"
+      p={1}
+      color="gray.700"
+      cursor="pointer"
+      onClick={onOpen}
+    />
+  )}
             </Box>
             <Text as="b" fontSize="xl" ml={"10px"} mt={4}>
               {userDetails.user.username}
