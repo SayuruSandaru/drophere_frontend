@@ -12,4 +12,7 @@ export const getUserDetails = async (): Promise<any> => {
     console.error("Error getting user details: ", error);
     throw error;
   }
+
+
+
 };
