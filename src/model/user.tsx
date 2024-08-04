@@ -48,6 +48,11 @@ class User {
         const userDetail = this.getUserDetail();
         return userDetail ? userDetail.isDriver : false;
     }
+
+    static getProfileImage() {
+        const userDetail = this.getUserDetail();
+        return userDetail ? userDetail.user.profile_image : null;
+    }
 }
 
 export default User;
