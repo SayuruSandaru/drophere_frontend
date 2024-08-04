@@ -18,5 +18,11 @@ export enum RouterPaths {
     DASHBOARDHOME = "/dashboard/home",
     MYRIDES = "/reservations",
     ORDERDELIVERY = "/delivery/order/:id",
+    ADMINDASHBOARD = "/admin-dashboard",
+    ADMINHOME = "/admin-dashboard/home",
+    ADMINUSERS = "/admin-dashboard/users",
+    ADMINDISPUTE = "/admin-dashboard/dispute",
+    ADMINDRIVERREGREQUEST = "/admin-dashboard/registration-request",
+    ADMINANALYTICS = "/admin-dashboard/analytics"
 }
 
