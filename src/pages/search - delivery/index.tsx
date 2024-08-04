@@ -5,10 +5,11 @@ import PlaceAutocompleteModal from 'pages/components/placeModalbox';
 import Footer from 'pages/components/footer';
 import Navbar from 'pages/components/NavbarNeedLogin';
 import { RouterPaths } from 'router/routerConfig';
-import { searchRides } from 'api/ride'; 
-import { searchRideState } from 'state'; 
+import { searchRides } from 'api/ride';
+import { searchRideState } from 'state';
 import { useSetRecoilState } from 'recoil';
 import { FaCalendarAlt, FaUser, FaMapMarkerAlt, FaFlag, FaSearch } from 'react-icons/fa';
+import { format } from 'date-fns/format';
 
 const SearchDelivery = () => {
   const { isOpen: isPickupPlaceOpen, onOpen: onPickupPlaceOpen, onClose: onPickupPlaceClose } = useDisclosure();
@@ -23,7 +24,7 @@ const SearchDelivery = () => {
   const [pickCordinate, setPickCordinate] = useState({});
   const [destinationCordinate, setDestinationCordinate] = useState({});
   const [selectedPickupLocation, setSelectedPickupLocation] = useState("");
-  
+
   const [isMobile] = useMediaQuery("(max-width: 767px)");
 
   const handleItemClick = (item) => {
@@ -48,11 +49,16 @@ const SearchDelivery = () => {
     try {
       setLoading(true);
       setErrorMessage('');
+      const formattedDate = format(selectedDate, 'yyyy-MM-dd');
       const res = await searchRides({
         pickup_lat: pickCordinate['lat'],
         pickup_lng: pickCordinate['lng'],
         destination_lat: destinationCordinate['lat'],
         destination_lng: destinationCordinate['lng'],
+        pickup_name: selectedPickupLocation,
+        destination_name: selectedDestinationLocation,
+        date: formattedDate,
+        passenger_count: 1,
       });
 
       const deliveryData = {
