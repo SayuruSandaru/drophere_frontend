@@ -4,7 +4,7 @@ import { Box, Flex, VStack, HStack, Image, Text, Menu, MenuButton, MenuItem, Men
 import React from 'react';
 import { FiMapPin, FiMoreVertical, FiSend } from 'react-icons/fi';
 
-const VehicleDetails = ({ imageUrl, brand, model, plateNumber, onEdit, onDelete }) => {
+const VehicleDetails = ({ imageUrl, model, plateNumber, onEdit, onDelete }) => {
     return (
         <Box
             maxH="sm"
@@ -17,7 +17,7 @@ const VehicleDetails = ({ imageUrl, brand, model, plateNumber, onEdit, onDelete 
         >
             <Image
                 src={imageUrl}
-                alt={`${brand} ${model}`}
+                alt={`${model}`}
                 objectFit="cover"
                 width="100%"
                 height="auto"
@@ -39,11 +39,6 @@ const VehicleDetails = ({ imageUrl, brand, model, plateNumber, onEdit, onDelete 
             </Menu>
             <Box p="6" w="100%">
                 <VStack align="start" spacing={3}>
-                    <HStack>
-                        <Text>
-                            <Text as="span" fontWeight="bold">Brand: </Text> {brand}
-                        </Text>
-                    </HStack>
                     <HStack>
                         <Text>
                             <Text as="span" fontWeight="bold">Model: </Text> {model}

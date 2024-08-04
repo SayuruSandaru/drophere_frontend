@@ -118,7 +118,6 @@ const DashboardHome = () => {
                         <VehicleDetails
                             key={vehicle.vehicle_id}
                             imageUrl={vehicle.image_url || 'https://via.placeholder.com/150'}
-                            brand={vehicle.brand}
                             model={vehicle.model}
                             plateNumber={vehicle.license_plate}
                             onEdit={() => handleEditVehicle(vehicle.vehicle_id)}

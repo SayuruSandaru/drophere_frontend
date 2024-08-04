@@ -209,7 +209,7 @@ export default function OrderPageRide() {
               textAlign="center"
             >
               <Image
-                src={rideDetails.owner_details.image_url}
+                src={rideDetails.vehicle_details.image_url}
                 alt="Passenger Image"
                 objectFit="cover"
                 borderRadius="md"
