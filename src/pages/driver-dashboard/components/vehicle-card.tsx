@@ -4,7 +4,7 @@ import { Box, Flex, VStack, HStack, Image, Text, Menu, MenuButton, MenuItem, Men
 import React from 'react';
 import { FiMapPin, FiMoreVertical, FiSend } from 'react-icons/fi';
 
-const VehicleDetails = () => {
+const VehicleDetails = ({ imageUrl, brand, model, plateNumber, onEdit, onDelete }) => {
     return (
         <Box
             maxH="sm"
@@ -13,11 +13,11 @@ const VehicleDetails = () => {
             overflow="hidden"
             bg={useColorModeValue('white', 'gray.800')}
             m={2}
-            position="relative" // This makes the Box a positioning context for absolute positioning inside it
+            position="relative"
         >
             <Image
-                src="https://images.pexels.com/photos/119435/pexels-photo-119435.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
-                alt="Vehicle"
+                src={imageUrl}
+                alt={`${brand} ${model}`}
                 objectFit="cover"
                 width="100%"
                 height="auto"
@@ -27,26 +27,31 @@ const VehicleDetails = () => {
                     as={IconButton}
                     icon={<FiMoreVertical />}
                     variant="outline"
-                    position="absolute" // Absolutely position this button
-                    right="1" // Position from the right
-                    top="1" // Position from the top
+                    position="absolute"
+                    right="1"
+                    top="1"
                     size="sm"
                 />
                 <MenuList>
-                    <MenuItem>Edit</MenuItem>
-                    <MenuItem>Delete</MenuItem>
+                    <MenuItem onClick={onEdit}>Edit</MenuItem>
+                    <MenuItem onClick={onDelete}>Delete</MenuItem>
                 </MenuList>
             </Menu>
             <Box p="6" w="100%">
                 <VStack align="start" spacing={3}>
                     <HStack>
                         <Text>
-                            <Text as="span" fontWeight="bold">Brand: </Text> Toyota Camry
+                            <Text as="span" fontWeight="bold">Brand: </Text> {brand}
                         </Text>
                     </HStack>
                     <HStack>
                         <Text>
-                            <Text as="span" fontWeight="bold">To: </Text> Abuja
+                            <Text as="span" fontWeight="bold">Model: </Text> {model}
+                        </Text>
+                    </HStack>
+                    <HStack>
+                        <Text>
+                            <Text as="span" fontWeight="bold">Plate Number: </Text> {plateNumber}
                         </Text>
                     </HStack>
                 </VStack>
