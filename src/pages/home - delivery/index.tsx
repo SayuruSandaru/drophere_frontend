@@ -38,6 +38,7 @@ import { decodePolyline } from "util/map";
 import MapContainer from "pages/home/components/googleMap";
 import { selectedRideState } from "state";
 import { encryptData, getLocalStorage, setLocalStorage } from "util/secure";
+import { format } from "date-fns/format";
 
 const HomeDelivery = () => {
   const setSelectedRide = useSetRecoilState(selectedRideState);
@@ -129,11 +130,16 @@ const HomeDelivery = () => {
     try {
       setLoading(true);
       setErrorMessage('');
+      const formattedDate = format(selectedDate, 'yyyy-MM-dd');
       const res = await searchRides({
         pickup_lat: pickCordinate.lat,
         pickup_lng: pickCordinate.lng,
         destination_lat: destinationCordinate.lat,
         destination_lng: destinationCordinate.lng,
+        pickup_name: selectedPickupLocation,
+        destination_name: selectedDestinationLocation,
+        date: formattedDate,
+        passenger_count: 1,
       });
       const deliveryData = {
         pickup_lat: pickCordinate.lat,
@@ -145,6 +151,7 @@ const HomeDelivery = () => {
         date: selectedDate,
         weight: selectedWeight,
         response: res.rides,
+
       };
       setSearchRideState(deliveryData);
       setLoading(false);
@@ -161,9 +168,9 @@ const HomeDelivery = () => {
 
   const setdata = (id, price) => {
     console.log(id, price);
-    setLocalStorage(id, price.toString()); // Ensure price is stored as a string
+    setLocalStorage(id, price.toString());
     console.log("success");
-    console.log(getLocalStorage(id)); // Log the retrieved value to verify
+    console.log(getLocalStorage(id));
   };
 
   return (
@@ -311,7 +318,7 @@ const HomeDelivery = () => {
                   to={ride.end_location}
                   name={ride.owner_details.city}
                   availability={ride.status}
-                  seatsLeft={ride.vehicle_details.capacity}
+                  seatsLeft={ride.passenger_count}
                   price={`Rs ${ride.fee}`}
                   onClick={() => {
                     const points = decodePolyline(ride.route);
