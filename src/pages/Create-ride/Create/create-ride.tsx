@@ -125,16 +125,26 @@ const Cride = () => {
 
   const getVehicle = async () => {
     try {
-      const userId = User.getUserId();
-      const res = await vehicleService.getVehicleByOwenerId(userId.toString());
+      const user = User.getUserId();
+      if (!user) {
+        console.error("User is not logged in or session expired");
+        showErrorToast("Please log in to view vehicles");
+        // Optionally, redirect to login page
+        // window.location.href = '/login';
+        return;
+      }
+      const userId = user.toString();
+      console.log("User ID:", userId);
+      const res = await vehicleService.getVehicleByOwenerId(userId);
+      console.log("API Response:", res);
       if (res.status === "error") {
-        showErrorToast("Failed to get vehicle");
+        showErrorToast(`Failed to get vehicle: ${res.message || 'Unknown error'}`);
       } else {
-        setVehicles([]);
         setVehicles(res.vehicles);
       }
     } catch (error) {
-      showErrorToast("Failed to get vehicle");
+      console.error("Error in getVehicle:", error);
+      showErrorToast(`Failed to get vehicle: ${error.message || 'Unknown error'}`);
     }
   };
 

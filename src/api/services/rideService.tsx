@@ -54,6 +54,17 @@ class RideService extends ApiService {
         }
     }
 
+
+    public async getRides(): Promise<any> {
+        try {
+            const response = await this.get("/rides");
+            return response;
+        } catch (error) {
+            console.error("Error getting rides: ", error);
+            throw error;
+        }
+    }
+
     public async getDirections(start: any, end: any): Promise<any> {
         try {
             const data = {
@@ -71,6 +82,29 @@ class RideService extends ApiService {
         }
     }
 
+    public async deleteRide(id: number): Promise<any> {
+        try {
+            const response = await this.post("/rides/delete",
+                {
+                    "ride_id": id
+                }
+            );
+            console.log(response);
+            return response;
+        } catch (error) {
+            console.error("Error deleting ride: ", error);
+            throw error;
+        }
+    }
+
+
+
+
+    
+
 }
+
+
+
 
 export default new RideService();

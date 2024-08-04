@@ -7,7 +7,7 @@ const CounterComponent = ({ isOpen, onClose, handleCountChange }) => {
     const { isOpen: isDestinationPlaceOpen, onOpen: onDestinationPlaceOpen, onClose: onDestinationPlaceClose } = useDisclosure();
 
     return (
-        <Modal isOpen={isOpen} onClose={onClose}>
+        <Modal isOpen={isOpen} onClose={onClose} isCentered>
             <ModalOverlay />
             <ModalContent bg="#f7fafc" borderRadius="md" boxShadow="md">
                 <ModalHeader bg="#2b8ab0" color="white" borderTopRadius="md" fontSize={"md"}>Passenger amount</ModalHeader>

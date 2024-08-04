@@ -37,7 +37,6 @@ class ReservationService extends ApiService {
         }
     }
 
-
     public async getReservationsByStatus(status: string): Promise<any> {
         try {
             console.log("Fetching reservations with status: ", status);
@@ -69,6 +68,9 @@ class ReservationService extends ApiService {
             throw error;
         }
     }
+
+
+    
 }
 
 export default new ReservationService();
