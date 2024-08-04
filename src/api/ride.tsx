@@ -11,6 +11,7 @@ export const searchRides = async (search: {
     date?: string;
     passenger_count?: number
 }): Promise<any> => {
+    
     try {
         console.log(search);
         const requestPayload: any = {

@@ -27,6 +27,8 @@ import {
   ModalCloseButton,
 } from "@chakra-ui/react";
 import RideService from "api/services/rideService";
+import userService from "api/services/userService";
+import User from "model/user";
 
 const RideListPage = () => {
   const [rides, setRides] = useState([]);
@@ -49,7 +51,8 @@ const RideListPage = () => {
   const fetchRides = async () => {
     try {
       setLoading(true);
-      const response = await RideService.getRides();
+      console.log("Fetching rides for driver:", User.getDriverDetails());
+      const response = await RideService.getRideByIdfor(User.getDriverDetails().driver_id);
       if (response.status === "success") {
         setRides(response.rides || []);
       } else {
