@@ -1,5 +1,4 @@
 import { Avatar, Button, Box, Flex, useColorModeValue, HStack, IconButton, Menu, MenuButton, MenuDivider, MenuItem, MenuList, Text, VStack, FlexProps } from "@chakra-ui/react"
-import User from "model/user"
 import { FiBell, FiChevronDown, FiMenu, FiPlus } from "react-icons/fi"
 
 interface MobileProps extends FlexProps {
@@ -54,7 +53,7 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
                                 <Avatar
                                     size={'sm'}
                                     src={
-                                        User.getProfileImage()
+                                        'https://images.unsplash.com/photo-1619946794135-5bc917a27793?ixlib=rb-0.3.5&q=80&fm=jpg&crop=faces&fit=crop&h=200&w=200&s=b616b2c5b373a80ffc9636ba24f7a4a9'
                                     }
                                 />
                                 <VStack
@@ -62,11 +61,11 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
                                     alignItems="flex-start"
                                     spacing="1px"
                                     ml="2">
-                                    <Text fontSize="sm">{User.getUserName()}</Text>
+                                    <Text fontSize="sm">Justina Clark</Text>
                                 </VStack>
-                                {/* <Box display={{ base: 'none', md: 'flex' }}>
+                                <Box display={{ base: 'none', md: 'flex' }}>
                                     <FiChevronDown />
-                                </Box> */}
+                                </Box>
                             </HStack>
                         </MenuButton>
 

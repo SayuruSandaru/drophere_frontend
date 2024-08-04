@@ -1,11 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   Box,
   Flex,
   Text,
   Stack,
   Avatar,
-  VStack,
   Heading,
   Divider,
   Input,
@@ -17,104 +16,198 @@ import {
   ModalContent,
   ModalHeader,
   ModalBody,
-  ModalFooter,
   ModalCloseButton,
-  useDisclosure
+  useDisclosure,
+  Icon,
+  Grid,
+  useToast
 } from "@chakra-ui/react";
 import { MdCheckCircle, MdEmail, MdPhone, MdStar } from "react-icons/md";
-import { FaPaperPlane } from 'react-icons/fa';
+import { FaPaperPlane, FaCamera } from 'react-icons/fa';
 import NavbarHome from "pages/components/NavbarHome";
 import Footer from "pages/components/footer";
 import Rating from "react-rating";
 import ReviewItem from "./review_card";
-import { getReviews, createReview } from "api/review"; // Ensure to import these functions
+import { getReviews, createReview } from "api/review";
+import { getUserDetails } from "api/user";
+import { fileUpload } from "api/common";
+import authService from "api/services/authService";
+import User from "model/user";
+import { useParams } from "react-router-dom";
+import { getUserById } from "api/user";
 
 const Profile = () => {
   const [ratingData, setRatingData] = useState({ rating: 0, reviews: 0 });
   const [reviews, setReviews] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [newReview, setNewReview] = useState({ rating: 0, comment: "" });
-
-
+  const [newReviewRating, setNewReviewRating] = useState(0);
+  const [newReviewComment, setNewReviewComment] = useState("");
+  const [userDetails, setUserDetails] = useState(null);
+  const [selectedFile, setSelectedFile] = useState(null);
   const { isOpen, onOpen, onClose } = useDisclosure();
-
   const [isLargeScreen] = useMediaQuery("(min-width: 992px)");
+  const toast = useToast();
+  const { driver_id } = useParams();
+  const [isCurrentUser, setIsCurrentUser] = useState(true);
 
   useEffect(() => {
     const fetchReviews = async () => {
       try {
         const fetchedReviews = await getReviews();
-        console.log("Fetched Reviews:", fetchedReviews); // Log fetched reviews
-
         if (Array.isArray(fetchedReviews)) {
-          setReviews(fetchedReviews);
-          const averageRating = fetchedReviews.reduce((acc, review) => acc + review.rating, 0) / fetchedReviews.length;
-          setRatingData({ rating: averageRating, reviews: fetchedReviews.length });
+          // Filter reviews if driver_id is provided
+          const filteredReviews = driver_id 
+            ? fetchedReviews.filter(review => review.driver_id === parseInt(driver_id))
+            : fetchedReviews;
+          
+          setReviews(filteredReviews);
+          const averageRating = filteredReviews.reduce((acc, review) => acc + review.rating, 0) / filteredReviews.length;
+          setRatingData({ rating: averageRating, reviews: filteredReviews.length });
         } else {
-          console.error("Fetched reviews is not an array");
           setReviews([]);
         }
       } catch (error) {
-        console.error("Failed to fetch reviews", error);
-        setReviews([]); // Set reviews to empty array on error
+        console.error("Failed to fetch reviews:", error);
+        setReviews([]);
       } finally {
         setIsLoading(false);
       }
     };
 
     fetchReviews();
-  }, []);
+  }, [driver_id]);  
 
+  useEffect(() => {
+    const fetchUserDetails = async () => {
+      try {
+        if (driver_id) {
+          const response = await getUserById(driver_id); // Pass driver_id directly as a string
+          if (response.status === "success") {
+            setUserDetails({ user: response.user });
+            setIsCurrentUser(User.getUserId().toString() === driver_id);
+          }
+        } else {
+          const fetchedUserDetails = await getUserDetails();
+          setUserDetails(fetchedUserDetails);
+          setIsCurrentUser(true);
+        }
+      } catch (error) {
+        console.error("Failed to fetch user details", error);
+      }
+    };
 
-
+    fetchUserDetails();
+  }, [driver_id]);
 
   const handleAddReview = async () => {
     try {
       setIsLoading(true);
-      console.log("Submitting review:", { description: newReview.comment, rating: newReview.rating, driver_id: 1 }); // Log the data being sent
-      const response = await createReview({ description: newReview.comment, rating: newReview.rating, driver_id: 1 }); // Replace with appropriate driver_id
-      console.log("Response from createReview:", response); // Log the response
-      const updatedReviews = await getReviews();
-      console.log("Updated Reviews:", updatedReviews); // Log updated reviews
-      if (Array.isArray(updatedReviews)) {
-        setReviews(updatedReviews);
-        const averageRating = updatedReviews.reduce((acc, review) => acc + review.rating, 0) / updatedReviews.length;
-        setRatingData({ rating: averageRating, reviews: updatedReviews.length });
-        setNewReview({ rating: 0, comment: "" });
-      } else {
-        console.error("Updated reviews is not an array");
-        setReviews([]);
+      const response = await createReview({
+        description: newReviewComment,
+        rating: newReviewRating,
+        driver_id: driver_id || User.getUserId().toString() // Ensure driver_id is a string
+      });
+       // Fetch reviews again after adding a new one
+       const updatedReviews = await getReviews();
+       if (Array.isArray(updatedReviews)) {
+         const filteredReviews = driver_id 
+           ? updatedReviews.filter(review => review.driver_id === parseInt(driver_id))
+           : updatedReviews;
+         
+         setReviews(filteredReviews);
+         const averageRating = filteredReviews.reduce((acc, review) => acc + review.rating, 0) / filteredReviews.length;
+         setRatingData({ rating: averageRating, reviews: filteredReviews.length });
+         setNewReviewRating(0);
+         setNewReviewComment("");
+       } else {
+         setReviews([]);
+       }
+      } catch (error) {
+        console.error("Failed to add review", error);
+      } finally {
+        setIsLoading(false);
       }
-    } catch (error) {
-      console.error("Failed to add review", error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
+    };
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
     if (file) {
-      // Handle file upload logic here (e.g., send to server)
-      console.log("Selected file:", file);
-      // Close the modal programmatically if needed
-      // onClose();
+      setSelectedFile(file);
     }
-    // Keep the modal open after file selection
   };
 
+  const uploadImage = async () => {
+    if (!selectedFile || !userDetails || !userDetails.user || !userDetails.user.email) {
+      console.error('Missing required data:', { selectedFile, userDetails });
+      toast({
+        title: "Error",
+        description: "Missing required data for upload",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+      return;
+    }
 
+    try {
+      setIsLoading(true);
 
+      console.log('Uploading document for user:', userDetails.user.email);
+      const url = await fileUpload(selectedFile);
+      console.log('File uploaded, received URL:', url);
+
+      const response = await authService.updateUserImg(userDetails.user.email, url);
+      console.log('Profile update response:', response);
+
+      if (response && response.status === "success") {
+        toast({
+          title: "Profile image updated",
+          description: "Your profile image has been successfully updated.",
+          status: "success",
+          duration: 5000,
+          isClosable: true,
+        });
+
+        // Update the local state immediately
+        setUserDetails(prevDetails => ({
+          ...prevDetails,
+          user: {
+            ...prevDetails.user,
+            profile_image: url
+          }
+        }));
+      } else {
+        throw new Error(response.message || "Failed to update profile image");
+      }
+
+      setIsLoading(false);
+      onClose();
+    } catch (error) {
+      setIsLoading(false);
+      console.error("Failed to upload file:", error);
+      toast({
+        title: "Error",
+        description: `Failed to update profile image: ${error.message}`,
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+    }
+  };
+
+  const handleChange = useCallback((e) => {
+    const { value } = e.target;
+    setNewReviewComment(value);
+  }, []);
 
   const ReviewsAndComments = () => (
     <Box pl={isLargeScreen ? 10 : 0}>
-      <Box maxW={"500px"} borderRadius={10} padding={10} bg={"white"}>
-        <Heading size="md" mb={8}>Reviews and Comments</Heading>
+      <Box maxW={"900px"} borderRadius={10} padding={10}>
+        <Heading size="md" mt={-10} mb={8}>Reviews and Comments</Heading>
         {isLoading ? (
           <Spinner />
         ) : (
-          <Stack spacing={5}>
+          <Grid templateColumns="repeat(2, 1fr)" gap={6}>
             {Array.isArray(reviews) && reviews.length > 0 ? reviews.map((review, index) => (
               <ReviewItem
                 key={index}
@@ -125,159 +218,168 @@ const Profile = () => {
             )) : (
               <Text>No reviews available.</Text>
             )}
-          </Stack>
+          </Grid>
         )}
       </Box>
     </Box>
   );
 
-
-
-return (
-  <Box>
-    <Box h={20}>
-      <NavbarHome />
-    </Box>
-    <Flex
-      position="relative"
-      justifyContent="center"
-      alignItems="start"
-      bg={"gray.50"}
-      padding={10}
-    >
-      <Flex maxW={"1200px"} w="full">
-        <Box borderRadius={10}>
-          <Stack spacing="4">
-            <Box>
-              <Flex>
-                <Avatar
-                  size="lg"
-                  name="John"
-                  src="https://bit.ly/prosper-baba"
-                  cursor="pointer"
-                  position="relative" 
-                  onClick={onOpen}
-                />
-              
-              <VStack align="start" pl="2">
-                <Text as="b" fontSize="xl">
-                  John
-                </Text>
-                <Text>Working Year: 2</Text>
-              </VStack>
-              </Flex>
+  const UserDetailsCard = () => (
+    <Box borderRadius={10} maxWidth={"700px"} width={"600px"} boxShadow="lg">
+      <Stack spacing="4" bgColor={"white"} paddingX={"30px"} paddingY={"20px"} borderRadius={"10px"}>
+        <Box>
+          <Flex>
+            <Box position="relative" display="inline-block">
+              <Avatar
+                size="lg"
+                name={userDetails.user.username}
+                src={userDetails.user.profile_image}
+              />
+               {User.isDriver() && User.getUserId() === parseInt(driver_id) && (
+    <Icon
+      as={FaCamera}
+      boxSize={6}
+      position="absolute"
+      bottom={0}
+      right={0}
+      bg="white"
+      borderRadius="full"
+      p={1}
+      color="gray.700"
+      cursor="pointer"
+      onClick={onOpen}
+    />
+  )}
             </Box>
-            <Text pt="6" fontSize="sm" color={"gray"}>
-              <b>{ratingData.rating.toFixed(1)}</b> ({ratingData.reviews} reviews)
+            <Text as="b" fontSize="xl" ml={"10px"} mt={4}>
+              {userDetails.user.username}
             </Text>
-            <Divider />
-            <Box>
-              <Flex align="center" pt="2">
-                <MdCheckCircle color="green" />
-                <Text fontSize="sm" ml="2">
-                  Verified ID
-                </Text>
-              </Flex>
-              <Flex align="center" pt="2">
-                <MdCheckCircle color="green" />
-                <Text fontSize="sm" ml="2">
-                  Confirmed email
-                </Text>
-              </Flex>
-              <Flex align="center" pt="2">
-                <MdCheckCircle color="green" />
-                <Text fontSize="sm" ml="2">
-                  Confirmed phone number
-                </Text>
-              </Flex>
-            </Box>
-            <Divider />
-            <Box>
-              <Heading size="xs">About John</Heading>
-              <Text pt="2" fontSize="sm">
-                I am a professional driver with 2 years of experience. I have a 5-star rating and I am a verified driver.
-              </Text>
-            </Box>
-            <Divider />
-            <Box>
-              <Heading size="xs">Contact</Heading>
-              <Flex align="center" pt="2">
-                <MdEmail />
-                <Text fontSize="sm" ml="2">
-                  john@gmail.com
-                </Text>
-              </Flex>
-              <Flex align="center" pt="2">
-                <MdPhone />
-                <Text fontSize="sm" ml="2">
-                  0771234567
-                </Text>
-              </Flex>
-            </Box>
-            <Divider />
-            <Box>
-              <Heading size="xs" mb={3} mt={3}>Add a New Review</Heading>
-              <Flex>
-                <Text fontSize="sm" mr={2}>Rating: </Text>
-                <Rating
-                  initialRating={newReview.rating}
-                  emptySymbol={<MdStar size={20} color="gray" />}
-                  fullSymbol={<MdStar size={20} color="gold" />}
-                  onClick={(rate) => setNewReview({ ...newReview, rating: rate })}
-                />
-              </Flex>
-              <Flex>
-                <Input
-                  placeholder="Comment"
-                  value={newReview.comment}
-                  onChange={(e) => setNewReview({ ...newReview, comment: e.target.value })}
-                  mb={3}
-                  mr={2}
-                  borderRadius={5}
-                />
-                <Button onClick={handleAddReview} bg={"transparent"}>
-                  <FaPaperPlane />
-                </Button>
-              </Flex>
-            </Box>
-          </Stack>
+          </Flex>
         </Box>
-        {isLargeScreen && <ReviewsAndComments />}
-      </Flex>
-    </Flex>
-    {!isLargeScreen && <ReviewsAndComments />}
-    <Footer />
+        <Text pt="6" fontSize="sm" color={"gray"}>
+          <b>{ratingData.rating.toFixed(1)}</b> ({ratingData.reviews} reviews)
+        </Text>
+        <Divider />
+        <Box>
+          <Flex align="center" pt="2">
+            <MdCheckCircle color="green" />
+            <Text fontSize="sm" ml="2">
+              Verified ID
+            </Text>
+          </Flex>
+          <Flex align="center" pt="2">
+            <MdCheckCircle color="green" />
+            <Text fontSize="sm" ml="2">
+              Confirmed email
+            </Text>
+          </Flex>
+          <Flex align="center" pt="2">
+            <MdCheckCircle color="green" />
+            <Text fontSize="sm" ml="2">
+              Confirmed phone number
+            </Text>
+          </Flex>
+        </Box>
+        <Divider />
+        <Box>
+          <Heading size="xs">Contact</Heading>
+          <Flex align="center" pt="2">
+            <MdEmail />
+            <Text fontSize="sm" ml="2">
+              {userDetails?.user.email}
+            </Text>
+          </Flex>
+          <Flex align="center" pt="2">
+            <MdPhone />
+            <Text fontSize="sm" ml="2">
+              {userDetails.user.phone}
+            </Text>
+          </Flex>
+        </Box>
+        <Divider />
+        <Box>
+          <Heading size="xs" mb={3} mt={3}>Add a New Review</Heading>
+          <Flex>
+            <Text fontSize="sm" mr={2}>Rating: </Text>
+            <Rating
+              initialRating={newReviewRating}
+              emptySymbol={<MdStar size={20} color="gray" />}
+              fullSymbol={<MdStar size={20} color="gold" />}
+              onChange={(rate) => setNewReviewRating(rate)}
+            />
+          </Flex>
+          <Flex>
+            <Input
+              placeholder="Comment"
+              value={newReviewComment}
+              onChange={handleChange}
+              mb={3}
+              mr={2}
+              borderRadius={5}
+              focusBorderColor="blue.500"
+            />
+            <Button onClick={handleAddReview} bg={"transparent"}>
+              <FaPaperPlane />
+            </Button>
+          </Flex>
+        </Box>
+      </Stack>
+    </Box>
+  );
 
-    <Modal isOpen={isOpen} onClose={onClose}>
-      <ModalOverlay />
-      <ModalContent>
-        <ModalHeader>Add a profile picture</ModalHeader>
-        <ModalCloseButton />
-        <ModalBody>
-          <Input type="file" accept="image/*" onChange={handleFileChange} borderStyle="none"/>
-          <Button
-            mt={4}
-            bg="#2b8ab0"
-            color="white"
-            width="full"
-            _hover={{ bg: "#1a688b" }}
-            _active={{ bg: "#1a688b" }}
-            _focus={{ boxShadow: "none" }}
-            borderRadius="md"
-            boxShadow="md"
-            py={3}
-            onClick={() => {
-              // Handle file upload logic here (e.g., send to server)
-              // onClose(); // Close the modal after file selection
-            }}
-          >
-            Upload
-          </Button>
-        </ModalBody>
-      </ModalContent>
-    </Modal>
-  </Box>
-);
+  return (
+    <Box>
+      <Box h={20}>
+        <NavbarHome />
+      </Box>
+      {userDetails === null ? (
+        <Flex justifyContent="center" alignItems="center" h="90vh">
+          <Spinner />
+        </Flex>
+      ) : (
+        <Flex
+          position="relative"
+          justifyContent="center"
+          alignItems="start"
+          bg={"gray.50"}
+          padding={10}
+          flexDirection={isLargeScreen ? "row" : "column"}
+        >
+          <UserDetailsCard />
+          {isLargeScreen && <ReviewsAndComments />}
+        </Flex>
+      )}
+      {!isLargeScreen && <ReviewsAndComments />}
+      <Footer />
+
+      <Modal isOpen={isOpen} onClose={onClose}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Add a profile picture</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <Input type="file" accept="image/*" onChange={handleFileChange} borderStyle="none" />
+            <Button
+              mt={4}
+              bg="#2b8ab0"
+              color="white"
+              width="full"
+              _hover={{ bg: "#1a688b" }}
+              _active={{ bg: "#1a688b" }}
+              _focus={{ boxShadow: "none" }}
+              borderRadius="md"
+              boxShadow="md"
+              py={3}
+              onClick={uploadImage}
+              isLoading={isLoading}
+            >
+              Upload
+            </Button>
+          </ModalBody>
+        </ModalContent>
+      </Modal>
+    </Box>
+  );
 };
 
 export default Profile;

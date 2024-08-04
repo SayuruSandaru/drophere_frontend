@@ -1,3 +1,4 @@
+import React, { useEffect, useState } from "react";
 import {
   Heading,
   Avatar,
@@ -11,9 +12,9 @@ import {
   Image,
   Spinner,
 } from "@chakra-ui/react";
-import { MdCheckCircle, MdDateRange, MdEmail, MdPhone } from "react-icons/md";
-import React, { useEffect, useState } from "react";
+import { MdCheckCircle, MdDateRange, MdEmail, MdPhone, MdAccessTime } from "react-icons/md";
 import { useNavigate, useParams } from "react-router-dom";
+import { format, parseISO } from "date-fns";
 import NavbarHome from "pages/components/NavbarHome";
 import Footer from "pages/components/footer";
 import StarRating from "./components/starRating";
@@ -23,36 +24,39 @@ import "./components/order.css";
 import { RouterPaths } from "router/routerConfig";
 import reservationService from "api/services/reservationService";
 import rideService from "api/services/rideService";
+import { getUserById } from "api/user";
 import { decryptData, getLocalStorage } from "util/secure";
 import { useShowSuccessToast } from "pages/components/toast";
 
 export default function OrderPageRide() {
   const navigate = useNavigate();
-  const rating = 4.5;
-  const reviews = 50;
-  const joinDate = "Joined 2024";
-  const email = "test@gmail.com";
-  const phone = "0771234567";
-  const [price, setPrice] = useState(0);
-  const showSuccessToast = useShowSuccessToast();
   const { id, passenger_count } = useParams();
   const [rideDetails, setRideDetails] = useState(null);
+  const [userData, setUserData] = useState(null);
+  const [price, setPrice] = useState(0);
   const [hasOpen, setHasOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const showSuccessToast = useShowSuccessToast();
 
   useEffect(() => {
     const fetchRideDetails = async () => {
       try {
+        setLoading(true);
         const response = await rideService.getRideById(parseInt(id));
         if (response.status === "success") {
           setRideDetails(response.ride);
-          const price = getLocalStorage(id)
-          console.log(price)
-          setPrice(price)
-          console.log(response);
+          const price = getLocalStorage(id);
+          setPrice(price);
+          const userId = response.ride.driver_id; // Assuming driver_id is the user ID
+          const userResponse = await getUserById(userId);
+          setUserData(userResponse.user);
+          setLoading(false);
         } else {
+          setLoading(false);
           console.log("Error getting ride details:", response);
         }
       } catch (error) {
+        setLoading(false);
         console.error("Error getting ride details:", error);
       }
     };
@@ -76,6 +80,7 @@ export default function OrderPageRide() {
       if (response.status === "success") {
         console.log("Order placed successfully:", response);
         showSuccessToast("Payment details added successfully");
+        navigate(RouterPaths.MYRIDES);
       } else {
         console.log("Error placing order:", response);
       }
@@ -85,7 +90,12 @@ export default function OrderPageRide() {
     }
   };
 
-
+  const formattedDate = rideDetails
+    ? format(parseISO(rideDetails.start_time), "PPP")
+    : "";
+  const formattedTime = rideDetails
+    ? format(parseISO(rideDetails.start_time), "p")
+    : "";
 
   return (
     <Box bgColor={"gray.50"}>
@@ -114,12 +124,12 @@ export default function OrderPageRide() {
               <Avatar
                 ml="14"
                 size="lg"
-                src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-1.2.1&q=80&fm=jpg&crop=faces&fit=crop&h=200&w=200&ixid=eyJhcHBfaWQiOjE3Nzg0fQ"
+                src={userData?.profile_image || "https://via.placeholder.com/150"}
                 css={{
                   border: "2px solid white",
                 }}
                 cursor="pointer"
-                onClick={() => navigate(RouterPaths.PROFILE)}
+                onClick={() => navigate(`/profile/${rideDetails.driver_id}`)}
               />
               <Stack spacing={0} align="left" ml={5}>
                 <Heading
@@ -127,9 +137,9 @@ export default function OrderPageRide() {
                   fontWeight={500}
                   fontFamily="body"
                   cursor="pointer"
-                  onClick={() => navigate(RouterPaths.PROFILE)}
+                  onClick={() => navigate(`/profile/${rideDetails.driver_id}`)}
                 >
-                  Sayuru Sandaru
+                  {userData?.username || "Unknown User"}
                 </Heading>
                 <Flex align="center">
                   <Box as={MdCheckCircle} mr={2} />
@@ -156,15 +166,19 @@ export default function OrderPageRide() {
               <Stack spacing={3} align="left" ml={20} mt={5}>
                 <Flex align="center">
                   <MdDateRange style={{ marginRight: "8px" }} />
-                  <Text color="gray.500">{rideDetails.start_time}</Text>
+                  <Text color="gray.500">{formattedDate}</Text>
+                </Flex>
+                <Flex align="center">
+                  <MdAccessTime style={{ marginRight: "8px" }} />
+                  <Text color="gray.500">{formattedTime}</Text>
                 </Flex>
                 <Flex align="center">
                   <MdEmail style={{ marginRight: "8px" }} />
-                  <Text color="gray.500">{email}</Text>
+                  <Text color="gray.500">{userData?.email || "N/A"}</Text>
                 </Flex>
                 <Flex align="center">
                   <MdPhone style={{ marginRight: "8px" }} />
-                  <Text color="gray.500">{phone}</Text>
+                  <Text color="gray.500">{userData?.phone || "N/A"}</Text>
                 </Flex>
               </Stack>
 

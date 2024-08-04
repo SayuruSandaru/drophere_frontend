@@ -37,6 +37,8 @@ export const registerUser = async (details: {
     profile_image: string;
 }): Promise<void> => {
     try {
+        console.log("Registering user");
+        console.log("profile_image: ", details.profile_image);
         const response = await authService.register(
             {
                 'email': details.email,

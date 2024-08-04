@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import CustomAlertDialog from "./alert-dialog";
 import ReservationService from "api/services/reservationService";
 import TabBtn from "./tab-btn";
+import User from "model/user";
 
 const RideReqTable = () => {
   const { isOpen: isOpenDecline, onOpen: onOpenDecline, onClose: onCloseDecline } = useDisclosure();
@@ -26,7 +27,7 @@ const RideReqTable = () => {
   const fetchReservations = async (status) => {
     try {
       setLoading(true);
-      const result = await ReservationService.getReservationsByStatus(status);
+      const result = await ReservationService.getReservationsByStatus(status, User.getUserId());
       console.log("Raw fetched reservations:", result);
       const reservations = result.data || result;
 

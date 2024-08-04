@@ -1,0 +1,112 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+
+*{
+    font-family: 'Poppins', sans-serif;
+}
+
+.hediing{
+    font-weight: 600;
+    font-size: 25px;
+    text-align: center;
+}
+form{
+    margin-top: 20px;
+    margin-left: 30px;
+
+}
+
+
+
+.details{
+    width: 90%;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 20px;
+    border: 1px solid #000;
+    font-size: 14px;
+
+}
+
+.flex{
+    display: flex;
+    
+}
+
+
+.box{
+    width: 80px;
+    margin-right: 50px;
+    margin-top: 8px;
+    padding: 10px;
+    border-radius: 20px;
+    border: 1px solid #000;
+    font-size: 14px;
+    
+}
+
+.icon{
+    margin: 12px;
+    margin-top: 20px;
+    
+}
+
+#visa{
+    margin-bottom: 30px;
+    margin-top: 25px;
+}
+
+#master{
+    margin-bottom: 25px;
+}
+
+.logo{
+    display: flex;
+}
+
+.submitbtn{
+    padding: 10px;
+    width: 100%;
+    border-radius: 30px;   
+    background: #000;
+    color: #fff;
+    cursor: pointer;
+    font-size: 18px;
+    font-weight: 600;
+    margin-left: -20px;
+}
+
+
+.content {
+    font-size: 20px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    line-height: 1.4;
+    background: #f1f1f1;
+    padding: 1px 1px;
+    border-radius: 30px;
+    height: 590px;
+    width: 550px;
+    
+    
+}
+
+.modal{
+    border-radius: 30px;
+    width: 500px;
+}
+
+.paybtn{
+    padding : 10px;
+    font-size: 25px;
+    background-color: #4bcf50;
+    border-radius: 10px;
+    width: 150px;
+    border: none;
+    cursor: pointer;
+    display: block;
+    margin: 100px auto 0;
+    
+    
+}

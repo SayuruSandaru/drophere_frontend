@@ -4,8 +4,8 @@ import { Box, Flex, VStack, HStack, Image, Text } from '@chakra-ui/react';
 import React from 'react';
 import { FiMapPin, FiSend } from 'react-icons/fi';
 
-const OngoingRideCard = () => {
-    return ( // Add the return statement here
+const OngoingRideCard = ({ imageUrl, from, to, onViewRide }) => {
+    return (
         <Box
             maxW="sm"
             borderWidth="1px"
@@ -16,7 +16,7 @@ const OngoingRideCard = () => {
         >
             <Flex direction="row">
                 <Image
-                    src="https://images.pexels.com/photos/26082992/pexels-photo-26082992/free-photo-of-alberoxalbero.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+                    src={imageUrl}
                     alt="Vehicle"
                     boxSize="150px"
                     objectFit="cover"
@@ -26,17 +26,17 @@ const OngoingRideCard = () => {
                         <HStack>
                             <FiMapPin />
                             <Text>
-                                <Text as="span" fontWeight="bold">From: </Text> Lagos
+                                <Text as="span" fontWeight="bold">From: </Text> {from}
                             </Text>
                         </HStack>
                         <HStack>
                             <FiSend />
                             <Text>
-                                <Text as="span" fontWeight="bold">To: </Text> Abuja
+                                <Text as="span" fontWeight="bold">To: </Text> {to}
                             </Text>
                         </HStack>
                         <Box />
-                        <Button size="sm" variant="link" colorScheme="blue">
+                        <Button size="sm" variant="link" colorScheme="blue" onClick={onViewRide}>
                             <FiMapPin style={{ marginRight: 10 }} />View ride
                         </Button>
                     </VStack>

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { RouterPaths } from 'router/routerConfig';
 import {
   Box,
   Button,
@@ -18,7 +19,7 @@ import { FiArrowLeft } from 'react-icons/fi';
 import { createVehicle } from 'api/vehicle';
 import { fileUpload } from 'api/common';
 import { useNavigate } from 'react-router-dom';
-import { RouterPaths } from 'router/routerConfig';
+
 
 interface VehicleDetailsProps {
   onBack: () => void;
@@ -125,7 +126,7 @@ const VehicleDetails: React.FC<VehicleDetailsProps> = ({ onBack, onError }) => {
         image_url: imageurl,
       });
       setLoading(false);
-      navigator(RouterPaths.RIDE)
+      navigator(RouterPaths.DASHBOARDRIDES)
     } catch (error) {
       setLoading(false);
       console.error(error);

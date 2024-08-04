@@ -37,16 +37,13 @@ class ReservationService extends ApiService {
         }
     }
 
-
-
-
-
-
-    public async getReservationsByStatus(status: string): Promise<any> {
+    public async getReservationsByStatus(status: string, id): Promise<any> {
         try {
             console.log("Fetching reservations with status: ", status);
             const response = await this.post("/reservation/available", {
-                "status": status
+                "status": status,
+                "user_id": id
+
             });
             console.log("Reservations fetched:", response);
             return response;
@@ -62,9 +59,9 @@ class ReservationService extends ApiService {
                 "reservation_id": reservationId,  // Ensure using "reservation_id"
                 "status": status
             };
-    
+
             console.log("Updating reservation status with request data: ", requestData); // Log request data
-    
+
             const response = await this.post(`/reservation/update`, requestData);
             console.log("Response from server: ", response); // Log server response
             return response;
@@ -73,6 +70,9 @@ class ReservationService extends ApiService {
             throw error;
         }
     }
+
+
+
 }
 
 export default new ReservationService();

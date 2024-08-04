@@ -21,6 +21,12 @@ import Rides from 'pages/driver-dashboard/rides';
 import Requests from 'pages/driver-dashboard/requests';
 import DashboardHome from 'pages/driver-dashboard/dashboard-home';
 import MyRide from "pages/myride";
+import AdminDashboard from "pages/admin-dashboard";
+import AdminHome from 'pages/admin-dashboard/home'; 
+import AdminUsers from 'pages/admin-dashboard/users'; 
+import AdminDispute from 'pages/admin-dashboard/dispute';
+import AdminDriverRegRequest from 'pages/admin-dashboard/registration-request'; 
+import AdminAnalytics from 'pages/admin-dashboard/analytics'; 
 
 const RouterConfig: React.FC = () => {
     return (
@@ -34,6 +40,7 @@ const RouterConfig: React.FC = () => {
             <Route path={RouterPaths.SEARCHDELIVERY} element={<SearchDelivery />} />
             <Route path={RouterPaths.SEARCHRIDE} element={<PrivateRoute element={<Ride />} />} />
             <Route path={RouterPaths.PROFILE} element={<Profile />} />
+            <Route path={RouterPaths.DRIVERPROFILE} element={<Profile />} />
             <Route path={RouterPaths.CREATERIDE} element={<Cride />} />
             <Route path={RouterPaths.HOMEDELIVERY} element={<HomeDelivery />} />
             <Route path={RouterPaths.LANDING} element={<LandingPage />} />
@@ -45,6 +52,14 @@ const RouterConfig: React.FC = () => {
                 <Route path={RouterPaths.DASHBOARDREQUESTS} element={<Requests />} />
             </Route>
             <Route path={RouterPaths.MYRIDES} element={<MyRide />} />
+            <Route path={RouterPaths.ADMINDASHBOARD} element={<AdminDashboard />}>
+                <Route path={RouterPaths.ADMINHOME} element={<AdminHome />} />
+                <Route path={RouterPaths.ADMINUSERS} element={<AdminUsers />} />
+                <Route path={RouterPaths.ADMINDISPUTE} element={<AdminDispute />} />
+                <Route path={RouterPaths.ADMINDRIVERREGREQUEST} element={<AdminDriverRegRequest />} />
+                <Route path={RouterPaths.ADMINANALYTICS} element={<AdminAnalytics />} />
+            </Route>
+            
         </Routes>
     );
 }

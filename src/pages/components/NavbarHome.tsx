@@ -7,8 +7,11 @@ import { RouterPaths } from 'router/routerConfig';
 import { FaFilter, FaBox, FaBars } from "react-icons/fa";
 import { MdBikeScooter, MdLocalShipping } from "react-icons/md";
 import { driverByUser } from 'api/driver';
-import { useRecoilValue } from 'recoil';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { userState } from 'state';
+
+import AuthService from '../../api/services/authService';
+import { logout } from 'api/services/logOutService';
 
 function NavbarHome() {
     const [isMenuDrawerOpen, setIsMenuDrawerOpen] = useState(false);
@@ -17,8 +20,13 @@ function NavbarHome() {
     const toast = useToast();
     const [isLargeScreen] = useMediaQuery('(min-width: 992px)');
 
-    // Fetch user state at the top level of the component
     const user = useRecoilValue(userState);
+    const setUser = useSetRecoilState(userState);
+    const handleLogout = () => {
+        logout(navigate, toast);
+      };
+
+    console.log(user);
     console.log(user);
     const handleEarnWithUsClick = async () => {
         if (user?.isDriver) {
@@ -36,6 +44,46 @@ function NavbarHome() {
         }
     };
 
+    // const handleSignOut = async () => {
+    //     try {
+    //         const response = await AuthService.logout(); // Call the logout method
+    //         console.log('Logout response:', response); // Log the raw response
+    
+    //         setUser(null); // Clear the user state
+    //         toast({
+    //             title: "Signed Out",
+    //             description: "You have been successfully signed out.",
+    //             status: "success",
+    //             duration: 3000,
+    //             isClosable: true,
+    //             position: "top",
+    //         });
+    //     } catch (error) {
+    //         console.error("Error signing out:", error);
+            
+    //         // Log more details about the error
+    //         if (error.response) {
+    //             console.error('Error response:', error.response);
+    //             console.error('Error response data:', error.response.data);
+    //             console.error('Error response status:', error.response.status);
+    //             console.error('Error response headers:', error.response.headers);
+    //         } else if (error.request) {
+    //             console.error('Error request:', error.request);
+    //         } else {
+    //             console.error('Error message:', error.message);
+    //         }
+    
+    //         toast({
+    //             title: "Sign Out Failed",
+    //             description: "An error occurred while signing out. Please try again.",
+    //             status: "error",
+    //             duration: 3000,
+    //             isClosable: true,
+    //             position: "top",
+    //         });
+    //     }
+    // };
+
     return (
         <Box>
             {isLargeScreen && (
@@ -46,6 +94,15 @@ function NavbarHome() {
                     </Flex>
                     <Spacer />
                     <HStack spacing={4}>
+                    {/* <Button 
+                            borderRadius={5} 
+                            bgColor={"blackAlpha.800"} 
+                            size={"sm"} 
+                            color={"white"} 
+                            onClick={handleSignOut}
+                        >
+                            Sign Out
+                        </Button> */}
                         <Button borderRadius={3} bgColor={"transparent"} size={"sm"} color={"black"} onClick={() => { navigate(RouterPaths.SEARCHDELIVERY); }}>
                             <Icon as={MdLocalShipping} w={6} h={4} color={"gray.700"} mr={1} />
                             Deliver
@@ -55,7 +112,18 @@ function NavbarHome() {
                             My rides
                         </Button>
                         <Button borderRadius={5} bgColor={"blackAlpha.800"} size={"sm"} color={"white"} onClick={handleEarnWithUsClick}>Earn with us</Button>
+                        <Button
+              borderRadius={5}
+              bgColor="red.500"
+              size="sm"
+              color="white"
+              onClick={handleLogout}
+            >
+              Logout
+            </Button>
                         {/* <Avatar size="sm" name="John" /> */}
+                       
+
                     </HStack>
                 </Flex>
             )}

@@ -20,16 +20,15 @@ import {
 } from '@chakra-ui/react'
 import {
     FiHome,
+    FiUsers,
     FiTrendingUp,
-    FiCompass,
-    FiStar,
-    FiSettings,
+    FiPieChart,
     FiMenu,
     FiBell,
     FiChevronDown,
 } from 'react-icons/fi'
 
-import { MdBikeScooter } from 'react-icons/md'
+import { MdReportProblem, MdPersonAdd } from 'react-icons/md'
 import { IconType } from 'react-icons'
 import MobileNav from './components/mobile-nav'
 import { Link } from 'react-router-dom'
@@ -46,18 +45,16 @@ interface NavItemProps extends FlexProps {
     children: React.ReactNode
 }
 
-
 interface SidebarProps extends BoxProps {
     onClose: () => void
 }
 
 const LinkItems: Array<LinkItemProps> = [
-    { name: 'Home', icon: FiHome, path: RouterPaths.DASHBOARDHOME },
-    { name: 'Requests', icon: FiTrendingUp, path: RouterPaths.DASHBOARDREQUESTS },
-    { name: 'Rides', icon: MdBikeScooter, path: RouterPaths.DASHBOARDRIDES },
-    { name: 'Ride Create', icon: FiCompass, path: RouterPaths.CREATERIDE },
-    // { name: 'Favourites', icon: FiStar },
-    // { name: 'Settings', icon: FiSettings },
+    { name: 'Home', icon: FiHome, path: RouterPaths.ADMINHOME },
+    { name: 'Users', icon: FiUsers, path: RouterPaths.ADMINUSERS },
+    { name: 'Dispute', icon: MdReportProblem, path: RouterPaths.ADMINDISPUTE },
+    { name: 'Registration Request', icon: MdPersonAdd, path: RouterPaths.ADMINDRIVERREGREQUEST },
+    { name: 'Analytics', icon: FiPieChart, path: RouterPaths.ADMINANALYTICS },
 ]
 
 const SidebarContent = ({ onClose, ...rest }) => {

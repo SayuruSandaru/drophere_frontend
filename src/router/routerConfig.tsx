@@ -9,6 +9,7 @@ export enum RouterPaths {
     SEARCHDELIVERY = "/delivery/search",
     SEARCHRIDE = "/ride/search",
     PROFILE = "/profile",
+    DRIVERPROFILE = "/profile/:driver_id",
     CREATERIDE = "/ride/create",
     CONTACT = "/contact",
     DRIVERREGISTER = "/drive/register",
@@ -16,7 +17,13 @@ export enum RouterPaths {
     DASHBOARDRIDES = "/dashboard/rides",
     DASHBOARDREQUESTS = "/dashboard/requests",
     DASHBOARDHOME = "/dashboard/home",
-    MYRIDES = "/myrides",
+    MYRIDES = "/reservations",
     ORDERDELIVERY = "/delivery/order/:id",
+    ADMINDASHBOARD = "/admin-dashboard",
+    ADMINHOME = "/admin-dashboard/home",
+    ADMINUSERS = "/admin-dashboard/users",
+    ADMINDISPUTE = "/admin-dashboard/dispute",
+    ADMINDRIVERREGREQUEST = "/admin-dashboard/registration-request",
+    ADMINANALYTICS = "/admin-dashboard/analytics"
 }
 
