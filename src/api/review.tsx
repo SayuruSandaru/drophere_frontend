@@ -18,23 +18,23 @@ export const createReview = async (review: { description: string, rating: number
     }
 };
 
-export const getReviews = async (): Promise<any> => {
+export const getReviews = async (driver_id): Promise<any> => {
     try {
-       const response = await reviewService.getReviews();
-       console.log("Fetched reviews:", response); // Log fetched reviews
-       if (Array.isArray(response)) {
-          return response;
-       } else {
-          console.error("Fetched reviews is not an array");
-          return [];
-       }
+        const response = await reviewService.getReviews(driver_id);
+        console.log("Fetched reviews:", response); // Log fetched reviews
+        if (Array.isArray(response)) {
+            return response;
+        } else {
+            console.error("Fetched reviews is not an array");
+            return [];
+        }
     } catch (error) {
-       console.error("Error getting reviews: ", error);
-       throw error;
+        console.error("Error getting reviews: ", error);
+        throw error;
     }
- };
+};
 
- export const getReviewById = async (id: string): Promise<any> => {
+export const getReviewById = async (id: string): Promise<any> => {
     try {
         const response = await reviewService.getReviewById(id);
         if (response) {

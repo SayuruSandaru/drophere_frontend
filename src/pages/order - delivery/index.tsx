@@ -20,12 +20,13 @@ import { Property } from "csstype";
 import { FaMapMarkerAlt, FaUser, FaCalendarAlt, FaMoneyBillWave, FaArrowRight, FaClock } from "react-icons/fa";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { selectedRideState, reservationState } from "state";
-import { useLocation, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { createDeliveryOrder } from "../../api/reservation";
 import { decryptData, getLocalStorage } from "util/secure";
 import rideService from "api/services/rideService";
 import { useShowErrorToast, useShowSuccessToast } from "pages/components/toast";
 import Modal from "./payment";
+import { RouterPaths } from "router/routerConfig";
 
 const OrderDelivery = () => {
   const location = useLocation();
@@ -66,6 +67,7 @@ const OrderDelivery = () => {
   const [loading, setLoading] = useState(false);
   const [hasOpen, setHasOpen] = useState(false);
 
+  const navigate = useNavigate();
   const setReservation = useSetRecoilState(reservationState);
 
   const openModal = () => setHasOpen(true);
@@ -148,10 +150,12 @@ const OrderDelivery = () => {
       const result = await createDeliveryOrder(orderData);
       if (result) {
         console.log("Delivery order created successfully");
+
         setReservation(result);
         setSuccess(true);
         setLoading(false);
         showSuccessToast("Delivery order created successfully");
+        navigate(RouterPaths.MYRIDES);
       }
     } catch (error) {
       console.error("Complete error object:", error);

@@ -1,16 +1,19 @@
-// src/pages/driver-dashboard/dashboard-home.tsx
 import React, { useEffect } from 'react';
-import { Box, Grid, HStack, Text, Spinner } from '@chakra-ui/react';
+import { Box, Grid, HStack, Text, Spinner, IconButton, Spacer, useDisclosure, useToast } from '@chakra-ui/react';
+import { FaPlus } from 'react-icons/fa';
 import OngoingRideCard from './components/ongoing-ride-card';
 import VehicleDetails from './components/vehicle-card';
 import ReservationService from 'api/services/reservationService';
 import VehicleService from 'api/services/vehicleService';
 import User from 'model/user';
+import AddVehicle from "./components/add-vehicle"; // Import the modal component
 
 const DashboardHome = () => {
     const [loading, setLoading] = React.useState(false);
     const [ongoing, setOngoing] = React.useState([]);
     const [vehicles, setVehicles] = React.useState([]);
+    const { isOpen, onOpen, onClose } = useDisclosure(); // Use useDisclosure for modal state
+    const toast = useToast(); // For error messages
 
     useEffect(() => {
         fetchVehicles();
@@ -55,8 +58,8 @@ const DashboardHome = () => {
             if (!driverDetails) {
                 throw new Error('Driver details not found');
             }
-            const driverId = driverDetails.driver_id;
-            console.log('Driver Details:', driverId);
+            const driverId = driverDetails.user_id;
+            console.log('Driver Details:', driverDetails);
             const result = await VehicleService.getVehicleByOwenerId(driverId.toString());
             console.log('Vehicles:', result.vehicles);
             setVehicles(result.vehicles);
@@ -78,7 +81,21 @@ const DashboardHome = () => {
 
     const handleDeleteVehicle = (vehicleId) => {
         console.log(`Delete vehicle ${vehicleId}`);
-        // Implement delete vehicle functionality
+    };
+
+    const handleBack = () => {
+        // Handle back action for modal
+        onClose();
+    };
+
+    const handleError = (errorMessage) => {
+        toast({
+            title: "Error",
+            description: errorMessage,
+            status: "error",
+            duration: 5000,
+            isClosable: true,
+        });
     };
 
     return (
@@ -110,6 +127,15 @@ const DashboardHome = () => {
             <Box h="20" />
             <HStack mb={4}>
                 <Text fontSize="2xl" fontWeight="bold">Vehicles available</Text>
+                <Spacer />
+                <IconButton
+                    icon={<FaPlus />}
+                    aria-label="Add Vehicle"
+                    bgColor="transparent"
+                    onClick={onOpen}
+                    variant="ghost"
+                    size="lg"
+                />
             </HStack>
             <Grid templateColumns="repeat(3, 1fr)" gap={6}>
                 {vehicles.length > 0 ? (
@@ -127,6 +153,14 @@ const DashboardHome = () => {
                     <Text>No vehicles found</Text>
                 )}
             </Grid>
+
+            {/* AddVehicle modal */}
+            <AddVehicle
+                isOpen={isOpen}
+                onClose={onClose}
+                onBack={handleBack}
+                onError={handleError}
+            />
         </Box>
     );
 };

@@ -14,7 +14,7 @@ import {
 } from "@chakra-ui/react";
 import { MdCheckCircle, MdDateRange, MdEmail, MdPhone, MdAccessTime } from "react-icons/md";
 import { useNavigate, useParams } from "react-router-dom";
-import { format, parseISO } from "date-fns";
+import { format, parseISO, set } from "date-fns";
 import NavbarHome from "pages/components/NavbarHome";
 import Footer from "pages/components/footer";
 import StarRating from "./components/starRating";
@@ -36,6 +36,7 @@ export default function OrderPageRide() {
   const [price, setPrice] = useState(0);
   const [hasOpen, setHasOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [userId, setUserId] = useState(null);
   const showSuccessToast = useShowSuccessToast();
 
   useEffect(() => {
@@ -47,8 +48,9 @@ export default function OrderPageRide() {
           setRideDetails(response.ride);
           const price = getLocalStorage(id);
           setPrice(price);
-          const userId = response.ride.driver_id; // Assuming driver_id is the user ID
-          const userResponse = await getUserById(userId);
+          const iduser = response.ride.owner_details.user_id;
+          const userResponse = await getUserById(iduser);
+          setUserId(iduser);
           setUserData(userResponse.user);
           setLoading(false);
         } else {
@@ -129,7 +131,7 @@ export default function OrderPageRide() {
                   border: "2px solid white",
                 }}
                 cursor="pointer"
-                onClick={() => navigate(`/profile/${rideDetails.driver_id}`)}
+                onClick={() => navigate(`/profile/${userId}`)}
               />
               <Stack spacing={0} align="left" ml={5}>
                 <Heading
@@ -137,7 +139,7 @@ export default function OrderPageRide() {
                   fontWeight={500}
                   fontFamily="body"
                   cursor="pointer"
-                  onClick={() => navigate(`/profile/${rideDetails.driver_id}`)}
+                  onClick={() => navigate(`/profile/${userId}`)}
                 >
                   {userData?.username || "Unknown User"}
                 </Heading>

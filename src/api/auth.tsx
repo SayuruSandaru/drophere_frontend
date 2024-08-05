@@ -26,6 +26,16 @@ export const login = async (credentials: { email: string; password: string }) =>
     }
 };
 
+export const updateUserData = async () => {
+    const res = await authService.getUser();
+    if (res.status !== "success") {
+        throw new Error('Failed to fetch user details');
+    }
+    const user = Convert.toUserModal(JSON.stringify(res));
+    User.setUserDetail(user);
+
+};
+
 
 export const registerUser = async (details: {
     email: string;

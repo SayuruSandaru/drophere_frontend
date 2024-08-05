@@ -5,12 +5,14 @@ interface TabBtnProps {
     onOngoingSelect: () => void;
     onConfirmedSelect: () => void;
     onCancelledSelect: () => void;
+    onCompletedSelect: () => void;
 }
 
 const TabBtn: React.FC<TabBtnProps> = ({
     onOngoingSelect,
     onConfirmedSelect,
     onCancelledSelect,
+    onCompletedSelect,
 }) => {
     const [selected, setSelected] = useState('ongoing');
 
@@ -34,6 +36,13 @@ const TabBtn: React.FC<TabBtnProps> = ({
                 isActive={selected === 'confirmed'}
             >
                 <Text fontWeight="medium">Confirmed</Text>
+            </Button>
+            <Button
+                colorScheme={selected === 'completed' ? 'blue' : 'gray'}
+                onClick={() => handleSelect('completed', onOngoingSelect)}
+                isActive={selected === 'completed'}
+            >
+                <Text fontWeight="medium">Completed</Text>
             </Button>
             <Button
                 colorScheme={selected === 'cancelled' ? 'blue' : 'gray'}
