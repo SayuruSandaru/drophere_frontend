@@ -208,10 +208,10 @@ const Cride = () => {
           <NavbarOwner />
         </Box>
         <Box p={[2, 5]}>
-          <Grid templateColumns={["1fr", null, "repeat(2, 1fr)"]} gap={6} height="calc(100vh - 80px)">
+          <Grid templateColumns={["1fr", null, "repeat(2, 1fr)"]} gap={2} height="calc(100vh - 80px)">
             <Center h={"90%"}>
               <GridItem w="100%">
-                <Box bgColor={"white"} p={[4, 5]} borderRadius={10} boxShadow={'2xl'} w={["100%", "80%"]}>
+                <Box bgColor={"white"} p={[4, 5]} borderRadius={10} boxShadow={'xl'} w={["100%", "80%"]} ml={"20px"}>
                   <Text color={"black"} fontWeight={"bold"} fontSize={"2xl"}>Plan your journey</Text>
                   <Text color={"gray.600"} fontSize={"md"}>Fill the following details to plan your journey</Text>
                   <Box mb={4} mt={5}>
@@ -310,7 +310,7 @@ const Cride = () => {
                 </Box>
               </GridItem>
             </Center>
-            <GridItem w="100%">
+            <GridItem w="100%" mr={"60px"}>
               <MapContainerMulitRoute polylinePath={polylinePath} onRouteSelect={handleRouteSelect} />
             </GridItem>
           </Grid>

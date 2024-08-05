@@ -18,41 +18,42 @@ class ReviewService extends ApiService {
     }
   }
 
-  public async getReviews(): Promise<any> {
+  public async getReviews(driver_id: string): Promise<any> {
     try {
-        const response = await this.get("/reviews/driver/1");
-        console.log("API Response:", response); // Log entire API response
-        if (response && response.status === "success" && Array.isArray(response.reviews)) {
-            return response.reviews; // Adjust based on actual response structure
-        } else {
-            console.error("Response data is not an array");
-            return [];
-        }
+      console.log("Fetching reviews for driver form service:", driver_id);
+      const response = await this.get(`/reviews/driver/${driver_id}`);
+      console.log("API Response:", response); // Log entire API response
+      if (response && response.status === "success" && Array.isArray(response.reviews)) {
+        return response.reviews; // Adjust based on actual response structure
+      } else {
+        console.error("Response data is not an array");
+        return [];
+      }
     } catch (error) {
-        console.error("Error getting reviews: ", error);
-        throw error;
+      console.error("Error getting reviews: ", error);
+      throw error;
     }
-}
+  }
 
 
- 
 
-public async getReviewById(id: string): Promise<any> {
+
+  public async getReviewById(id: string): Promise<any> {
     try {
-        const response = await this.get(`/review/${id}`);
-        console.log("API Response:", response); // Log entire API response
+      const response = await this.get(`/review/${id}`);
+      console.log("API Response:", response); // Log entire API response
 
-        if (response && response.status === "success" && response.review) {
-            return response.review; // Adjust based on actual response structure
-        } else {
-            console.error("Review not found or invalid response structure");
-            throw new Error("Review not found or invalid response structure");
-        }
+      if (response && response.status === "success" && response.review) {
+        return response.review; // Adjust based on actual response structure
+      } else {
+        console.error("Review not found or invalid response structure");
+        throw new Error("Review not found or invalid response structure");
+      }
     } catch (error) {
-        console.error("Error getting review: ", error);
-        throw error;
+      console.error("Error getting review: ", error);
+      throw error;
     }
-}
+  }
 }
 
 export default new ReviewService();

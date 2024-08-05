@@ -25,23 +25,29 @@ import {
   ModalFooter,
   ModalBody,
   ModalCloseButton,
+  Text,
 } from "@chakra-ui/react";
 import RideService from "api/services/rideService";
 import userService from "api/services/userService";
 import User from "model/user";
+import { FaPlusCircle, FaRegFrownOpen } from "react-icons/fa";
+import { RouterPaths } from "router/routerConfig";
+import { useNavigate } from "react-router-dom";
 
 const RideListPage = () => {
   const [rides, setRides] = useState([]);
   const [loading, setLoading] = useState(false);
   const [selectedRide, setSelectedRide] = useState(null);
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const { 
-    isOpen: isErrorModalOpen, 
-    onOpen: onErrorModalOpen, 
-    onClose: onErrorModalClose 
+  const {
+    isOpen: isErrorModalOpen,
+    onOpen: onErrorModalOpen,
+    onClose: onErrorModalClose
   } = useDisclosure();
   const toast = useToast();
-  
+  const [isEmpty, setIsEmpty] = useState(false);
+  const navigator = useNavigate();
+
   const headers = ["From", "To", "Date", "Status", "Passengers", "Actions"];
 
   useEffect(() => {
@@ -54,7 +60,9 @@ const RideListPage = () => {
       console.log("Fetching rides for driver:", User.getDriverDetails());
       const response = await RideService.getRideByIdfor(User.getDriverDetails().driver_id);
       if (response.status === "success") {
-        setRides(response.rides || []);
+        const ridesData = response.rides || [];
+        setRides(ridesData);
+        setIsEmpty(ridesData.length === 0);
       } else {
         console.error("Failed to fetch rides:", response);
         toast({
@@ -63,16 +71,18 @@ const RideListPage = () => {
           duration: 3000,
           isClosable: true,
         });
+        setIsEmpty(true);
       }
     } catch (error) {
       console.error("Error fetching rides:", error);
-      toast({
-        title: "Error fetching rides",
-        description: error.message,
-        status: "error",
-        duration: 3000,
-        isClosable: true,
-      });
+      // toast({
+      //   title: "Error fetching rides",
+      //   description: error.message,
+      //   status: "error",
+      //   duration: 3000,
+      //   isClosable: true,
+      // });
+      setIsEmpty(true);
     } finally {
       setLoading(false);
     }
@@ -80,7 +90,7 @@ const RideListPage = () => {
 
   const handleDelete = async () => {
     if (!selectedRide) return;
-    
+
     try {
       setLoading(true);
       const response = await RideService.deleteRide(selectedRide.ride_id);
@@ -92,6 +102,7 @@ const RideListPage = () => {
           duration: 3000,
           isClosable: true,
         });
+        setIsEmpty(rides.length === 1);
       } else {
         throw new Error(response.message || "Failed to delete ride");
       }
@@ -133,6 +144,14 @@ const RideListPage = () => {
       >
         {loading ? (
           <Spinner size="xl" />
+        ) : isEmpty ? (
+          <Flex direction="column" alignItems="center">
+            {/* <FaRegFrownOpen size={50} color="#718096" /> */}
+            <Text mb={4}>No rides available.</Text>
+            <Button colorScheme="gray" onClick={() => { navigator(RouterPaths.CREATERIDE) }}>
+              Create a Ride
+            </Button>
+          </Flex>
         ) : (
           <Table
             w="full"

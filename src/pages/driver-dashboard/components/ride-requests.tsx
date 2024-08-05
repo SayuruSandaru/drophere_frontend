@@ -27,6 +27,7 @@ const RideReqTable = () => {
   const fetchReservations = async (status) => {
     try {
       setLoading(true);
+      setData([]);
       const result = await ReservationService.getReservationsByStatus(status, User.getUserId());
       console.log("Raw fetched reservations:", result);
       const reservations = result.data || result;
@@ -99,13 +100,18 @@ const RideReqTable = () => {
 
   const handleConfirmedSelect = async () => {
     setSelectedStatus("confirmed");
-    await fetchReservations("completed");
+    await fetchReservations("confirmed");
   };
 
   const handleCancelledSelect = async () => {
     setSelectedStatus("cancelled");
     await fetchReservations("cancelled");
   };
+
+  const handleCompletedSelect = async () => {
+    setSelectedStatus("completed");
+    await fetchReservations("completed");
+  }
 
   return (
     <Box>
@@ -114,6 +120,7 @@ const RideReqTable = () => {
           onCancelledSelect={handleCancelledSelect}
           onConfirmedSelect={handleConfirmedSelect}
           onOngoingSelect={handleOngoingSelect}
+          onCompletedSelect={handleCompletedSelect}
         />
       </Box>
       <Flex
