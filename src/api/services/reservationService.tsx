@@ -40,6 +40,7 @@ class ReservationService extends ApiService {
     public async getReservationsByStatus(status: string, id): Promise<any> {
         try {
             console.log("Fetching reservations with status: ", status);
+            console.log("User ID: ", id);
             const response = await this.post("/reservation/available", {
                 "status": status,
                 "user_id": id

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Button, Text, ButtonGroup } from '@chakra-ui/react';
+import { on } from 'events';
 
 interface TabBtnProps {
     onOngoingSelect: () => void;
@@ -39,7 +40,7 @@ const TabBtn: React.FC<TabBtnProps> = ({
             </Button>
             <Button
                 colorScheme={selected === 'completed' ? 'blue' : 'gray'}
-                onClick={() => handleSelect('completed', onOngoingSelect)}
+                onClick={() => handleSelect('completed', onCompletedSelect)}
                 isActive={selected === 'completed'}
             >
                 <Text fontWeight="medium">Completed</Text>
