@@ -6,9 +6,12 @@ export const searchRides = async (search: {
     pickup_lng: number;
     destination_lat: number;
     destination_lng: number;
+    destination_name?: string;
+    pickup_name?: string;
     date?: string;
     passenger_count?: number
 }): Promise<any> => {
+    
     try {
         console.log(search);
         const requestPayload: any = {
@@ -16,6 +19,8 @@ export const searchRides = async (search: {
             "pickup_lng": search.pickup_lng,
             "destination_lat": search.destination_lat,
             "destination_lng": search.destination_lng,
+            "pickup_name": search.pickup_name,
+            "destination_name": search.destination_name,
             "date": search.date,
             "passenger_count": search.passenger_count,
         };
@@ -27,6 +32,7 @@ export const searchRides = async (search: {
         if (search.passenger_count) {
             requestPayload.passenger_count = search.passenger_count;
         }
+        console.log(requestPayload);
 
         const response = await rideService.searchRides(requestPayload);
 

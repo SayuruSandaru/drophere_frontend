@@ -14,6 +14,7 @@ import {
 } from "@chakra-ui/react";
 import { createDriver } from 'api/driver';
 import { fileUpload } from 'api/common';
+import { updateUserData } from 'api/auth';
 
 interface DriverDetailsProps {
   onNext: () => void;
@@ -45,6 +46,7 @@ const DriverDetails: React.FC<DriverDetailsProps> = ({ onNext, onError }) => {
         province: province,
         proof_document: imageurl,
       });
+      await updateUserData();
 
       setLoading(false);
       if (res) {

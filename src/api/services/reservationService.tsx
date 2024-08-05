@@ -3,16 +3,14 @@ import ApiService from "./apiService";
 class ReservationService extends ApiService {
     public async createReservation(reservation: any): Promise<any> {
         try {
-            console.log(reservation);
-            const response = await this.post("/reservation/create",
-                {
-                    "driver_id": reservation.driver_id,
-                    "ride_id": reservation.ride_id,
-                    "status": reservation.status,
-                    "price": reservation.price,
-                    "passenger_count": reservation.passenger_count,
-                }
-            );
+            console.log("Creating reservation: ", reservation);
+            const response = await this.post("/reservation/create", {
+                "driver_id": reservation.driver_id,
+                "ride_id": reservation.ride_id,
+                "status": reservation.status,
+                "price": reservation.price,
+                "passenger_count": reservation.passenger_count,
+            });
             return response;
         } catch (error) {
             console.error("Error creating reservation: ", error);
@@ -39,22 +37,43 @@ class ReservationService extends ApiService {
         }
     }
 
-
-
-
-
-
-    public async getReservationsByStatus(status: string): Promise<any> {
+    public async getReservationsByStatus(status: string, id): Promise<any> {
         try {
+            console.log("Fetching reservations with status: ", status);
+            console.log("User ID: ", id);
             const response = await this.post("/reservation/available", {
-                "status": status
+                "status": status,
+                "user_id": id
+
             });
+            console.log("Reservations fetched:", response);
             return response;
         } catch (error) {
             console.error("Error getting reservations by status: ", error);
             throw error;
         }
     }
+
+    public async updateReservationStatus(reservationId: string, status: string): Promise<any> {
+        try {
+            const requestData = {
+                "reservation_id": reservationId,  // Ensure using "reservation_id"
+                "status": status
+            };
+
+            console.log("Updating reservation status with request data: ", requestData); // Log request data
+
+            const response = await this.post(`/reservation/update`, requestData);
+            console.log("Response from server: ", response); // Log server response
+            return response;
+        } catch (error) {
+            console.error("Error updating reservation status: ", error);
+            throw error;
+        }
+    }
+
+
+
 }
 
 export default new ReservationService();

@@ -8,12 +8,18 @@ import { FaFilter, FaBox, FaBicycle, FaBars } from "react-icons/fa";
 
 
 
+
+
+
 function NavbarOwner() {
     const [isMenuDrawerOpen, setIsMenuDrawerOpen] = useState(false);
     const [isFilterDrawerMobileOpen, setIsFilterDrawerMobileOpen] = useState(false);
     const navigate = useNavigate();
 
     const [isLargeScreen] = useMediaQuery('(min-width: 992px)');
+    const handleUpdateClick = () => {
+        navigate(RouterPaths.DASHBOARDRIDES);
+    };
 
     return (
         <Box>
@@ -25,13 +31,13 @@ function NavbarOwner() {
                     </Flex>
                     <Spacer />
                     <HStack spacing={4}>
-                        <Link>Dashboard</Link>
+                        <button onClick={handleUpdateClick}>Dashboard</button>
                         <Button borderRadius={3} bgColor={"transparent"} size={"sm"} color={"black"} onClick={() => { navigate(RouterPaths.SEARCHDELIVERY); }}>
                             <Icon as={FaBicycle} w={6} h={4} color={"gray.700"} mr={1} />
                             Ride
                         </Button>
 
-                        <Avatar size="sm" name="John" />
+                        {/* <Avatar size="sm" name="John" /> */}
                     </HStack>
                 </Flex>
             )}

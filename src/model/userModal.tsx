@@ -3,36 +3,36 @@ export interface UserModal {
     status: string;
     user: User;
     isDriver: boolean;
-    driverDetails: DriverDetails;
+    driverDetails?: DriverDetails;  // Make this optional since it's not present when isDriver is false
 }
 
 // Interface for user details
 export interface User {
     id: number;
     email: string;
-    firstname: string | null;  // Can be null
-    lastname: string | null;   // Can be null
-    username: string | null;   // Can be null
-    phone: string | null;      // Can be null
+    firstname: string | null;
+    lastname: string | null;
+    username: string | null;
+    phone: string | null;
     profile_image: string | null;
-    driver_id: number | null;  // Can be null
-    user_id: number | null;    // Can be null
-    street: string | null;     // Can be null
-    city: string | null;       // Can be null
-    province: string | null;   // Can be null
-    proof_document: string | null; // Can be null
-    status: string | null;     // Can be null
+    driver_id?: number | null;  // Optional
+    user_id?: number | null;    // Optional
+    street?: string | null;     // Optional
+    city?: string | null;       // Optional
+    province?: string | null;   // Optional
+    proof_document?: string | null; // Optional
+    status?: string | null;     // Optional
 }
 
 // Interface for driver details
 export interface DriverDetails {
-    driver_id: number | null;  // Can be null
-    user_id: number | null;    // Can be null
-    street: string | null;     // Can be null
-    city: string | null;       // Can be null
-    province: string | null;   // Can be null
-    proof_document: string | null; // Can be null
-    status: string | null;     // Can be null
+    driver_id: number | null;
+    user_id: number | null;
+    street: string | null;
+    city: string | null;
+    province: string | null;
+    proof_document: string | null;
+    status: string | null;
 }
 
 // Utility functions to safely parse and stringify the JSON data, using these interfaces
@@ -53,6 +53,10 @@ export class Convert {
     }
 
     private static isUserModal(obj: any): obj is UserModal {
-        return 'status' in obj && 'user' in obj && 'isDriver' in obj && 'driverDetails' in obj;
+        return typeof obj === 'object' &&
+            'status' in obj &&
+            'user' in obj &&
+            'isDriver' in obj &&
+            (obj.isDriver ? 'driverDetails' in obj : true);
     }
 }

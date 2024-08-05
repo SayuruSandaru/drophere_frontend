@@ -74,16 +74,16 @@ const CarInfo: React.FC<CarInfoProps> = ({ imageUrl, altText, carName, date, fro
                 {availability}
               </Badge>
               <Box ml={2} />
-              <Icon
+              {/* <Icon
                 as={MdAirlineSeatReclineExtra}
                 w={4}
                 h={4}
                 color="gray.500"
                 mt={0}
               />
-              <Text ml={2}>{seatsLeft} seats left</Text>
+              <Text ml={2}>{seatsLeft} seats left</Text> */}
             </Flex>
-            <Divider
+            {/* <Divider
               sx={{
                 height: "3px",
                 borderRadius: "md",
@@ -99,7 +99,7 @@ const CarInfo: React.FC<CarInfoProps> = ({ imageUrl, altText, carName, date, fro
                 />
                 <Text pl={"4"}>{name}</Text>
               </Flex>
-            </Box>
+            </Box> */}
           </Stack>
         </Box>
         <Spacer />
