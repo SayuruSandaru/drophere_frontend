@@ -3,28 +3,24 @@ import { RouterPaths } from 'router/routerConfig';
 import {
     Box,
     Button,
-    Container,
     FormControl,
     FormLabel,
-    Heading,
     Input,
     Stack,
-    Flex,
     Select,
-    Image,
     FormErrorMessage,
     Spinner,
     Modal,
     ModalOverlay,
     ModalContent,
-    ModalHeader,
     ModalCloseButton,
     ModalBody,
 } from "@chakra-ui/react";
-import { FiArrowLeft } from 'react-icons/fi';
 import { createVehicle } from 'api/vehicle';
 import { fileUpload } from 'api/common';
 import { useNavigate } from 'react-router-dom';
+
+import { vehicleData } from '../../register_driver/components/vehicleData'; 
 
 interface VehicleDetailsProps {
     isOpen: boolean;
@@ -35,7 +31,11 @@ interface VehicleDetailsProps {
 
 const VehicleDetails: React.FC<VehicleDetailsProps> = ({ isOpen, onClose, onBack, onError }) => {
     const navigator = useNavigate();
+    const [brand, setBrand] = useState('');
+    const [customBrand, setCustomBrand] = useState('');
     const [vehicleModel, setVehicleModel] = useState('');
+    const [customModel, setCustomModel] = useState('');
+    const [models, setModels] = useState<string[]>([]);
     const [year, setYear] = useState('');
     const [licensePlate, setLicensePlate] = useState('');
     const [vehicleImage, setVehicleImage] = useState<File | null>(null);
@@ -45,7 +45,10 @@ const VehicleDetails: React.FC<VehicleDetailsProps> = ({ isOpen, onClose, onBack
     const [error, setError] = useState<string | null>(null);
 
     const [formErrors, setFormErrors] = useState({
+        brand: '',
+        customBrand: '',
         vehicleModel: '',
+        customModel: '',
         year: '',
         licensePlate: '',
         vehicleImage: '',
@@ -53,10 +56,24 @@ const VehicleDetails: React.FC<VehicleDetailsProps> = ({ isOpen, onClose, onBack
         capacity: '',
     });
 
+    const updateModels = (selectedBrand: string) => {
+        const brandData = vehicleData.find(item => item.brand === selectedBrand);
+        if (brandData) {
+            setModels([...brandData.models, 'Other']);
+        } else {
+            setModels([]);
+        }
+        setVehicleModel('');
+        setCustomModel('');
+    };
+
     const validateForm = () => {
         let valid = true;
         const errors = {
+            brand: '',
+            customBrand: '',
             vehicleModel: '',
+            customModel: '',
             year: '',
             licensePlate: '',
             vehicleImage: '',
@@ -64,10 +81,22 @@ const VehicleDetails: React.FC<VehicleDetailsProps> = ({ isOpen, onClose, onBack
             capacity: '',
         };
 
+        if (!brand.trim()) {
+            errors.brand = 'Brand is required';
+            valid = false;
+        } else if (brand === 'Other' && !customBrand.trim()) {
+            errors.customBrand = 'Please enter the brand';
+            valid = false;
+        }
+
         if (!vehicleModel.trim()) {
             errors.vehicleModel = 'Vehicle Model is required';
             valid = false;
+        } else if ((vehicleModel === 'Other' || models.length === 0) && !customModel.trim()) {
+            errors.customModel = 'Please enter the model';
+            valid = false;
         }
+
         if (!year.trim()) {
             errors.year = 'Year is required';
             valid = false;
@@ -113,7 +142,7 @@ const VehicleDetails: React.FC<VehicleDetailsProps> = ({ isOpen, onClose, onBack
             const res = await fileUpload(vehicleImage);
             await updateVehicle(res);
             setLoading(false);
-        } catch (error) {
+        } catch (error: any) {
             setLoading(false);
             const errorMessage = error.message || 'Failed to upload document. Please try again.';
             setError(errorMessage);
@@ -124,17 +153,20 @@ const VehicleDetails: React.FC<VehicleDetailsProps> = ({ isOpen, onClose, onBack
     const updateVehicle = async (imageurl: string) => {
         try {
             setLoading(true);
+            const selectedBrand = brand === 'Other' ? customBrand : brand;
+            const selectedModel = (vehicleModel === 'Other' || models.length === 0) ? customModel : vehicleModel;
+
             await createVehicle({
                 capacity: parseInt(capacity),
                 license_plate: licensePlate,
-                model: vehicleModel,
+                model: `${selectedBrand} ${selectedModel}`, // Concatenated brand and model
                 type: type.toLowerCase(),
                 year: parseInt(year),
                 image_url: imageurl,
             });
             setLoading(false);
             navigator(RouterPaths.DASHBOARDRIDES)
-        } catch (error) {
+        } catch (error: any) {
             setLoading(false);
             console.error(error);
             const errorMessage = error.message || 'Failed to create vehicle. Please try again.';
@@ -149,34 +181,131 @@ const VehicleDetails: React.FC<VehicleDetailsProps> = ({ isOpen, onClose, onBack
             <ModalContent>
                 <ModalCloseButton />
                 <ModalBody>
-
                     <Box my={"30px"}>
                         <form onSubmit={handleSubmit}>
                             <Stack spacing="6">
                                 <Stack spacing="5">
+                                    {/* Brand Selection */}
+                                    <FormControl isInvalid={!!formErrors.brand} isRequired>
+                                        <FormLabel htmlFor="brand">Brand</FormLabel>
+                                        <Select
+                                            id="brand"
+                                            value={brand}
+                                            onChange={(e) => {
+                                                setBrand(e.target.value);
+                                                updateModels(e.target.value);
+                                                setCustomBrand('');
+                                            }}
+                                        >
+                                            <option value="">Select Brand</option>
+                                            {vehicleData.map((item) => (
+                                                <option key={item.brand} value={item.brand}>
+                                                    {item.brand}
+                                                </option>
+                                            ))}
+                                            <option value="Other">Other</option>
+                                        </Select>
+                                        <FormErrorMessage>{formErrors.brand}</FormErrorMessage>
+                                    </FormControl>
+                                    {/* Custom Brand Input */}
+                                    {brand === 'Other' && (
+                                        <FormControl isInvalid={!!formErrors.customBrand} isRequired>
+                                            <FormLabel htmlFor="customBrand">Enter Brand</FormLabel>
+                                            <Input
+                                                id="customBrand"
+                                                type="text"
+                                                value={customBrand}
+                                                onChange={(e) => setCustomBrand(e.target.value)}
+                                            />
+                                            <FormErrorMessage>{formErrors.customBrand}</FormErrorMessage>
+                                        </FormControl>
+                                    )}
+                                    {/* Model Selection */}
                                     <FormControl isInvalid={!!formErrors.vehicleModel} isRequired>
-                                        <FormLabel htmlFor="vehicleModel">Vehicle Model</FormLabel>
-                                        <Input id="vehicleModel" type="text" value={vehicleModel} onChange={(e) => setVehicleModel(e.target.value)} />
+                                        <FormLabel htmlFor="vehicleModel">Model</FormLabel>
+                                        {models.length > 0 ? (
+                                            <Select
+                                                id="vehicleModel"
+                                                value={vehicleModel}
+                                                onChange={(e) => {
+                                                    setVehicleModel(e.target.value);
+                                                    setCustomModel('');
+                                                }}
+                                            >
+                                                <option value="">Select Model</option>
+                                                {models.map((model) => (
+                                                    <option key={model} value={model}>
+                                                        {model}
+                                                    </option>
+                                                ))}
+                                            </Select>
+                                        ) : (
+                                            <Input
+                                                id="vehicleModel"
+                                                type="text"
+                                                value={customModel}
+                                                onChange={(e) => setCustomModel(e.target.value)}
+                                            />
+                                        )}
                                         <FormErrorMessage>{formErrors.vehicleModel}</FormErrorMessage>
                                     </FormControl>
+                                    {/* Custom Model Input */}
+                                    {(vehicleModel === 'Other' || models.length === 0) && (
+                                        <FormControl isInvalid={!!formErrors.customModel} isRequired>
+                                            <FormLabel htmlFor="customModel">Enter Model</FormLabel>
+                                            <Input
+                                                id="customModel"
+                                                type="text"
+                                                value={customModel}
+                                                onChange={(e) => setCustomModel(e.target.value)}
+                                            />
+                                            <FormErrorMessage>{formErrors.customModel}</FormErrorMessage>
+                                        </FormControl>
+                                    )}
+                                    {/* Year Input */}
                                     <FormControl isInvalid={!!formErrors.year} isRequired>
                                         <FormLabel htmlFor="year">Year</FormLabel>
-                                        <Input id="year" type="number" value={year} onChange={(e) => setYear(e.target.value)} />
+                                        <Input
+                                            id="year"
+                                            type="number"
+                                            value={year}
+                                            onChange={(e) => setYear(e.target.value)}
+                                        />
                                         <FormErrorMessage>{formErrors.year}</FormErrorMessage>
                                     </FormControl>
+                                    {/* License Plate Input */}
                                     <FormControl isInvalid={!!formErrors.licensePlate} isRequired>
                                         <FormLabel htmlFor="licensePlate">License Plate No</FormLabel>
-                                        <Input id="licensePlate" type="text" value={licensePlate} onChange={(e) => setLicensePlate(e.target.value)} />
+                                        <Input
+                                            id="licensePlate"
+                                            type="text"
+                                            value={licensePlate}
+                                            onChange={(e) => setLicensePlate(e.target.value)}
+                                        />
                                         <FormErrorMessage>{formErrors.licensePlate}</FormErrorMessage>
                                     </FormControl>
+                                    {/* Vehicle Image Input */}
                                     <FormControl isInvalid={!!formErrors.vehicleImage} isRequired>
                                         <FormLabel htmlFor="vehicleImage">Vehicle Image</FormLabel>
-                                        <Input id="vehicleImage" type="file" border={'none'} accept="image/*" onChange={(e) => setVehicleImage(e.target.files ? e.target.files[0] : null)} />
+                                        <Input
+                                            id="vehicleImage"
+                                            type="file"
+                                            border={'none'}
+                                            accept="image/*"
+                                            onChange={(e) =>
+                                                setVehicleImage(e.target.files ? e.target.files[0] : null)
+                                            }
+                                        />
                                         <FormErrorMessage>{formErrors.vehicleImage}</FormErrorMessage>
                                     </FormControl>
+                                    {/* Type Selection */}
                                     <FormControl isInvalid={!!formErrors.type} isRequired>
                                         <FormLabel htmlFor="type">Type</FormLabel>
-                                        <Select id="type" value={type} onChange={(e) => setType(e.target.value)}>
+                                        <Select
+                                            id="type"
+                                            value={type}
+                                            onChange={(e) => setType(e.target.value)}
+                                        >
                                             <option value="">Select Type</option>
                                             <option value="bike">Bike</option>
                                             <option value="tuktuk">Tuktuk</option>
@@ -187,18 +316,20 @@ const VehicleDetails: React.FC<VehicleDetailsProps> = ({ isOpen, onClose, onBack
                                         </Select>
                                         <FormErrorMessage>{formErrors.type}</FormErrorMessage>
                                     </FormControl>
+                                    {/* Capacity Selection */}
                                     <FormControl isInvalid={!!formErrors.capacity} isRequired>
                                         <FormLabel htmlFor="capacity">Capacity</FormLabel>
-                                        <Select id="capacity" value={capacity} onChange={(e) => setCapacity(e.target.value)}>
+                                        <Select
+                                            id="capacity"
+                                            value={capacity}
+                                            onChange={(e) => setCapacity(e.target.value)}
+                                        >
                                             <option value="">Select Capacity</option>
-                                            <option value="1">1</option>
-                                            <option value="2">2</option>
-                                            <option value="3">3</option>
-                                            <option value="4">4</option>
-                                            <option value="5">5</option>
-                                            <option value="6">6</option>
-                                            <option value="7">7</option>
-                                            <option value="8">8</option>
+                                            {[...Array(8)].map((_, i) => (
+                                                <option key={i + 1} value={(i + 1).toString()}>
+                                                    {i + 1}
+                                                </option>
+                                            ))}
                                         </Select>
                                         <FormErrorMessage>{formErrors.capacity}</FormErrorMessage>
                                     </FormControl>
