@@ -24,7 +24,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { useNavigate } from 'react-router-dom';
 import { RouterPaths } from "router/routerConfig";
-import { FaUser, FaMapMarkerAlt, FaFlag, FaSearch, FaCalendarAlt, FaMap } from 'react-icons/fa'; 
+import { FaMap } from 'react-icons/fa'; 
 import CounterComponent from './CounterComponent';
 import PlaceAutocompleteModal from "pages/components/placeModalbox";
 import Navbar from "pages/components/NavbarNeedLogin";
@@ -178,7 +178,7 @@ const Ride: React.FC = () => {
                 <FormControl>
                   <FormLabel fontSize="sm" color={textColor}>Pick Up</FormLabel>
                   <Flex align="center" bg={inputBgColor} borderRadius="md" p={2} transition="all 0.3s" _hover={{ bg: useColorModeValue("gray.200", "gray.600") }}>
-                    <Icon as={FaMapMarkerAlt} color="blue.500" mr={2} />
+                   
                     <Input
                       placeholder="Select pickup location"
                       onClick={() => handleItemClick("Pickup")}
@@ -190,8 +190,8 @@ const Ride: React.FC = () => {
                     <IconButton
                       aria-label="Open Map"
                       icon={<FaMap />}
-                      colorScheme="blue"
                       ml={2}
+                      backgroundColor="gray.300"
                       onClick={() => handleItemClick("PickupMap")}
                     />
                   </Flex>
@@ -200,7 +200,7 @@ const Ride: React.FC = () => {
                 <FormControl>
                   <FormLabel fontSize="sm" color={textColor}>Destination</FormLabel>
                   <Flex align="center" bg={inputBgColor} borderRadius="md" p={2} transition="all 0.3s" _hover={{ bg: useColorModeValue("gray.200", "gray.600") }}>
-                    <Icon as={FaFlag} color="green.500" mr={2} />
+                    
                     <Input
                       placeholder="Select destination"
                       onClick={() => handleItemClick("Destination")}
@@ -212,8 +212,8 @@ const Ride: React.FC = () => {
                     <IconButton
                       aria-label="Open Map"
                       icon={<FaMap />}
-                      colorScheme="green"
                       ml={2}
+                      backgroundColor="gray.300"
                       onClick={() => handleItemClick("DestinationMap")}
                     />
                   </Flex>
@@ -222,7 +222,7 @@ const Ride: React.FC = () => {
                 <FormControl>
                   <FormLabel fontSize="sm" color={textColor}>Date</FormLabel>
                   <Flex align="center" bg={inputBgColor} borderRadius="md" p={2} transition="all 0.3s" _hover={{ bg: useColorModeValue("gray.200", "gray.600") }}>
-                    <Icon as={FaCalendarAlt} color="red.500" mr={2} />
+                    
                     <DatePicker
                       selected={selectedDate}
                       onChange={(date) => setSelectedDate(date)}
@@ -242,14 +242,12 @@ const Ride: React.FC = () => {
                   transition="all 0.3s"
                   _hover={{ bg: useColorModeValue("gray.200", "gray.600") }}
                 >
-                  <Icon as={FaUser} color="purple.500" mr={2} />
                   <Text fontSize="sm" fontWeight="medium" color={textColor}>
                     Passengers: {count}
                   </Text>
                 </Flex>
 
                 <Button
-                  leftIcon={<FaSearch />}
                   colorScheme="blue"
                   size="lg"
                   onClick={searchRide}
