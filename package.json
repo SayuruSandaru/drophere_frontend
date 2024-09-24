@@ -22,6 +22,7 @@
     "chakra": "^0.0.3",
     "crypto-js": "^4.2.0",
     "date-fns": "^3.6.0",
+    "drophere": "file:",
     "firebase": "^10.12.3",
     "formik": "^2.4.6",
     "framer-motion": "^3.2.1",

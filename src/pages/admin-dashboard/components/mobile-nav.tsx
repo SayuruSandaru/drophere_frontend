@@ -1,14 +1,34 @@
-import { Avatar, Button, Box, Flex, useColorModeValue, HStack, IconButton, Menu, MenuButton, MenuDivider, MenuItem, MenuList, Text, VStack, FlexProps } from "@chakra-ui/react"
-import { FiBell, FiChevronDown, FiMenu, FiPlus } from "react-icons/fi"
+import {
+    Avatar,
+    Button,
+    Box,
+    Flex,
+    useColorModeValue,
+    HStack,
+    IconButton,
+    Menu,
+    MenuButton,
+    MenuDivider,
+    MenuItem,
+    MenuList,
+    Text,
+    VStack,
+    FlexProps
+} from "@chakra-ui/react";
+import { FiBell, FiChevronDown, FiMenu, FiPlus } from "react-icons/fi";
 
 interface MobileProps extends FlexProps {
-    onOpen: () => void
+    onOpen: () => void;
 }
-
 
 const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
     return (
         <Flex
+            position="fixed"  // Ensure the navbar stays fixed
+            top="0"
+            left="0"
+            right="0"
+            zIndex="1000"    // Keep it above all other elements
             ml={{ base: 0, md: 60 }}
             px={{ base: 4, md: 4 }}
             height="20"
@@ -17,7 +37,8 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
             borderBottomWidth="1px"
             borderBottomColor={useColorModeValue('gray.200', 'gray.700')}
             justifyContent={{ base: 'space-between', md: 'flex-end' }}
-            {...rest}>
+            {...rest}
+        >
             <IconButton
                 display={{ base: 'flex', md: 'none' }}
                 onClick={onOpen}
@@ -82,7 +103,7 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
                 </Flex>
             </HStack>
         </Flex>
-    )
+    );
 }
 
 export default MobileNav;
