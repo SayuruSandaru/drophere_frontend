@@ -104,6 +104,7 @@ const Ride: React.FC = () => {
           date: formattedDate,
         }
       );
+      console.log(res);
       const rideData = {
         pickup_lat: pickCordinate['lat'],
         pickup_lng: pickCordinate['lng'],
