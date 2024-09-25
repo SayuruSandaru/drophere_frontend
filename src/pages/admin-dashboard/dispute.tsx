@@ -1,33 +1,14 @@
-// src/pages/admin-dashboard/index.tsx
-import { Text, Box, Drawer, DrawerContent, useDisclosure, useColorModeValue } from "@chakra-ui/react";
-import { Outlet } from "react-router-dom";
-import MobileNav from "./components/mobile-nav";
-import SidebarContent from "./dashboard-content";
+import React from 'react';
+import { Text, Box } from "@chakra-ui/react";
+import Disputes from './components/dispute-details';
 
-const AdminDashboard = () => {
-    const { isOpen, onOpen, onClose } = useDisclosure();
-
+const DisputeManagement: React.FC = () => {
     return (
-        <Box minH="100vh" bg={useColorModeValue('gray.100', 'gray.900')}>
-            <SidebarContent onClose={onClose} display={{ base: 'none', md: 'block' }} />
-            <Drawer
-                isOpen={isOpen}
-                placement="left"
-                onClose={onClose}
-                returnFocusOnClose={false}
-                onOverlayClick={onClose}
-                size="full"
-            >
-                <DrawerContent>
-                    <SidebarContent onClose={onClose} />
-                </DrawerContent>
-            </Drawer>
-            <MobileNav onOpen={onOpen} />
-            <Box ml={{ base: 0, md: 60 }} p="4">
-                <Outlet />
-            </Box>
+        <Box p="4">
+            <Text fontSize="2xl" mb="4">Dispute Management</Text>
+            <Disputes />
         </Box>
     );
 };
 
-export default AdminDashboard;
+export default DisputeManagement;

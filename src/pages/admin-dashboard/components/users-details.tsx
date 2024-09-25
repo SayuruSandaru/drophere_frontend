@@ -84,33 +84,33 @@ const Users = () => {
 
         // Render table content based on the selected tab
         return (
-            <Table w="full" colorScheme="gray">
+            <Table w="full" boxShadow="lg" borderRadius="md">
                 <Thead bg="white" h={16}>
                     <Tr>
                         {selectedTab === 'users' && (
                             <>
-                                <Th fontSize="md">ID</Th> {/* Increase font size */}
-                                <Th fontSize="md">Email</Th> {/* Increase font size */}
-                                <Th fontSize="md">First Name</Th> {/* Increase font size */}
-                                <Th fontSize="md">Last Name</Th> {/* Increase font size */}
-                                <Th fontSize="md">Username</Th> {/* Increase font size */}
-                                <Th fontSize="md">Phone</Th> {/* Increase font size */}
+                                <Th fontSize="md">ID</Th>
+                                <Th fontSize="md">Email</Th>
+                                <Th fontSize="md">First Name</Th>
+                                <Th fontSize="md">Last Name</Th>
+                                <Th fontSize="md">Username</Th>
+                                <Th fontSize="md">Phone</Th>
                             </>
                         )}
                         {selectedTab === 'drivers' && (
                             <>
-                                <Th fontSize="md">Driver ID</Th> {/* Increase font size */}
-                                <Th fontSize="md">User ID</Th> {/* Increase font size */}
-                                <Th fontSize="md">Street</Th> {/* Increase font size */}
-                                <Th fontSize="md">City</Th> {/* Increase font size */}
-                                <Th fontSize="md">Province</Th> {/* Increase font size */}
+                                <Th fontSize="md">Driver ID</Th>
+                                <Th fontSize="md">User ID</Th>
+                                <Th fontSize="md">Street</Th>
+                                <Th fontSize="md">City</Th>
+                                <Th fontSize="md">Province</Th>
                             </>
                         )}
                     </Tr>
                 </Thead>
-                <Tbody bg="white">
+                <Tbody>
                     {selectedTab === 'users' && usersData.map((user) => (
-                        <Tr key={user.id}>
+                        <Tr key={user.id} bg="gray.100">
                             <Td>{user.id}</Td>
                             <Td>{user.email}</Td>
                             <Td>{user.firstname}</Td>
@@ -120,7 +120,7 @@ const Users = () => {
                         </Tr>
                     ))}
                     {selectedTab === 'drivers' && driversData.map((driver) => (
-                        <Tr key={driver.driver_id}>
+                        <Tr key={driver.driver_id} bg="gray.100">
                             <Td>{driver.driver_id}</Td>
                             <Td>{driver.user_id}</Td>
                             <Td>{driver.street}</Td>
