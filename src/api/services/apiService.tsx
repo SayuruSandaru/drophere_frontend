@@ -49,15 +49,15 @@ class ApiService {
 
     public async uploadFile(path: string, fileData: FormData, authorized = true): Promise<any> {
         try {
-            const headers = new Headers();
+            // const headers = new Headers();
 
-            if (authorized) {
-                this.mergeToken(headers);
-            }
+            // if (authorized) {
+            //     this.mergeToken(headers);
+            // }
 
             const requestOptions: RequestInit = {
                 method: "POST",
-                headers: authorized ? headers : undefined, // Use headers only if authorization is required
+                // headers: authorized ? headers : undefined, // Use headers only if authorization is required
                 body: fileData,
                 redirect: 'follow'
             };
@@ -106,6 +106,82 @@ class ApiService {
             throw error;
         }
     }
+
+    public async put(path: string, data: any, authorized = true): Promise<any> {
+        try {
+          const headers = new Headers({
+            "Content-Type": "application/json",
+          });
+      
+          if (authorized) {
+            this.mergeToken(headers);
+          }
+      
+          const requestOptions: RequestInit = {
+            method: "PUT",
+            headers: headers,
+            body: JSON.stringify(data),
+            redirect: "follow",
+          };
+      
+          const response = await fetch(this.baseUrl + path, requestOptions);
+      
+          if (!response.ok) {
+            const errorText = await response.text();
+            
+            try {
+              const errorJson = JSON.parse(errorText);
+              throw new Error(errorJson.message || "Unknown error");
+            } catch (parseError) {
+              throw new Error(errorText || "Malformed server response");
+            }
+          }
+      
+          const responseBody = await response.text();
+          if (responseBody) {
+            return JSON.parse(responseBody); 
+          } else {
+            throw new Error("Empty response from server");
+          }
+        } catch (error) {
+          console.error("Error making PUT request: ", error);
+          throw error;
+        }
+      }
+      
+
+    // public async put(path: string, data: any, authorized = true): Promise<any> {
+    //     try {
+    //         const headers = new Headers({
+    //             "Content-Type": "application/json",
+    //         });
+    
+    //         if (authorized) {
+    //             this.mergeToken(headers);
+    //         }
+    
+    //         const requestOptions: RequestInit = {
+    //             method: "PUT",
+    //             headers: headers,
+    //             body: JSON.stringify(data),
+    //             redirect: 'follow',
+    //         };
+    
+    //         const response = await fetch(this.baseUrl + path, requestOptions);
+    
+    //         if (!response.ok) {
+    //             const errorText = await response.text();
+    //             const errorJson = JSON.parse(errorText);
+    //             throw new Error(errorJson.message);
+    //         }
+    
+    //         return await response.json();
+    //     } catch (error) {
+    //         console.error("Error making PUT request: ", error);
+    //         throw error;
+    //     }
+    // }
+    
 }
 
 export default ApiService;

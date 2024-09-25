@@ -32,6 +32,9 @@ import { getReviews, createReview } from "api/review";
 import { getUserDetails } from "api/user";
 import { fileUpload } from "api/common";
 import authService from "api/services/authService";
+import User from "model/user";
+import { useParams } from "react-router-dom";
+import { getUserById } from "api/user";
 
 const Profile = () => {
   const [ratingData, setRatingData] = useState({ rating: 0, reviews: 0 });
@@ -44,15 +47,24 @@ const Profile = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [isLargeScreen] = useMediaQuery("(min-width: 992px)");
   const toast = useToast();
+  const { driver_id: userId } = useParams();
+  const [isCurrentUser, setIsCurrentUser] = useState(true);
+  const [driverId, setDriverId] = useState(null);
 
   useEffect(() => {
     const fetchReviews = async () => {
       try {
-        const fetchedReviews = await getReviews();
+        const fetchedReviews = await getReviews(driverId || User.getDriverDetails().driver_id);
         if (Array.isArray(fetchedReviews)) {
-          setReviews(fetchedReviews);
-          const averageRating = fetchedReviews.reduce((acc, review) => acc + review.rating, 0) / fetchedReviews.length;
-          setRatingData({ rating: averageRating, reviews: fetchedReviews.length });
+          // const filteredReviews = userId
+          //   ? fetchedReviews.filter(review => review.driver_id === parseInt(userId))
+          //   : fetchedReviews;
+
+          const filteredReviews = fetchedReviews;
+
+          setReviews(filteredReviews);
+          const averageRating = filteredReviews.reduce((acc, review) => acc + review.rating, 0) / filteredReviews.length;
+          setRatingData({ rating: averageRating, reviews: filteredReviews.length });
         } else {
           setReviews([]);
         }
@@ -65,34 +77,47 @@ const Profile = () => {
     };
 
     fetchReviews();
-  }, []);
+  }, [userId, driverId]);
 
   useEffect(() => {
     const fetchUserDetails = async () => {
       try {
-        const fetchedUserDetails = await getUserDetails();
-        setUserDetails(fetchedUserDetails);
+        if (userId) {
+          const response = await getUserById(userId);
+          if (response.status === "success") {
+            setUserDetails({ user: response.user });
+            setDriverId(response.user.driver_id);
+            setIsCurrentUser(User.getUserId().toString() === userId);
+          }
+        } else {
+          const fetchedUserDetails = await getUserDetails();
+          setUserDetails(fetchedUserDetails);
+          setIsCurrentUser(true);
+        }
       } catch (error) {
         console.error("Failed to fetch user details", error);
       }
     };
 
     fetchUserDetails();
-  }, []);
+  }, [userId]);
 
   const handleAddReview = async () => {
     try {
       setIsLoading(true);
-      const response = await createReview({ 
-        description: newReviewComment, 
-        rating: newReviewRating, 
-        driver_id: 1 
+      const response = await createReview({
+        description: newReviewComment,
+        rating: newReviewRating,
+        driver_id: driverId || User.getDriverDetails().driver_id
       });
-      const updatedReviews = await getReviews();
+      // Fetch reviews again after adding a new one
+      const updatedReviews = await getReviews(driverId || User.getDriverDetails().driver_id);
       if (Array.isArray(updatedReviews)) {
-        setReviews(updatedReviews);
-        const averageRating = updatedReviews.reduce((acc, review) => acc + review.rating, 0) / updatedReviews.length;
-        setRatingData({ rating: averageRating, reviews: updatedReviews.length });
+        const filteredReviews = updatedReviews;
+
+        setReviews(filteredReviews);
+        const averageRating = filteredReviews.reduce((acc, review) => acc + review.rating, 0) / filteredReviews.length;
+        setRatingData({ rating: averageRating, reviews: filteredReviews.length });
         setNewReviewRating(0);
         setNewReviewComment("");
       } else {
@@ -124,17 +149,13 @@ const Profile = () => {
       });
       return;
     }
-  
+
     try {
       setIsLoading(true);
-      
-      console.log('Uploading document for user:', userDetails.user.email);
+
       const url = await fileUpload(selectedFile);
-      console.log('File uploaded, received URL:', url);
-  
       const response = await authService.updateUserImg(userDetails.user.email, url);
-      console.log('Profile update response:', response);
-  
+
       if (response && response.status === "success") {
         toast({
           title: "Profile image updated",
@@ -143,8 +164,7 @@ const Profile = () => {
           duration: 5000,
           isClosable: true,
         });
-  
-        // Update the local state immediately
+
         setUserDetails(prevDetails => ({
           ...prevDetails,
           user: {
@@ -155,7 +175,7 @@ const Profile = () => {
       } else {
         throw new Error(response.message || "Failed to update profile image");
       }
-  
+
       setIsLoading(false);
       onClose();
     } catch (error) {
@@ -169,11 +189,10 @@ const Profile = () => {
         isClosable: true,
       });
     }
-  };  
+  };
 
   const handleChange = useCallback((e) => {
-    const { value } = e.target;
-    setNewReviewComment(value);
+    setNewReviewComment(e.target.value);
   }, []);
 
   const ReviewsAndComments = () => (
@@ -188,7 +207,7 @@ const Profile = () => {
               <ReviewItem
                 key={index}
                 name={review.username || "Anonymous"}
-                comment={review.comment || review.description || "No comment"}
+                comment={review.description || "No comment"}
                 rating={review.rating}
               />
             )) : (
@@ -211,19 +230,21 @@ const Profile = () => {
                 name={userDetails.user.username}
                 src={userDetails.user.profile_image}
               />
-              <Icon
-                as={FaCamera}
-                boxSize={6}
-                position="absolute"
-                bottom={0}
-                right={0}
-                bg="white"
-                borderRadius="full"
-                p={1}
-                color="gray.700"                
-                cursor="pointer"
-                onClick={onOpen}
-              />
+              {User.isDriver() && User.getUserId() === parseInt(userId) && (
+                <Icon
+                  as={FaCamera}
+                  boxSize={6}
+                  position="absolute"
+                  bottom={0}
+                  right={0}
+                  bg="white"
+                  borderRadius="full"
+                  p={1}
+                  color="gray.700"
+                  cursor="pointer"
+                  onClick={onOpen}
+                />
+              )}
             </Box>
             <Text as="b" fontSize="xl" ml={"10px"} mt={4}>
               {userDetails.user.username}
@@ -324,7 +345,7 @@ const Profile = () => {
         </Flex>
       )}
       {!isLargeScreen && <ReviewsAndComments />}
-      <Footer />
+      {/* <Footer /> */}
 
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />

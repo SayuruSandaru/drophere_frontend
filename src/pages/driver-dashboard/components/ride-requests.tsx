@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import CustomAlertDialog from "./alert-dialog";
 import ReservationService from "api/services/reservationService";
 import TabBtn from "./tab-btn";
+import User from "model/user";
 
 const RideReqTable = () => {
   const { isOpen: isOpenDecline, onOpen: onOpenDecline, onClose: onCloseDecline } = useDisclosure();
@@ -26,7 +27,9 @@ const RideReqTable = () => {
   const fetchReservations = async (status) => {
     try {
       setLoading(true);
-      const result = await ReservationService.getReservationsByStatus(status);
+      setData([]);
+      const result = await ReservationService.getReservationsByStatus(status, User.getUserId());
+      console.log("Fetched reservations:", result);
       console.log("Raw fetched reservations:", result);
       const reservations = result.data || result;
 
@@ -98,13 +101,18 @@ const RideReqTable = () => {
 
   const handleConfirmedSelect = async () => {
     setSelectedStatus("confirmed");
-    await fetchReservations("completed");
+    await fetchReservations("confirmed");
   };
 
   const handleCancelledSelect = async () => {
     setSelectedStatus("cancelled");
     await fetchReservations("cancelled");
   };
+
+  const handleCompletedSelect = async () => {
+    setSelectedStatus("completed");
+    await fetchReservations("completed");
+  }
 
   return (
     <Box>
@@ -113,6 +121,7 @@ const RideReqTable = () => {
           onCancelledSelect={handleCancelledSelect}
           onConfirmedSelect={handleConfirmedSelect}
           onOngoingSelect={handleOngoingSelect}
+          onCompletedSelect={handleCompletedSelect}
         />
       </Box>
       <Flex

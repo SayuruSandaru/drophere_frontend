@@ -1,7 +1,24 @@
 import { AnyFunction } from "@chakra-ui/utils";
 import ApiService from "./apiService";
 
+
 class AuthService extends ApiService {
+
+
+  public async logout(): Promise<any> {
+    try {
+      const response = await this.post("/logout", {}, true);
+      // Clear any local storage or state here
+      localStorage.removeItem('token');
+      
+      // Assuming you store the token in localStorage
+      return response;
+    } catch (error) {
+      console.error("Error logging out: ", error);
+      throw error;
+    }
+  }
+
   public async login(email: string, password: string): Promise<any> {
     try {
       const response = await this.post("/login", {
@@ -24,7 +41,7 @@ class AuthService extends ApiService {
         "lastname": user.lastname,
         "username": user.username,
         "phone": user.phone,
-        "profile_image": "NOT AVAILABLE"
+        "profile_image": user.profile_image
       };
       console.log(r);
       const response = await this.post("/register", r, false);
@@ -48,12 +65,12 @@ class AuthService extends ApiService {
   public async updateUserImg(email: string, url: string): Promise<any> {
     try {
       console.log('Updating user image. Email:', email, 'URL:', url);
-      const response = await this.post("/update", 
+      const response = await this.post("/update",
         {
-          "email":email,
+          "email": email,
           "profile_image": url
-      }
-    );
+        }
+      );
       console.log('Update user image response:', response);
       return response;
     } catch (error) {
@@ -61,6 +78,11 @@ class AuthService extends ApiService {
       throw error;
     }
   }
+
+
+
+
+
 }
 
 export default new AuthService();

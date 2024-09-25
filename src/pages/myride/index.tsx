@@ -27,7 +27,7 @@ const MyRide: React.FC = () => {
     const getReservationByStatus = async (status: string) => {
         try {
             setLoading(true);
-            const response = await reservationService.getReservationsByStatus(status);
+            const response = await reservationService.getReservationsByStatus(status, User.getUserId());
             console.log(response);
             setData(response.data);
             setLoading(false);
@@ -54,16 +54,21 @@ const MyRide: React.FC = () => {
         await getReservationByStatus("cancelled");
     };
 
+    const handleConfirmedSelect = async () => {
+        await getReservationByStatus("confirmed");
+    };
+
     return (
-        <Box bgColor={"#edf3f8"}>
+        <Box bgColor={"gray.100"} minH="100vh">
             <NavbarHome />
-            <Box h={"100vh"} >
-                <Text fontSize={"xl"} px={"15px"} py={"30px"} fontWeight={"bold"}>Ride history</Text>
+            <Box>
+                <Text fontSize={"xl"} px={"15px"} py={"30px"} fontWeight={"bold"}>Reservation history</Text>
                 <Flex direction={"row"} mx={"48px"}>
                     <OrderStatusTabs
                         onCancelledSelect={handleCancelledSelect}
                         onCompletedSelect={handleCompletedSelect}
                         onOngoingSelect={handleOngoingSelect}
+                        onConfirmedSelect={handleConfirmedSelect}
                     />
                     {/* <Spacer /> */}
                     {/* <SortByMenu onSortChange={/() => { }} /> */}
@@ -73,9 +78,9 @@ const MyRide: React.FC = () => {
                         {data && Array.isArray(data) && data.length > 0 ? (
                             <OrderHistoryTable data={data} />
                         ) : (
-                            <VStack align="center" spacing={3} mt={"40px"}>
+                            <VStack align="center" spacing={3} mt={"140px"}>
                                 <Icon as={BiSearchAlt} boxSize="50px" />
-                                <Text>No data was returned</Text>
+                                <Text>No ride available</Text>
                             </VStack>
                         )}
                     </>
@@ -86,7 +91,7 @@ const MyRide: React.FC = () => {
                     </Flex>
                 )}
             </Box>
-            <Footer />
+            {/* <Footer /> */}
         </Box>
     );
 };

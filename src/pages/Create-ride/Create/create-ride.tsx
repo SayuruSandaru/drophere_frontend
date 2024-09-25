@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { ChakraProvider, Text, Box, Button, FormControl, FormLabel, Input, HStack, VStack, Grid, GridItem, Center, useDisclosure, Select, useToast, useMediaQuery, Spinner, Flex } from '@chakra-ui/react';
+import { ChakraProvider, Text, Box, Button, FormControl, FormLabel, Input, HStack, VStack, Grid, GridItem, Center, useDisclosure, Select, useToast, useMediaQuery, Spinner, Flex, InputGroup, InputRightElement, IconButton } from '@chakra-ui/react';
 import NavbarOwner from 'pages/components/navbar-owner';
 import Footer from 'pages/components/footer';
 import PlaceAutocompleteModal from 'pages/components/placeModalbox';
@@ -10,6 +10,8 @@ import MapContainerMulitRoute from 'pages/home/components/googleMap_multiroute';
 import { useShowErrorToast, useShowSuccessToast } from 'pages/components/toast';
 import User from 'model/user';
 import { set } from 'date-fns';
+import { FaMap } from 'react-icons/fa';
+import MapPopup from 'pages/ride - search/location_picker_modal';
 
 interface Coordinate {
   lat: number;
@@ -36,6 +38,10 @@ const Cride = () => {
   const [loading, setLoading] = useState(false);
   const [passenger, setPassenger] = useState("");
 
+  const { isOpen: isPickupMapOpen, onOpen: onPickupMapOpen, onClose: onPickupMapClose } = useDisclosure();
+
+  const { isOpen: isDestinationMapOpen, onOpen: onDestinationMapOpen, onClose: onDestinationMapClose } = useDisclosure();
+
   const showSuccessToast = useShowSuccessToast();
   const showErrorToast = useShowErrorToast();
 
@@ -54,6 +60,11 @@ const Cride = () => {
       onPickupPlaceOpen();
     } else if (item === "Destination") {
       onDestinationPlaceOpen();
+    } else if (item === "PickupMap") {
+      onPickupMapOpen();
+    }
+    else if (item === "DestinationMap") {
+      onDestinationMapOpen();
     }
   };
 
@@ -125,16 +136,26 @@ const Cride = () => {
 
   const getVehicle = async () => {
     try {
-      const userId = User.getUserId();
-      const res = await vehicleService.getVehicleByOwenerId(userId.toString());
+      const user = User.getUserId();
+      if (!user) {
+        console.error("User is not logged in or session expired");
+        showErrorToast("Please log in to view vehicles");
+        // Optionally, redirect to login page
+        // window.location.href = '/login';
+        return;
+      }
+      const userId = user.toString();
+      console.log("User ID:", userId);
+      const res = await vehicleService.getVehicleByOwenerId(userId);
+      console.log("API Response:", res);
       if (res.status === "error") {
-        showErrorToast("Failed to get vehicle");
+        showErrorToast(`Failed to get vehicle: ${res.message || 'Unknown error'}`);
       } else {
-        setVehicles([]);
         setVehicles(res.vehicles);
       }
     } catch (error) {
-      showErrorToast("Failed to get vehicle");
+      console.error("Error in getVehicle:", error);
+      showErrorToast(`Failed to get vehicle: ${error.message || 'Unknown error'}`);
     }
   };
 
@@ -198,33 +219,63 @@ const Cride = () => {
           <NavbarOwner />
         </Box>
         <Box p={[2, 5]}>
-          <Grid templateColumns={["1fr", null, "repeat(2, 1fr)"]} gap={6} height="calc(100vh - 80px)">
+          <Grid templateColumns={["1fr", null, "repeat(2, 1fr)"]} gap={2} height="calc(100vh - 80px)">
             <Center h={"90%"}>
               <GridItem w="100%">
-                <Box bgColor={"white"} p={[4, 5]} borderRadius={10} boxShadow={'2xl'} w={["100%", "80%"]}>
+                <Box bgColor={"white"} p={[4, 5]} borderRadius={10} boxShadow={'xl'} w={["100%", "80%"]} ml={"20px"}>
                   <Text color={"black"} fontWeight={"bold"} fontSize={"2xl"}>Plan your journey</Text>
                   <Text color={"gray.600"} fontSize={"md"}>Fill the following details to plan your journey</Text>
                   <Box mb={4} mt={5}>
+
+
+
                     <FormControl>
-                      <FormLabel fontSize="sm" color={"gray.500"}>Pick Up</FormLabel>
-                      <Input
-                        placeholder=""
-                        onClick={() => handleItemClick("Pickup")}
-                        value={selectedPickupLocation}
-                        readOnly
-                      />
+                      <FormLabel fontSize="sm" color={"gray.600"}>Pickup</FormLabel>
+                      <InputGroup>
+                        <Input
+                          placeholder="Select pickup location"
+                          onClick={() => handleItemClick("Pickup")}
+                          value={selectedPickupLocation}
+                          readOnly
+                        />
+                        <InputRightElement width="3rem" paddingRight="0.5rem">
+                          <IconButton
+                            size={"sm"}
+                            aria-label="Open Map"
+                            icon={<FaMap />}
+                            backgroundColor="gray.300"
+                            onClick={() => handleItemClick("PickupMap")}
+                          />
+                        </InputRightElement>
+                      </InputGroup>
                     </FormControl>
+
+
                   </Box>
                   <Box mb={4}>
+
                     <FormControl>
-                      <FormLabel fontSize="sm" color={"gray.500"}>Destination</FormLabel>
-                      <Input
-                        placeholder=""
-                        onClick={() => handleItemClick("Destination")}
-                        value={selectedDestinationLocation}
-                        readOnly
-                      />
+                      <FormLabel fontSize="sm" color={"gray.600"}>Pickup</FormLabel>
+                      <InputGroup>
+                        <Input
+                          placeholder="Select Destination location"
+                          onClick={() => handleItemClick("Destination")}
+                          value={selectedDestinationLocation}
+                          readOnly
+                        />
+                        <InputRightElement width="3rem" paddingRight="0.5rem">
+                          <IconButton
+                            size={"sm"}
+                            aria-label="Open Map"
+                            icon={<FaMap />}
+                            backgroundColor="gray.300"
+                            onClick={() => handleItemClick("DestinationMap")}
+                          />
+                        </InputRightElement>
+                      </InputGroup>
                     </FormControl>
+
+
                   </Box>
                   <Box mb={4}>
                     <FormControl>
@@ -300,7 +351,7 @@ const Cride = () => {
                 </Box>
               </GridItem>
             </Center>
-            <GridItem w="100%">
+            <GridItem w="100%" mr={"60px"}>
               <MapContainerMulitRoute polylinePath={polylinePath} onRouteSelect={handleRouteSelect} />
             </GridItem>
           </Grid>
@@ -308,6 +359,25 @@ const Cride = () => {
         {!isLargeScreen && <Footer />}
         <PlaceAutocompleteModal isOpen={isPickupPlaceOpen} onClose={onPickupPlaceClose} onPlaceSelect={handlePickupLocationSelect} />
         <PlaceAutocompleteModal isOpen={isDestinationPlaceOpen} onClose={onDestinationPlaceClose} onPlaceSelect={handleDestinationSelect} />
+        <MapPopup
+          isOpen={isPickupMapOpen}
+          onClose={onPickupMapClose}
+          onConfirmLocation={(location, placeName) => {
+            console.log("Confirmed Pickup Location:", location);
+            setPickCordinate(location);
+            setSelectedPickupLocation(placeName);
+          }}
+        />
+        <MapPopup
+          isOpen={isDestinationMapOpen}
+          onClose={onDestinationMapClose}
+          onConfirmLocation={(location, placeName) => {
+            console.log("Confirmed Destination Location:", location);
+            setDestinationCordinate(location);
+            setSelectedDestinationLocation(placeName);
+          }}
+        />
+
       </Box>
     </ChakraProvider>
   );
