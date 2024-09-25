@@ -17,13 +17,14 @@ import {
   Stack,
   Image,
   useMediaQuery,
+  IconButton,
 } from "@chakra-ui/react";
 import React, { useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { useNavigate } from 'react-router-dom';
 import { RouterPaths } from "router/routerConfig";
-import { FaUser, FaMapMarkerAlt, FaFlag, FaSearch, FaCalendarAlt } from 'react-icons/fa';
+import { FaMap } from 'react-icons/fa'; 
 import CounterComponent from './CounterComponent';
 import PlaceAutocompleteModal from "pages/components/placeModalbox";
 import Navbar from "pages/components/NavbarNeedLogin";
@@ -33,12 +34,19 @@ import { searchRides } from "api/ride";
 import { searchRideState } from "state";
 import { getDriverById } from "api/driver";
 import { format } from "date-fns/format";
+import MapPopup from "./location_picker_modal";
 
 const Ride: React.FC = () => {
   const [isMobile] = useMediaQuery("(max-width: 767px)");
   const setSearchRideState = useSetRecoilState(searchRideState);
+  
+  // Disclosure for Modals
   const { isOpen: isPickupPlaceOpen, onOpen: onPickupPlaceOpen, onClose: onPickupPlaceClose } = useDisclosure();
   const { isOpen: isDestinationPlaceOpen, onOpen: onDestinationPlaceOpen, onClose: onDestinationPlaceClose } = useDisclosure();
+  const { isOpen: isDestinationMapOpen, onOpen: onDestinationMapOpen, onClose: onDestinationMapClose } = useDisclosure();
+  const { isOpen: isPickupMapOpen, onOpen: onPickupMapOpen, onClose: onPickupMapClose } = useDisclosure();
+
+  // State management
   const [selectedDestinationLocation, setSelectedDestinationLocation] = useState("");
   const [selectedPickupLocation, setSelectedPickupLocation] = useState("");
   const [count, setCount] = useState(0);
@@ -57,6 +65,10 @@ const Ride: React.FC = () => {
       onPickupPlaceOpen();
     } else if (item === "Destination") {
       onDestinationPlaceOpen();
+    } else if (item === "DestinationMap") {
+      onDestinationMapOpen();
+    } else if (item === "PickupMap") {
+      onPickupMapOpen();
     }
   };
 
@@ -92,6 +104,7 @@ const Ride: React.FC = () => {
           date: formattedDate,
         }
       );
+      console.log(res);
       const rideData = {
         pickup_lat: pickCordinate['lat'],
         pickup_lng: pickCordinate['lng'],
@@ -131,7 +144,6 @@ const Ride: React.FC = () => {
       <Navbar isDelivery={true} />
       <Container maxW="container.xl" py={10}>
         <Stack direction={{ base: "column", lg: "row" }} spacing={8} align="center">
-          {/* Left side content - hidden on mobile */}
           {!isMobile && (
             <Box flex={1}>
               <ScaleFade initialScale={0.9} in={true}>
@@ -148,7 +160,6 @@ const Ride: React.FC = () => {
             </Box>
           )}
 
-          {/* Right side form */}
           <Box flex={1} w="100%">
             <ScaleFade initialScale={0.9} in={true}>
               <VStack
@@ -164,10 +175,11 @@ const Ride: React.FC = () => {
                 <Heading as="h2" size="lg" textAlign="center" color={textColor}>
                   Plan Your Ride
                 </Heading>
+
                 <FormControl>
                   <FormLabel fontSize="sm" color={textColor}>Pick Up</FormLabel>
                   <Flex align="center" bg={inputBgColor} borderRadius="md" p={2} transition="all 0.3s" _hover={{ bg: useColorModeValue("gray.200", "gray.600") }}>
-                    <Icon as={FaMapMarkerAlt} color="blue.500" mr={2} />
+                   
                     <Input
                       placeholder="Select pickup location"
                       onClick={() => handleItemClick("Pickup")}
@@ -176,12 +188,20 @@ const Ride: React.FC = () => {
                       border="none"
                       _focus={{ boxShadow: "none" }}
                     />
+                    <IconButton
+                      aria-label="Open Map"
+                      icon={<FaMap />}
+                      ml={2}
+                      backgroundColor="gray.300"
+                      onClick={() => handleItemClick("PickupMap")}
+                    />
                   </Flex>
                 </FormControl>
+
                 <FormControl>
                   <FormLabel fontSize="sm" color={textColor}>Destination</FormLabel>
                   <Flex align="center" bg={inputBgColor} borderRadius="md" p={2} transition="all 0.3s" _hover={{ bg: useColorModeValue("gray.200", "gray.600") }}>
-                    <Icon as={FaFlag} color="green.500" mr={2} />
+                    
                     <Input
                       placeholder="Select destination"
                       onClick={() => handleItemClick("Destination")}
@@ -190,12 +210,20 @@ const Ride: React.FC = () => {
                       border="none"
                       _focus={{ boxShadow: "none" }}
                     />
+                    <IconButton
+                      aria-label="Open Map"
+                      icon={<FaMap />}
+                      ml={2}
+                      backgroundColor="gray.300"
+                      onClick={() => handleItemClick("DestinationMap")}
+                    />
                   </Flex>
                 </FormControl>
+
                 <FormControl>
                   <FormLabel fontSize="sm" color={textColor}>Date</FormLabel>
                   <Flex align="center" bg={inputBgColor} borderRadius="md" p={2} transition="all 0.3s" _hover={{ bg: useColorModeValue("gray.200", "gray.600") }}>
-                    <Icon as={FaCalendarAlt} color="red.500" mr={2} />
+                    
                     <DatePicker
                       selected={selectedDate}
                       onChange={(date) => setSelectedDate(date)}
@@ -204,6 +232,7 @@ const Ride: React.FC = () => {
                     />
                   </Flex>
                 </FormControl>
+
                 <Flex
                   align="center"
                   bg={inputBgColor}
@@ -214,13 +243,12 @@ const Ride: React.FC = () => {
                   transition="all 0.3s"
                   _hover={{ bg: useColorModeValue("gray.200", "gray.600") }}
                 >
-                  <Icon as={FaUser} color="purple.500" mr={2} />
                   <Text fontSize="sm" fontWeight="medium" color={textColor}>
                     Passengers: {count}
                   </Text>
                 </Flex>
+
                 <Button
-                  leftIcon={<FaSearch />}
                   colorScheme="blue"
                   size="lg"
                   onClick={searchRide}
@@ -248,8 +276,38 @@ const Ride: React.FC = () => {
         onClose={onClose}
         handleCountChange={handleCountChange}
       />
-      <PlaceAutocompleteModal isOpen={isPickupPlaceOpen} onClose={onPickupPlaceClose} onPlaceSelect={handlePickupLocationSelect} />
-      <PlaceAutocompleteModal isOpen={isDestinationPlaceOpen} onClose={onDestinationPlaceClose} onPlaceSelect={handleDestiantionSelect} />
+      
+      {/* Modals for pickup and destination location selection */}
+      <PlaceAutocompleteModal 
+        isOpen={isPickupPlaceOpen} 
+        onClose={onPickupPlaceClose} 
+        onPlaceSelect={handlePickupLocationSelect} 
+      />
+      <PlaceAutocompleteModal 
+        isOpen={isDestinationPlaceOpen} 
+        onClose={onDestinationPlaceClose} 
+        onPlaceSelect={handleDestiantionSelect} 
+      />
+
+      {/* MapPopup for pickup and destination */}
+      <MapPopup
+        isOpen={isPickupMapOpen}
+        onClose={onPickupMapClose}
+        onConfirmLocation={(location, placeName) => {
+          console.log("Confirmed Pickup Location:", location);
+          setPickCordinate(location);
+          setSelectedPickupLocation(placeName);
+        }}
+      />
+      <MapPopup
+        isOpen={isDestinationMapOpen}
+        onClose={onDestinationMapClose}
+        onConfirmLocation={(location, placeName) => {
+          console.log("Confirmed Destination Location:", location);
+          setDestinationCordinate(location);
+          setSelectedDestinationLocation(placeName);
+        }}
+      />
 
       <Footer />
     </Box>

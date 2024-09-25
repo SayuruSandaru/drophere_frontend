@@ -56,6 +56,7 @@ class RideService extends ApiService {
         "date": search.date,
         "passenger_count": search.passenger_count,
       };
+      console.log("hello");
       console.log(data);
       const response = await this.post("/rides/search/v1",
         data
