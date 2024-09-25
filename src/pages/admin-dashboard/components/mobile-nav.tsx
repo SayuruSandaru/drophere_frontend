@@ -17,6 +17,11 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
             borderBottomWidth="1px"
             borderBottomColor={useColorModeValue('gray.200', 'gray.700')}
             justifyContent={{ base: 'space-between', md: 'flex-end' }}
+           position="relative"
+          
+         
+
+            
             {...rest}>
             <IconButton
                 display={{ base: 'flex', md: 'none' }}
@@ -61,7 +66,7 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
                                     alignItems="flex-start"
                                     spacing="1px"
                                     ml="2">
-                                    <Text fontSize="sm">Justina Clark</Text>
+                                    <Text fontSize="sm">ss</Text>
                                 </VStack>
                                 <Box display={{ base: 'none', md: 'flex' }}>
                                     <FiChevronDown />
