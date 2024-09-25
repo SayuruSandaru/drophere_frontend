@@ -47,6 +47,27 @@ class DriverService extends ApiService {
             throw error;
         }
     }
+
+    
+    public async updateDriverStatus(driverId: number, status: string): Promise<any> {
+        try {
+          console.log(`Updating status for driverId: ${driverId} with status: ${status}`);
+          const response = await this.put(`/driver/${driverId}/status`, { status: status });
+          console.log("Response:", response);
+          return response;
+        } catch (error) {
+          console.error('Error updating driver status:', error);
+          if (error instanceof Error) {
+            throw new Error(error.message);
+          } else {
+            throw new Error('Unknown error occurred');
+          }
+        }
+      }
+      
+      
+
 }
+    
 
 export default new DriverService();
