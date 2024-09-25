@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box, Button, FormControl, FormLabel, Input, HStack, Text, Stack, useDisclosure, Spinner, Flex, Image, VStack, ScaleFade, Container, Icon, useMediaQuery } from '@chakra-ui/react';
+import { Box, Button, FormControl, FormLabel, Input, HStack, Text, Stack, useDisclosure, Spinner, Flex, Image, VStack, ScaleFade, Container, Icon, useMediaQuery, InputGroup, InputRightElement, IconButton } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
 import PlaceAutocompleteModal from 'pages/components/placeModalbox';
 import Footer from 'pages/components/footer';
@@ -8,12 +8,16 @@ import { RouterPaths } from 'router/routerConfig';
 import { searchRides } from 'api/ride';
 import { searchRideState } from 'state';
 import { useSetRecoilState } from 'recoil';
-import { FaCalendarAlt, FaUser, FaMapMarkerAlt, FaFlag, FaSearch } from 'react-icons/fa';
+import { FaUser, FaSearch, FaMap } from 'react-icons/fa';
 import { format } from 'date-fns/format';
+import MapPopup from 'pages/ride - search/location_picker_modal';
 
 const SearchDelivery = () => {
   const { isOpen: isPickupPlaceOpen, onOpen: onPickupPlaceOpen, onClose: onPickupPlaceClose } = useDisclosure();
   const { isOpen: isDestinationPlaceOpen, onOpen: onDestinationPlaceOpen, onClose: onDestinationPlaceClose } = useDisclosure();
+  const { isOpen: isPickupMapOpen, onOpen: onPickupMapOpen, onClose: onPickupMapClose } = useDisclosure();
+  const { isOpen: isDestinationMapOpen, onOpen: onDestinationMapOpen, onClose: onDestinationMapClose } = useDisclosure();
+
   const [selectedDestinationLocation, setSelectedDestinationLocation] = useState("");
   const [selectedDate, setSelectedDate] = useState('');
   const [selectedWeight, setSelectedWeight] = useState('');
@@ -32,6 +36,10 @@ const SearchDelivery = () => {
       onPickupPlaceOpen();
     } else if (item === "Destination") {
       onDestinationPlaceOpen();
+    } else if (item === "PickupMap") {
+      onPickupMapOpen();
+    } else if (item === "DestinationMap") {
+      onDestinationMapOpen();
     }
   };
 
@@ -124,33 +132,58 @@ const SearchDelivery = () => {
                 </Text>
                 <FormControl>
                   <FormLabel fontSize="sm" color={"gray.600"}>Pickup</FormLabel>
-                  <Icon as={FaMapMarkerAlt} color="blue.500" mr={2} />
-                  <Input
-                    placeholder="Select pickup location"
-                    onClick={() => handleItemClick("Pickup")}
-                    value={selectedPickupLocation}
-                    readOnly
-                  />
+                  <InputGroup>
+                    <Input
+                      placeholder="Select pickup location"
+                      onClick={() => handleItemClick("Pickup")}
+                      value={selectedPickupLocation}
+                      readOnly
+                    />
+                    <InputRightElement width="3rem" paddingRight="0.5rem">
+                      <IconButton
+                        size={"sm"}
+                        aria-label="Open Map"
+                        icon={<FaMap />}
+                        backgroundColor="gray.300"
+                        onClick={() => handleItemClick("PickupMap")}
+                      />
+                    </InputRightElement>
+                  </InputGroup>
                 </FormControl>
+
+
                 <FormControl>
                   <FormLabel fontSize="sm" color={"gray.600"}>Destination</FormLabel>
-                  <Icon as={FaFlag} color="green.500" mr={2} />
-                  <Input
-                    placeholder="Select destination"
-                    onClick={() => handleItemClick("Destination")}
-                    value={selectedDestinationLocation}
-                    readOnly
-                  />
+                  <InputGroup>
+                    <Input
+                      placeholder="Select destination"
+                      onClick={() => handleItemClick("Destination")}
+                      value={selectedDestinationLocation}
+                      readOnly
+                    />
+                    <InputRightElement paddingRight="0.5rem">
+                      <IconButton
+                        size={"sm"}
+                        aria-label="Open Map"
+                        icon={<FaMap />}
+                        backgroundColor="gray.300"
+                        onClick={() => handleItemClick("DestinationMap")}  // Corrected to open DestinationMap modal
+                      />
+                    </InputRightElement>
+                  </InputGroup>
                 </FormControl>
+
+
                 <FormControl>
                   <FormLabel fontSize="sm" color={"gray.600"}>Date</FormLabel>
-                  <Icon as={FaCalendarAlt} color="green.500" mr={2} />
                   <Input
                     type="date"
                     value={selectedDate}
                     onChange={(e) => setSelectedDate(e.target.value)}
+                    min={new Date().toISOString().split("T")[0]}
                   />
                 </FormControl>
+
                 <FormControl>
                   <FormLabel fontSize="sm" color={"gray.600"}>Weight</FormLabel>
                   <HStack>
@@ -163,6 +196,7 @@ const SearchDelivery = () => {
                     <Text pl={3} pr={3}>Kg</Text>
                   </HStack>
                 </FormControl>
+
                 <Button
                   colorScheme="blue"
                   onClick={searchDelivery}
@@ -179,8 +213,27 @@ const SearchDelivery = () => {
         </Stack>
       </Container>
 
+      {/* Autocomplete Modals for pickup and destination */}
       <PlaceAutocompleteModal isOpen={isPickupPlaceOpen} onClose={onPickupPlaceClose} onPlaceSelect={handlePickupLocationSelect} />
       <PlaceAutocompleteModal isOpen={isDestinationPlaceOpen} onClose={onDestinationPlaceClose} onPlaceSelect={handleDestiantionSelect} />
+
+      {/* Map Modals for pickup and destination */}
+      <MapPopup
+        isOpen={isPickupMapOpen}
+        onClose={onPickupMapClose}
+        onConfirmLocation={(location, placeName) => {
+          setPickCordinate(location);
+          setSelectedPickupLocation(placeName);
+        }}
+      />
+      <MapPopup
+        isOpen={isDestinationMapOpen}
+        onClose={onDestinationMapClose}
+        onConfirmLocation={(location, placeName) => {
+          setDestinationCordinate(location);
+          setSelectedDestinationLocation(placeName);
+        }}
+      />
 
       <Footer />
     </Box>

@@ -6,6 +6,7 @@ import { Libraries, LoadScript } from "@react-google-maps/api";
 import RouterConfig from "router/routerPaths";
 const libraries: Libraries = ["places"];
 
+
 function App(): JSX.Element {
   return (
     <ChakraProvider theme={theme} >
