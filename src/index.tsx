@@ -7,7 +7,9 @@ import reportWebVitals from "./reportWebVitals";
 
 ReactDOM.render(
   <React.StrictMode>
-    <RecoilRoot> {/* Wrap App component with RecoilRoot */}
+    <RecoilRoot>
+      {" "}
+   
       <RecoilNexus />
       <App />
     </RecoilRoot>

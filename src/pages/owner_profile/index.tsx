@@ -345,7 +345,7 @@ const Profile = () => {
         </Flex>
       )}
       {!isLargeScreen && <ReviewsAndComments />}
-      <Footer />
+      {/* <Footer /> */}
 
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
