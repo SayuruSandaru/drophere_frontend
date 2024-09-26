@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { ChakraProvider, Text, Box, Button, FormControl, FormLabel, Input, HStack, VStack, Grid, GridItem, Center, useDisclosure, Select, useToast, useMediaQuery, Spinner, Flex } from '@chakra-ui/react';
+import { ChakraProvider, Text, Box, Button, FormControl, FormLabel, Input, HStack, VStack, Grid, GridItem, Center, useDisclosure, Select, useToast, useMediaQuery, Spinner, Flex, InputGroup, InputRightElement, IconButton } from '@chakra-ui/react';
 import NavbarOwner from 'pages/components/navbar-owner';
 import Footer from 'pages/components/footer';
 import PlaceAutocompleteModal from 'pages/components/placeModalbox';
@@ -10,6 +10,8 @@ import MapContainerMulitRoute from 'pages/home/components/googleMap_multiroute';
 import { useShowErrorToast, useShowSuccessToast } from 'pages/components/toast';
 import User from 'model/user';
 import { set } from 'date-fns';
+import { FaMap } from 'react-icons/fa';
+import MapPopup from 'pages/ride - search/location_picker_modal';
 
 interface Coordinate {
   lat: number;
@@ -36,6 +38,10 @@ const Cride = () => {
   const [loading, setLoading] = useState(false);
   const [passenger, setPassenger] = useState("");
 
+  const { isOpen: isPickupMapOpen, onOpen: onPickupMapOpen, onClose: onPickupMapClose } = useDisclosure();
+
+  const { isOpen: isDestinationMapOpen, onOpen: onDestinationMapOpen, onClose: onDestinationMapClose } = useDisclosure();
+
   const showSuccessToast = useShowSuccessToast();
   const showErrorToast = useShowErrorToast();
 
@@ -54,6 +60,11 @@ const Cride = () => {
       onPickupPlaceOpen();
     } else if (item === "Destination") {
       onDestinationPlaceOpen();
+    } else if (item === "PickupMap") {
+      onPickupMapOpen();
+    }
+    else if (item === "DestinationMap") {
+      onDestinationMapOpen();
     }
   };
 
@@ -215,26 +226,56 @@ const Cride = () => {
                   <Text color={"black"} fontWeight={"bold"} fontSize={"2xl"}>Plan your journey</Text>
                   <Text color={"gray.600"} fontSize={"md"}>Fill the following details to plan your journey</Text>
                   <Box mb={4} mt={5}>
+
+
+
                     <FormControl>
-                      <FormLabel fontSize="sm" color={"gray.500"}>Pick Up</FormLabel>
-                      <Input
-                        placeholder=""
-                        onClick={() => handleItemClick("Pickup")}
-                        value={selectedPickupLocation}
-                        readOnly
-                      />
+                      <FormLabel fontSize="sm" color={"gray.600"}>Pickup</FormLabel>
+                      <InputGroup>
+                        <Input
+                          placeholder="Select pickup location"
+                          onClick={() => handleItemClick("Pickup")}
+                          value={selectedPickupLocation}
+                          readOnly
+                        />
+                        <InputRightElement width="3rem" paddingRight="0.5rem">
+                          <IconButton
+                            size={"sm"}
+                            aria-label="Open Map"
+                            icon={<FaMap />}
+                            backgroundColor="gray.300"
+                            onClick={() => handleItemClick("PickupMap")}
+                          />
+                        </InputRightElement>
+                      </InputGroup>
                     </FormControl>
+
+
                   </Box>
                   <Box mb={4}>
+
                     <FormControl>
-                      <FormLabel fontSize="sm" color={"gray.500"}>Destination</FormLabel>
-                      <Input
-                        placeholder=""
-                        onClick={() => handleItemClick("Destination")}
-                        value={selectedDestinationLocation}
-                        readOnly
-                      />
+                      <FormLabel fontSize="sm" color={"gray.600"}>Pickup</FormLabel>
+                      <InputGroup>
+                        <Input
+                          placeholder="Select Destination location"
+                          onClick={() => handleItemClick("Destination")}
+                          value={selectedDestinationLocation}
+                          readOnly
+                        />
+                        <InputRightElement width="3rem" paddingRight="0.5rem">
+                          <IconButton
+                            size={"sm"}
+                            aria-label="Open Map"
+                            icon={<FaMap />}
+                            backgroundColor="gray.300"
+                            onClick={() => handleItemClick("DestinationMap")}
+                          />
+                        </InputRightElement>
+                      </InputGroup>
                     </FormControl>
+
+
                   </Box>
                   <Box mb={4}>
                     <FormControl>
@@ -318,6 +359,25 @@ const Cride = () => {
         {!isLargeScreen && <Footer />}
         <PlaceAutocompleteModal isOpen={isPickupPlaceOpen} onClose={onPickupPlaceClose} onPlaceSelect={handlePickupLocationSelect} />
         <PlaceAutocompleteModal isOpen={isDestinationPlaceOpen} onClose={onDestinationPlaceClose} onPlaceSelect={handleDestinationSelect} />
+        <MapPopup
+          isOpen={isPickupMapOpen}
+          onClose={onPickupMapClose}
+          onConfirmLocation={(location, placeName) => {
+            console.log("Confirmed Pickup Location:", location);
+            setPickCordinate(location);
+            setSelectedPickupLocation(placeName);
+          }}
+        />
+        <MapPopup
+          isOpen={isDestinationMapOpen}
+          onClose={onDestinationMapClose}
+          onConfirmLocation={(location, placeName) => {
+            console.log("Confirmed Destination Location:", location);
+            setDestinationCordinate(location);
+            setSelectedDestinationLocation(placeName);
+          }}
+        />
+
       </Box>
     </ChakraProvider>
   );
