@@ -26,6 +26,26 @@ export const login = async (credentials: { email: string; password: string }) =>
     }
 };
 
+export const adminLogin = async (credentials: { email: string; password: string }) => {
+    try {
+        const response = await authService.adminLogin(credentials.email, credentials.password);
+        if (!response.token) {
+            throw new Error('No token returned');
+        }
+        CookieManager.setCookie("token", response.token, 5);
+        const res = await authService.getUser();
+        if (res.status !== "success") {
+            throw new Error('Failed to fetch user details');
+        }
+        const user = Convert.toUserModal(JSON.stringify(res));
+        User.setUserDetail(user);
+        return { user, token: response.token };
+    } catch (error) {
+        console.error('Failed to login:', error);
+        throw error;
+    }
+}
+
 export const updateUserData = async () => {
     const res = await authService.getUser();
     if (res.status !== "success") {
