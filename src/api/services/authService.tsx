@@ -32,6 +32,19 @@ class AuthService extends ApiService {
     }
   }
 
+  public async adminLogin(email: string, password: string): Promise<any> {
+    try {
+      const response = await this.post("/admin/login", {
+        email,
+        password
+      }, false);
+      return response;
+    } catch (error) {
+      console.error("Error logging in: ", error);
+      throw error;
+    }
+  }
+
   public async register(user: any): Promise<any> {
     try {
       const r = {
