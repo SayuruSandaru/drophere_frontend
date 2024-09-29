@@ -28,6 +28,7 @@ const RideReqTable = () => {
     try {
       setLoading(true);
       setData([]);
+      console.log("user id:", User.getUserId());
       const result = await ReservationService.getReservationsByStatus(status, User.getUserId());
       console.log("Fetched reservations:", result);
       console.log("Raw fetched reservations:", result);
