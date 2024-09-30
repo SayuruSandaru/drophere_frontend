@@ -1,6 +1,6 @@
 
 import { Box, Flex, Image, Stack, Text, Heading, useMediaQuery, Spinner } from "@chakra-ui/react";
-import React from "react";
+import React, { useEffect } from "react";
 import { LoginForm } from "./login_form";
 import { useNavigate } from 'react-router-dom';
 import { RouterPaths } from "router/routerConfig";
@@ -22,16 +22,18 @@ const Login: React.FC = () => {
   const setUser = useSetRecoilState(userState);
   const navigate = useNavigate();
 
-  const handleLogin = async () => {
+  const handleLogin = async (rememberMe: boolean) => {
     try {
       setLoading(true);
-      setErrorMessage('');
+      setErrorMessage("");
       const credentials = { email, password };
-      console.log("login process start");
       const { user, token } = await login(credentials);
-      setToken(token);
+
+      if (rememberMe) {
+        localStorage.setItem("token", token); 
+      }
+      setToken(token); 
       setUser(user);
-      const userId = User.getUserId();
       setLoading(false);
       navigate(RouterPaths.SEARCHRIDE);
     } catch (error) {
@@ -39,6 +41,20 @@ const Login: React.FC = () => {
       setErrorMessage(error.message);
     }
   };
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      setToken(token);
+      driverByUser().then((user: User) => {
+        setUser(user);
+        navigate(RouterPaths.SEARCHRIDE);
+      }).catch((error) => {
+        console.error("Error getting user: ", error);
+      });
+    }
+  }
+    , []);
 
   const [isLargeScreen] = useMediaQuery('(min-width: 992px)');
 

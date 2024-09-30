@@ -1,11 +1,41 @@
 // src/pages/driver-dashboard/index.tsx
-import { Text, Box, Drawer, DrawerContent, useDisclosure, useColorModeValue } from "@chakra-ui/react";
-import { Outlet } from "react-router-dom";
+import { Text, Box, Drawer, DrawerContent, useDisclosure, useColorModeValue, useToast } from "@chakra-ui/react";
+import User from "model/user";
+import { useEffect } from "react";
+import { Outlet, useNavigate } from "react-router-dom";
 import MobileNav from "./components/mobile-nav";
 import SidebarContent from "./dashboard-content";
 
 const DriverDashboard = () => {
     const { isOpen, onOpen, onClose } = useDisclosure();
+    const navigate = useNavigate();
+    const toast = useToast();
+  
+    useEffect(() => {
+        console.log("User.getDriverDetails().status", User.getDriverDetails().status);
+        const verifyUser = async () => {
+            try {
+                if(User.getDriverDetails().status === "pending"){
+                    navigate(-1);
+                    toast({
+                        title: "Your driver account not approved yet",
+                        status: "error",
+                        duration: 5000,
+                        isClosable: true,
+                        position: "top",
+                    });
+                }else{
+                    
+                }
+            } catch (error) {
+                console.error("Error verifying user:", error);
+                navigate(-1);
+            }
+        };
+      
+        verifyUser();
+    }, [navigate]);
+
     // const accessbility
     return (
         <Box minH="100vh" bg={useColorModeValue('gray.100', 'gray.900')}>
