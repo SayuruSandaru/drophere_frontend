@@ -14,7 +14,7 @@ class DispatchService extends ApiService {
 
   public async updateDisputeStatus(disputeId: number, status: string): Promise<any> {
     try {
-      const response = await this.post(`/user/dispute/status`, { status });
+      const response = await this.post(`/user/dispute/status`, { dispute_id: disputeId, status });
       return response;
     } catch (error) {
       console.error("Error updating dispute status: ", error);

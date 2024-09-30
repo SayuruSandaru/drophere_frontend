@@ -30,7 +30,7 @@ import {
 
 import { MdReportProblem, MdPersonAdd } from 'react-icons/md'
 import { IconType } from 'react-icons'
-import MobileNav from './components/mobile-nav'
+
 import { Link } from 'react-router-dom'
 import { RouterPaths } from 'router/routerConfig'
 

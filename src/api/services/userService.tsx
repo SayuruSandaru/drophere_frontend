@@ -21,6 +21,20 @@ class UserService extends ApiService {
       throw error;
     }
   }
+
+
+  public async updateUserStatus(userId: number, status: string): Promise<any> {
+    try {
+        const response = await this.post('/user/status', { user_id: userId, status });
+        return response;
+    } catch (error) {
+        console.error('Error updating user status: ', error);
+        throw error;
+    }
+}
+
+  
+
 }
 
 export default new UserService();

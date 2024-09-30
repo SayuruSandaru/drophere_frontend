@@ -26,7 +26,7 @@ const DisputeTab: React.FC<DisputeTabProps> = ({
                 onClick={onCancelSelect}
                 isActive={selectedTab === 'cancel'}
             >
-                <Text fontWeight="medium">Ride Cancel</Text> {/* Updated the text here */}
+                <Text fontWeight="medium">Ride Cancel</Text>
             </Button>
         </ButtonGroup>
     );
