@@ -92,9 +92,35 @@ class AuthService extends ApiService {
     }
   }
 
+  public async forgotPassword(email: string): Promise<any> {
+    try {
+      const response = await this.post("/forgot-password", { email }, false);
+      return response;
+    } catch (error) {
+      console.error("Error sending password reset email: ", error);
+      throw error;
+    }
+  }
 
-
-
+  public async resetPassword(token: string, newPassword: string): Promise<any> {
+    try {
+      console.log("Reset Password Token: ", token); 
+      console.log("New Password: ", newPassword);
+      const response = await this.post(
+        "/reset-password",
+        {
+          token: token, 
+          password: newPassword,
+        },
+        false 
+      );
+      return response;
+    } catch (error: any) {
+      console.error("Error resetting password: ", error.response || error.message);
+      throw new Error(error.response?.data?.message || "Failed to reset password.");
+    }
+  }
+  
 
 }
 

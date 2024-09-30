@@ -28,6 +28,8 @@ import AdminDispute from "pages/admin-dashboard/dispute";
 import AdminDriverRegRequest from "pages/admin-dashboard/registration-request";
 import AdminAnalytics from "pages/admin-dashboard/analytics";
 import AdminLogin from "pages/login/adminlogin";
+import ForgotPassword from "pages/forgot-password";
+import ResetPassword from "pages/reset-password";
 
 const RouterConfig: React.FC = () => {
   return (
@@ -48,6 +50,8 @@ const RouterConfig: React.FC = () => {
       <Route path={RouterPaths.DRIVERPROFILE} element={<Profile />} />
       <Route path={RouterPaths.CREATERIDE} element={<Cride />} />
       <Route path={RouterPaths.HOMEDELIVERY} element={<HomeDelivery />} />
+      <Route path={RouterPaths.FORGOTPASSWORD} element={<ForgotPassword />} />
+      <Route path={RouterPaths.RESETPASSWORD} element={<ResetPassword />} />
       <Route path={RouterPaths.LANDING} element={<LandingPage />} />
       <Route path={RouterPaths.CONTACT} element={<ContactUs />} />
       <Route path={RouterPaths.COMPLAIN} element={<Complain />} />

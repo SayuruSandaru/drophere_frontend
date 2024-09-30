@@ -109,3 +109,36 @@ export const registerUser = async (details: {
 //     setRecoil(tokenState, null);
 //     setRecoil(userState, null);
 // };
+
+export const forgotPassword = async (email: string): Promise<boolean> => {
+    try {
+        const response = await authService.forgotPassword(email);
+        if (response.status !== "success") {
+            throw new Error('Failed to send password reset email');
+        }else{
+            return true;
+        }
+    } catch (error) {
+        console.error('Failed to send password reset email:', error);
+        throw error;
+    }
+}
+
+export const resetPassword = async (newPassword: string, confirmPassword: string, token: string): Promise<boolean> => {
+    try {
+
+        if (newPassword !== confirmPassword) {
+            throw new Error('Passwords do not match');
+        }
+
+        const response = await authService.resetPassword(token, newPassword);
+        if (response.status !== "success") {
+            throw new Error('Failed to reset password');
+        }else{
+            return true;
+        }
+    } catch (error) {
+        console.error('Failed to reset password:', error);
+        throw error;
+    }
+}
