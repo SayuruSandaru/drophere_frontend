@@ -1,6 +1,6 @@
 import { Text, Box, Drawer, DrawerContent, useDisclosure, useColorModeValue } from "@chakra-ui/react";
 import { Outlet } from "react-router-dom";
-import MobileNav from "./components/mobile-nav";
+
 import SidebarContent from "./dashboard-content";
 
 const AdminDashboard = () => {
@@ -21,7 +21,6 @@ const AdminDashboard = () => {
                     <SidebarContent onClose={onClose} />
                 </DrawerContent>
             </Drawer>
-            <MobileNav onOpen={onOpen} />
             <Box ml={{ base: 0, md: 60 }} p="4">
                 <Outlet />
             </Box>

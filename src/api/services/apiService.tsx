@@ -148,6 +148,29 @@ class ApiService {
           throw error;
         }
       }
+
+       // Example delete method
+       protected async delete(endpoint: string, authorizationRequired = true): Promise<any> {
+        const headers = new Headers({
+            'Content-Type': 'application/json',
+        });
+    
+        if (authorizationRequired) {
+            this.mergeToken(headers);
+        }
+    
+        const response = await fetch(this.baseUrl + endpoint, {
+            method: 'DELETE',
+            headers: headers,
+        });
+    
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+    
+        const responseBody = await response.text();
+        return responseBody ? JSON.parse(responseBody) : null; // Handle cases with empty response body
+    }
       
 
     // public async put(path: string, data: any, authorized = true): Promise<any> {
