@@ -1,99 +1,338 @@
-import { Box, Button, ButtonGroup, Flex, Spinner, useColorModeValue } from "@chakra-ui/react";
-import { Table, Thead, Tbody, Tr, Th, Td } from "@chakra-ui/table";
-import React, { useState } from "react";
-import TabBtn from "./tab-btn"; // Adjust path as needed
+import React, { useState, useEffect } from "react";
+import {
+    Box,
+    Table,
+    Thead,
+    Tbody,
+    Tr,
+    Th,
+    Td,
+    Select,
+    Flex,
+    Spinner,
+    Button,
+    useToast,
+    Text,
+    Badge,
+    Stack,
+    useBreakpointValue,
+    Modal,
+    ModalOverlay,
+    ModalContent,
+    ModalHeader,
+    ModalFooter,
+    ModalBody,
+    ModalCloseButton,
+} from "@chakra-ui/react";
+import { getUserDetails, updateUserStatus } from 'api/user';
+import driverService from 'api/services/driverService';
 
-const Users = () => {
-    const [selectedTab, setSelectedTab] = useState('users');
-    const [loading, setLoading] = useState(false);
+interface User {
+    id: number;
+    email: string;
+    firstname: string;
+    lastname: string;
+    username: string;
+    phone: string;
+    status: string;
+}
 
-    const usersData = [
-        { id: 1, email: 'user1@example.com', firstname: 'John', lastname: 'Doe', username: 'johndoe', phone: '123-456-7890' },
-        { id: 2, email: 'user2@example.com', firstname: 'Jane', lastname: 'Doe', username: 'janedoe', phone: '098-765-4321' },
-    ];
+interface Driver {
+    driver_id: number;
+    user_id: number;
+    street: string;
+    city: string;
+    province: string;
+}
 
-    const driversData = [
-        { driver_id: 1, user_id: 1, street: '123 Main St', city: 'Anytown', province: 'CA' },
-        { driver_id: 2, user_id: 2, street: '456 Oak St', city: 'Othertown', province: 'NY' },
-    ];
+const Users: React.FC = () => {
+    const [selectedTab, setSelectedTab] = useState<'users' | 'drivers'>('users');
+    const [loading, setLoading] = useState(true);
+    const [usersData, setUsersData] = useState<User[]>([]);
+    const [driversData, setDriversData] = useState<Driver[]>([]);
+    const [error, setError] = useState<string | null>(null);
+    const [isStatusModalOpen, setIsStatusModalOpen] = useState(false);
+    const [userIdToUpdate, setUserIdToUpdate] = useState<number | null>(null);
+    const [newStatus, setNewStatus] = useState('');
+    const [updatingUserId, setUpdatingUserId] = useState<number | null>(null);
+    const toast = useToast();
+    const isMobile = useBreakpointValue({ base: true, md: false });
 
-    const tableBg = useColorModeValue('white', 'gray.800');
+    useEffect(() => {
+        if (selectedTab === 'users') {
+            fetchUsers();
+        } else if (selectedTab === 'drivers') {
+            fetchDrivers();
+        }
+    }, [selectedTab]);
 
-    const handleTabChange = (tab: string) => {
+    const fetchUsers = async () => {
+        setLoading(true);
+        try {
+            const data = await getUserDetails();
+            if (data.status === "success") {
+                setUsersData(data.users);
+            } else {
+                setError('Failed to fetch user details');
+            }
+        } catch (error) {
+            setError('Error fetching user details');
+            console.error(error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const fetchDrivers = async () => {
+        setLoading(true);
+        try {
+            const data = await driverService.getDriver();
+            if (data.status === "success") {
+                setDriversData(data.drivers);
+            } else {
+                setError('Failed to fetch driver details');
+            }
+        } catch (error) {
+            setError('Error fetching driver details');
+            console.error(error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleTabChange = (tab: 'users' | 'drivers') => {
         setSelectedTab(tab);
+        setError(null);
+    };
+
+    const handleStatusChange = (userId: number, status: string) => {
+        setUserIdToUpdate(userId);
+        setNewStatus(status);
+        setIsStatusModalOpen(true);
+    };
+
+    const closeStatusModal = () => {
+        setIsStatusModalOpen(false);
+        setUserIdToUpdate(null);
+        setNewStatus('');
+    };
+
+    const handleUpdateStatus = async () => {
+        if (userIdToUpdate && newStatus) {
+            try {
+                setUpdatingUserId(userIdToUpdate);
+                const response = await updateUserStatus(userIdToUpdate, newStatus);
+                if (response && response.status === "success") {
+                    setUsersData(usersData.map(user => 
+                        user.id === userIdToUpdate ? {...user, status: newStatus} : user
+                    ));
+                    toast({
+                        title: "Status updated",
+                        description: response.message || `User status has been successfully updated to ${newStatus}.`,
+                        status: "success",
+                        duration: 3000,
+                        isClosable: true,
+                    });
+                } else {
+                    throw new Error(response.message || "Failed to update user status");
+                }
+            } catch (error) {
+                console.error(`Failed to update user status: `, error);
+                toast({
+                    title: "Error",
+                    description: error.message || "Failed to update user status. Please try again.",
+                    status: "error",
+                    duration: 5000,
+                    isClosable: true,
+                });
+            } finally {
+                setUpdatingUserId(null);
+                closeStatusModal();
+            }
+        }
+    };
+
+    const getStatusColor = (status: string) => {
+        switch (status.toLowerCase()) {
+            case 'active':
+                return 'green';
+            case 'suspended':
+                return 'yellow';
+            case 'deleted':
+                return 'red';
+            default:
+                return 'gray';
+        }
+    };
+
+    const renderContent = () => {
+        if (loading) {
+            return (
+                <Flex w="full" alignItems="center" justifyContent="center">
+                    <Spinner size="xl" />
+                </Flex>
+            );
+        }
+
+        if (error) {
+            return <Box color="red">{error}</Box>;
+        }
+
+        if (isMobile) {
+            return (
+                <Stack spacing={4}>
+                    {selectedTab === 'users' ? 
+                        usersData.map((user) => (
+                            <Box key={user.id} p={4} borderWidth={1} borderRadius="md" shadow="md">
+                                <Text><strong>ID:</strong> {user.id}</Text>
+                                <Text><strong>Email:</strong> {user.email}</Text>
+                                <Text><strong>Name:</strong> {user.firstname} {user.lastname}</Text>
+                                <Text><strong>Username:</strong> {user.username}</Text>
+                                <Text><strong>Phone:</strong> {user.phone}</Text>
+                                <Flex alignItems="center" mt={2}>
+                                    <Text mr={2}><strong>Status:</strong></Text>
+                                    <Badge colorScheme={getStatusColor(user.status)}>{user.status}</Badge>
+                                </Flex>
+                                <Select 
+                                    mt={2}
+                                    value={user.status}
+                                    onChange={(e) => handleStatusChange(user.id, e.target.value)}
+                                    isDisabled={updatingUserId === user.id}
+                                >
+                                    <option value="Active">Active</option>
+                                    <option value="Suspended">Suspended</option>
+                                    <option value="Deleted">Deleted</option>
+                                </Select>
+                                {updatingUserId === user.id && <Spinner size="sm" mt={2} />}
+                            </Box>
+                        ))
+                    : 
+                        driversData.map((driver) => (
+                            <Box key={driver.driver_id} p={4} borderWidth={1} borderRadius="md" shadow="md">
+                                <Text><strong>Driver ID:</strong> {driver.driver_id}</Text>
+                                <Text><strong>User ID:</strong> {driver.user_id}</Text>
+                                <Text><strong>Street:</strong> {driver.street}</Text>
+                                <Text><strong>City:</strong> {driver.city}</Text>
+                                <Text><strong>Province:</strong> {driver.province}</Text>
+                            </Box>
+                        ))
+                    }
+                </Stack>
+            );
+        }
+
+         return (
+            <Box overflowX="auto">
+                <Table w="full" boxShadow="lg" borderRadius="md">
+                    <Thead bg="gray.100">
+                        <Tr>
+                            {selectedTab === 'users' ? (
+                                <>
+                                    <Th width="10%">ID</Th>
+                                    <Th width="20%">Email</Th>
+                                    <Th width="15%">Name</Th>
+                                    <Th width="15%">Username</Th>
+                                    <Th width="15%">Phone</Th>
+                                    <Th width="10%">Status</Th>
+                                    <Th width="15%">Action</Th>
+                                </>
+                            ) : (
+                                <>
+                                    <Th width="20%">Driver ID</Th>
+                                    <Th width="20%">User ID</Th>
+                                    <Th width="20%">Street</Th>
+                                    <Th width="20%">City</Th>
+                                    <Th width="20%">Province</Th>
+                                </>
+                            )}
+                        </Tr>
+                    </Thead>
+                    <Tbody>
+                        {selectedTab === 'users' ? 
+                            usersData.map((user) => (
+                                <Tr key={user.id}>
+                                    <Td width="10%">{user.id}</Td>
+                                    <Td width="20%">{user.email}</Td>
+                                    <Td width="15%">{user.firstname} {user.lastname}</Td>
+                                    <Td width="15%">{user.username}</Td>
+                                    <Td width="15%">{user.phone}</Td>
+                                    <Td width="10%">
+                                        <Badge colorScheme={getStatusColor(user.status)}>{user.status}</Badge>
+                                    </Td>
+                                    <Td width="15%">
+                                        <Select 
+                                            value={user.status}
+                                            size="sm"
+                                            onChange={(e) => handleStatusChange(user.id, e.target.value)}
+                                            isDisabled={updatingUserId === user.id}
+                                            width="full"
+                                        >
+                                            <option value="Active">Active</option>
+                                            <option value="Suspended">Suspended</option>
+                                            <option value="Deleted">Deleted</option>
+                                        </Select>
+                                        {updatingUserId === user.id && <Spinner size="sm" ml={2} />}
+                                    </Td>
+                                </Tr>
+                            ))
+                        : 
+                            driversData.map((driver) => (
+                                <Tr key={driver.driver_id}>
+                                    <Td width="20%">{driver.driver_id}</Td>
+                                    <Td width="20%">{driver.user_id}</Td>
+                                    <Td width="20%">{driver.street}</Td>
+                                    <Td width="20%">{driver.city}</Td>
+                                    <Td width="20%">{driver.province}</Td>
+                                </Tr>
+                            ))
+                        }
+                    </Tbody>
+                </Table>
+            </Box>
+        );
     };
 
     return (
-        <Box minH="100vh" p="4">
-            <Box mb="4">
-                <TabBtn
-                    onUsersSelect={() => handleTabChange('users')}
-                    onDriversSelect={() => handleTabChange('drivers')}
-                />
+        <Box minH="100vh" p={4}>
+            <Stack direction={["column", "row"]} spacing={4} mb={4}>
+                <Button 
+                    onClick={() => handleTabChange('users')} 
+                    colorScheme={selectedTab === 'users' ? 'blue' : 'gray'}
+                    flex={1}
+                >
+                    Users
+                </Button>
+                <Button 
+                    onClick={() => handleTabChange('drivers')} 
+                    colorScheme={selectedTab === 'drivers' ? 'blue' : 'gray'}
+                    flex={1}
+                >
+                    Drivers
+                </Button>
+            </Stack>
+
+            <Box w="full" bg="white" p={4} borderRadius="md" shadow="md">
+                {renderContent()}
             </Box>
-            <Flex
-                w="full"
-                bg="#edf3f8"
-                _dark={{ bg: "#3e3e3e" }}
-                p={50}
-                alignItems="center"
-                justifyContent="center"
-            >
-                {loading ? (
-                    <Spinner size="xl" />
-                ) : (
-                    <Table
-                        w="full"
-                        bg={tableBg}
-                        _dark={{ bg: "gray.800" }}
-                    >
-                        <Thead>
-                            <Tr>
-                                {selectedTab === 'users' && (
-                                    <>
-                                        <Th>ID</Th>
-                                        <Th>Email</Th>
-                                        <Th>First Name</Th>
-                                        <Th>Last Name</Th>
-                                        <Th>Username</Th>
-                                        <Th>Phone</Th>
-                                    </>
-                                )}
-                                {selectedTab === 'drivers' && (
-                                    <>
-                                        <Th>Driver ID</Th>
-                                        <Th>User ID</Th>
-                                        <Th>Street</Th>
-                                        <Th>City</Th>
-                                        <Th>Province</Th>
-                                    </>
-                                )}
-                            </Tr>
-                        </Thead>
-                        <Tbody>
-                            {selectedTab === 'users' && usersData.map(user => (
-                                <Tr key={user.id}>
-                                    <Td>{user.id}</Td>
-                                    <Td>{user.email}</Td>
-                                    <Td>{user.firstname}</Td>
-                                    <Td>{user.lastname}</Td>
-                                    <Td>{user.username}</Td>
-                                    <Td>{user.phone}</Td>
-                                </Tr>
-                            ))}
-                            {selectedTab === 'drivers' && driversData.map(driver => (
-                                <Tr key={driver.driver_id}>
-                                    <Td>{driver.driver_id}</Td>
-                                    <Td>{driver.user_id}</Td>
-                                    <Td>{driver.street}</Td>
-                                    <Td>{driver.city}</Td>
-                                    <Td>{driver.province}</Td>
-                                </Tr>
-                            ))}
-                        </Tbody>
-                    </Table>
-                )}
-            </Flex>
+
+            <Modal isOpen={isStatusModalOpen} onClose={closeStatusModal}>
+                <ModalOverlay />
+                <ModalContent>
+                    <ModalHeader>Confirm Status Change</ModalHeader>
+                    <ModalCloseButton />
+                    <ModalBody>
+                        Are you sure you want to change the user's status to {newStatus}?
+                    </ModalBody>
+                    <ModalFooter>
+                        <Button colorScheme="blue" onClick={closeStatusModal}>
+                            Cancel
+                        </Button>
+                        <Button colorScheme="green" onClick={handleUpdateStatus} ml={3}>
+                            Confirm
+                        </Button>
+                    </ModalFooter>
+                </ModalContent>
+            </Modal>
         </Box>
     );
 };

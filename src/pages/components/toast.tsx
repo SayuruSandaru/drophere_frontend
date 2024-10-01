@@ -17,7 +17,8 @@ export const useShowErrorToast = () => {
     const toast = useToast();
     return (message: string) => {
         toast({
-            title: message,
+            title: "Error",
+            description: message,
             status: "error",
             duration: 5000,
             isClosable: true,
@@ -30,7 +31,8 @@ export const useShowSuccessToast = () => {
     const toast = useToast();
     return (message: string) => {
         toast({
-            title: message,
+            title: "Success",
+            description: message,
             status: "success",
             duration: 5000,
             isClosable: true,

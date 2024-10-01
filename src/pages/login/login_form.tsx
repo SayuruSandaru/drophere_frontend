@@ -18,36 +18,38 @@ import {
   Spinner,
 } from "@chakra-ui/react";
 import { PasswordField } from "./components/passwordField";
-
-const Signupindex = "/register";
+import { useNavigate } from "react-router-dom";
+import { RouterPaths } from "router/routerConfig";
 
 interface LoginFormProps {
   email: string;
   password: string;
   setEmail: (email: string) => void;
   setPassword: (password: string) => void;
-  onLogin: () => void;
+  onLogin: (rememberMe: boolean) => void; // Pass rememberMe flag to handle login
   loading: boolean;
 }
 
 export const LoginForm: React.FC<LoginFormProps> = ({ email, password, setEmail, setPassword, onLogin, loading }) => {
   const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
+  const [rememberMe, setRememberMe] = useState(false); 
+  const navigate = useNavigate();
 
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(e.target.value);
     if (!/\S+@\S+\.\S+/.test(e.target.value)) {
-      setErrors(prevErrors => ({ ...prevErrors, email: "Invalid email address" }));
+      setErrors((prevErrors) => ({ ...prevErrors, email: "Invalid email address" }));
     } else {
-      setErrors(prevErrors => ({ ...prevErrors, email: undefined }));
+      setErrors((prevErrors) => ({ ...prevErrors, email: undefined }));
     }
   };
 
   const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPassword(e.target.value);
-    if (e.target.value.length < 0) {
-      setErrors(prevErrors => ({ ...prevErrors, password: "Please enter your password" }));
+    if (e.target.value.length < 1) {
+      setErrors((prevErrors) => ({ ...prevErrors, password: "Please enter your password" }));
     } else {
-      setErrors(prevErrors => ({ ...prevErrors, password: undefined }));
+      setErrors((prevErrors) => ({ ...prevErrors, password: undefined }));
     }
   };
 
@@ -59,67 +61,44 @@ export const LoginForm: React.FC<LoginFormProps> = ({ email, password, setEmail,
     if (emailError || passwordError) {
       setErrors({ email: emailError, password: passwordError });
     } else {
-      onLogin();
+      onLogin(rememberMe); // Pass rememberMe value on login
     }
   };
 
   return (
     <Flex direction="column" justifyContent={"center"} m="auto">
-      <Container
-        maxW="lg"
-        pt={{ base: "12", md: "24" }}
-        py={{ base: "12", md: "24" }}
-        px={{ base: "0", sm: "8" }}
-      >
+      <Container maxW="lg" pt={{ base: "12", md: "24" }} py={{ base: "12", md: "24" }} px={{ base: "0", sm: "8" }}>
         <Stack spacing="8">
           <Stack>
             <Image src="/images/Black_T.png" w={"24"} m="auto" />
             <Stack spacing={{ base: "2", md: "3" }} textAlign="center">
               <Heading size="xs">Log in to your account</Heading>
               <Text color="fg.muted">
-                Don't have an account? <Link href={Signupindex}>Sign up</Link>
+                Don't have an account? <Link href="/register">Sign up</Link>
               </Text>
             </Stack>
           </Stack>
-          <Box
-            py={{ base: "0", sm: "8" }}
-            px={{ base: "4", sm: "10" }}
-            bg={{ base: "transparent", sm: "bg.surface" }}
-            borderRadius={{ base: "none", sm: "xl" }}
-          >
+          <Box py={{ base: "0", sm: "8" }} px={{ base: "4", sm: "10" }} bg={{ base: "transparent", sm: "bg.surface" }} borderRadius={{ base: "none", sm: "xl" }}>
             <form onSubmit={handleSubmit}>
               <Stack spacing="6">
                 <Stack spacing="5">
                   <FormControl isInvalid={!!errors.email}>
                     <FormLabel htmlFor="email">Email</FormLabel>
-                    <Input
-                      id="email"
-                      type="email"
-                      value={email}
-                      onChange={handleEmailChange}
-                    />
+                    <Input id="email" type="email" value={email} onChange={handleEmailChange} />
                     {errors.email && <FormErrorMessage>{errors.email}</FormErrorMessage>}
                   </FormControl>
-                  <PasswordField
-                    value={password}
-                    onChange={handlePasswordChange}
-                    isInvalid={!!errors.password}
-                    errorMessage={errors.password}
-                  />
+                  <PasswordField value={password} onChange={handlePasswordChange} isInvalid={!!errors.password} errorMessage={errors.password} />
                 </Stack>
                 <HStack justify="space-between">
-                  <Checkbox defaultChecked>Remember me</Checkbox>
-                  <Button variant="text" size="sm">
+                  <Checkbox isChecked={rememberMe} onChange={(e) => setRememberMe(e.target.checked)}>
+                    Remember me
+                  </Checkbox>
+                  <Button variant="text" size="sm" onClick={()=>navigate(RouterPaths.FORGOTPASSWORD)}>
                     Forgot password?
                   </Button>
                 </HStack>
                 <Stack spacing="6">
-                  <Button
-                    bgColor={"black"}
-                    type="submit"
-                    color="white"
-                    _hover={{ bgColor: "gray.700" }}
-                  >
+                  <Button bgColor={"black"} type="submit" color="white" _hover={{ bgColor: "gray.700" }}>
                     {loading ? "" : "Log in"}
                     {loading && (
                       <Flex justify="center">

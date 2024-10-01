@@ -36,6 +36,146 @@ import User from "model/user";
 import { useParams } from "react-router-dom";
 import { getUserById } from "api/user";
 
+// Move UserDetailsCard outside of the Profile component
+const UserDetailsCard = ({
+  userDetails,
+  ratingData,
+  isLargeScreen,
+  onOpen,
+  newReviewRating,
+  setNewReviewRating,
+  newReviewComment,
+  handleChange,
+  handleAddReview,
+  userId
+}) => (
+  <Box borderRadius={10} maxWidth={"700px"} width={"600px"} boxShadow="lg">
+    <Stack spacing="4" bgColor={"white"} paddingX={"30px"} paddingY={"20px"} borderRadius={"10px"}>
+      <Box>
+        <Flex>
+          <Box position="relative" display="inline-block">
+            <Avatar
+              size="lg"
+              name={userDetails.user.username}
+              src={userDetails.user.profile_image}
+            />
+            {User.isDriver() && User.getUserId() === parseInt(userId) && (
+              <Icon
+                as={FaCamera}
+                boxSize={6}
+                position="absolute"
+                bottom={0}
+                right={0}
+                bg="white"
+                borderRadius="full"
+                p={1}
+                color="gray.700"
+                cursor="pointer"
+                onClick={onOpen}
+              />
+            )}
+          </Box>
+          <Text as="b" fontSize="xl" ml={"10px"} mt={4}>
+            {userDetails.user.username}
+          </Text>
+        </Flex>
+      </Box>
+      <Text pt="6" fontSize="sm" color={"gray"}>
+        <b>{ratingData.rating.toFixed(1)}</b> ({ratingData.reviews} reviews)
+      </Text>
+      <Divider />
+      <Box>
+        <Flex align="center" pt="2">
+          <MdCheckCircle color="green" />
+          <Text fontSize="sm" ml="2">
+            Verified ID
+          </Text>
+        </Flex>
+        <Flex align="center" pt="2">
+          <MdCheckCircle color="green" />
+          <Text fontSize="sm" ml="2">
+            Confirmed email
+          </Text>
+        </Flex>
+        <Flex align="center" pt="2">
+          <MdCheckCircle color="green" />
+          <Text fontSize="sm" ml="2">
+            Confirmed phone number
+          </Text>
+        </Flex>
+      </Box>
+      <Divider />
+      <Box>
+        <Heading size="xs">Contact</Heading>
+        <Flex align="center" pt="2">
+          <MdEmail />
+          <Text fontSize="sm" ml="2">
+            {userDetails?.user.email}
+          </Text>
+        </Flex>
+        <Flex align="center" pt="2">
+          <MdPhone />
+          <Text fontSize="sm" ml="2">
+            {userDetails.user.phone}
+          </Text>
+        </Flex>
+      </Box>
+      <Divider />
+      <Box>
+        <Heading size="xs" mb={3} mt={3}>Add a New Review</Heading>
+        <Flex>
+          <Text fontSize="sm" mr={2}>Rating: </Text>
+          <Rating
+            initialRating={newReviewRating}
+            emptySymbol={<MdStar size={20} color="gray" />}
+            fullSymbol={<MdStar size={20} color="gold" />}
+            onChange={(rate) => setNewReviewRating(rate)}
+          />
+        </Flex>
+        <Flex>
+          <Input
+            placeholder="Comment"
+            value={newReviewComment}
+            onChange={handleChange}
+            mb={3}
+            mr={2}
+            borderRadius={5}
+            focusBorderColor="blue.500"
+          />
+          <Button onClick={handleAddReview} bg={"transparent"}>
+            <FaPaperPlane />
+          </Button>
+        </Flex>
+      </Box>
+    </Stack>
+  </Box>
+);
+
+// Move ReviewsAndComments outside of the Profile component
+const ReviewsAndComments = ({ isLargeScreen, isLoading, reviews }) => (
+  <Box pl={isLargeScreen ? 10 : 0}>
+    <Box maxW={"900px"} borderRadius={10} padding={10}>
+      <Heading size="md" mt={-10} mb={8}>Reviews and Comments</Heading>
+      {isLoading ? (
+        <Spinner />
+      ) : (
+        <Grid templateColumns="repeat(2, 1fr)" gap={6}>
+          {Array.isArray(reviews) && reviews.length > 0 ? reviews.map((review, index) => (
+            <ReviewItem
+              key={index}
+              name={review.username || "Anonymous"}
+              comment={review.description || "No comment"}
+              rating={review.rating}
+            />
+          )) : (
+            <Text>No reviews available.</Text>
+          )}
+        </Grid>
+      )}
+    </Box>
+  </Box>
+);
+
 const Profile = () => {
   const [ratingData, setRatingData] = useState({ rating: 0, reviews: 0 });
   const [reviews, setReviews] = useState([]);
@@ -56,12 +196,7 @@ const Profile = () => {
       try {
         const fetchedReviews = await getReviews(driverId || User.getDriverDetails().driver_id);
         if (Array.isArray(fetchedReviews)) {
-          // const filteredReviews = userId
-          //   ? fetchedReviews.filter(review => review.driver_id === parseInt(userId))
-          //   : fetchedReviews;
-
           const filteredReviews = fetchedReviews;
-
           setReviews(filteredReviews);
           const averageRating = filteredReviews.reduce((acc, review) => acc + review.rating, 0) / filteredReviews.length;
           setRatingData({ rating: averageRating, reviews: filteredReviews.length });
@@ -105,7 +240,20 @@ const Profile = () => {
   const handleAddReview = async () => {
     try {
       setIsLoading(true);
-      const response = await createReview({
+      console.log("Adding review");
+      console.log("User details", User.getDriverDetails());
+      console.log("User email", userDetails.user.email);
+      if(User.getUserEmail() === userDetails.user.email) {
+        toast({
+          title: "Error",
+          description: `You cannot review yourself`,
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+          position: "top",
+        });
+      }
+      await createReview({
         description: newReviewComment,
         rating: newReviewRating,
         driver_id: driverId || User.getDriverDetails().driver_id
@@ -114,7 +262,6 @@ const Profile = () => {
       const updatedReviews = await getReviews(driverId || User.getDriverDetails().driver_id);
       if (Array.isArray(updatedReviews)) {
         const filteredReviews = updatedReviews;
-
         setReviews(filteredReviews);
         const averageRating = filteredReviews.reduce((acc, review) => acc + review.rating, 0) / filteredReviews.length;
         setRatingData({ rating: averageRating, reviews: filteredReviews.length });
@@ -146,6 +293,7 @@ const Profile = () => {
         status: "error",
         duration: 5000,
         isClosable: true,
+        position: "top",
       });
       return;
     }
@@ -163,6 +311,7 @@ const Profile = () => {
           status: "success",
           duration: 5000,
           isClosable: true,
+          position: "top",
         });
 
         setUserDetails(prevDetails => ({
@@ -187,6 +336,7 @@ const Profile = () => {
         status: "error",
         duration: 5000,
         isClosable: true,
+        position: "top",
       });
     }
   };
@@ -194,133 +344,6 @@ const Profile = () => {
   const handleChange = useCallback((e) => {
     setNewReviewComment(e.target.value);
   }, []);
-
-  const ReviewsAndComments = () => (
-    <Box pl={isLargeScreen ? 10 : 0}>
-      <Box maxW={"900px"} borderRadius={10} padding={10}>
-        <Heading size="md" mt={-10} mb={8}>Reviews and Comments</Heading>
-        {isLoading ? (
-          <Spinner />
-        ) : (
-          <Grid templateColumns="repeat(2, 1fr)" gap={6}>
-            {Array.isArray(reviews) && reviews.length > 0 ? reviews.map((review, index) => (
-              <ReviewItem
-                key={index}
-                name={review.username || "Anonymous"}
-                comment={review.description || "No comment"}
-                rating={review.rating}
-              />
-            )) : (
-              <Text>No reviews available.</Text>
-            )}
-          </Grid>
-        )}
-      </Box>
-    </Box>
-  );
-
-  const UserDetailsCard = () => (
-    <Box borderRadius={10} maxWidth={"700px"} width={"600px"} boxShadow="lg">
-      <Stack spacing="4" bgColor={"white"} paddingX={"30px"} paddingY={"20px"} borderRadius={"10px"}>
-        <Box>
-          <Flex>
-            <Box position="relative" display="inline-block">
-              <Avatar
-                size="lg"
-                name={userDetails.user.username}
-                src={userDetails.user.profile_image}
-              />
-              {User.isDriver() && User.getUserId() === parseInt(userId) && (
-                <Icon
-                  as={FaCamera}
-                  boxSize={6}
-                  position="absolute"
-                  bottom={0}
-                  right={0}
-                  bg="white"
-                  borderRadius="full"
-                  p={1}
-                  color="gray.700"
-                  cursor="pointer"
-                  onClick={onOpen}
-                />
-              )}
-            </Box>
-            <Text as="b" fontSize="xl" ml={"10px"} mt={4}>
-              {userDetails.user.username}
-            </Text>
-          </Flex>
-        </Box>
-        <Text pt="6" fontSize="sm" color={"gray"}>
-          <b>{ratingData.rating.toFixed(1)}</b> ({ratingData.reviews} reviews)
-        </Text>
-        <Divider />
-        <Box>
-          <Flex align="center" pt="2">
-            <MdCheckCircle color="green" />
-            <Text fontSize="sm" ml="2">
-              Verified ID
-            </Text>
-          </Flex>
-          <Flex align="center" pt="2">
-            <MdCheckCircle color="green" />
-            <Text fontSize="sm" ml="2">
-              Confirmed email
-            </Text>
-          </Flex>
-          <Flex align="center" pt="2">
-            <MdCheckCircle color="green" />
-            <Text fontSize="sm" ml="2">
-              Confirmed phone number
-            </Text>
-          </Flex>
-        </Box>
-        <Divider />
-        <Box>
-          <Heading size="xs">Contact</Heading>
-          <Flex align="center" pt="2">
-            <MdEmail />
-            <Text fontSize="sm" ml="2">
-              {userDetails?.user.email}
-            </Text>
-          </Flex>
-          <Flex align="center" pt="2">
-            <MdPhone />
-            <Text fontSize="sm" ml="2">
-              {userDetails.user.phone}
-            </Text>
-          </Flex>
-        </Box>
-        <Divider />
-        <Box>
-          <Heading size="xs" mb={3} mt={3}>Add a New Review</Heading>
-          <Flex>
-            <Text fontSize="sm" mr={2}>Rating: </Text>
-            <Rating
-              initialRating={newReviewRating}
-              emptySymbol={<MdStar size={20} color="gray" />}
-              fullSymbol={<MdStar size={20} color="gold" />}
-              onChange={(rate) => setNewReviewRating(rate)}
-            />
-          </Flex>
-          <Flex>
-            <Input
-              placeholder="Comment"
-              value={newReviewComment}
-              onChange={handleChange}
-              mb={3}
-              mr={2}
-              borderRadius={5}
-              focusBorderColor="blue.500"
-            />
-            <Button onClick={handleAddReview} bg={"transparent"}>
-              <FaPaperPlane />
-            </Button>
-          </Flex>
-        </Box>
-      </Stack>
-    </Box>
-  );
 
   return (
     <Box>
@@ -340,11 +363,34 @@ const Profile = () => {
           padding={10}
           flexDirection={isLargeScreen ? "row" : "column"}
         >
-          <UserDetailsCard />
-          {isLargeScreen && <ReviewsAndComments />}
+          <UserDetailsCard
+            userDetails={userDetails}
+            ratingData={ratingData}
+            isLargeScreen={isLargeScreen}
+            onOpen={onOpen}
+            newReviewRating={newReviewRating}
+            setNewReviewRating={setNewReviewRating}
+            newReviewComment={newReviewComment}
+            handleChange={handleChange}
+            handleAddReview={handleAddReview}
+            userId={userId}
+          />
+          {isLargeScreen && (
+            <ReviewsAndComments
+              isLargeScreen={isLargeScreen}
+              isLoading={isLoading}
+              reviews={reviews}
+            />
+          )}
         </Flex>
       )}
-      {!isLargeScreen && <ReviewsAndComments />}
+      {!isLargeScreen && (
+        <ReviewsAndComments
+          isLargeScreen={isLargeScreen}
+          isLoading={isLoading}
+          reviews={reviews}
+        />
+      )}
       {/* <Footer /> */}
 
       <Modal isOpen={isOpen} onClose={onClose}>
