@@ -226,7 +226,7 @@ const HomeDelivery = () => {
                 {formatDateWithoutYear(selectedDate)}
               </Text>
             </Flex>
-            <Flex
+            {/* <Flex
               flex={1}
               align="center"
               onClick={() => handleItemClick("Weight")}
@@ -239,7 +239,7 @@ const HomeDelivery = () => {
                 fontSize="md"
                 fontWeight={"medium"}
               >{`${selectedWeight} Kg`}</Text>
-            </Flex>
+            </Flex> */}
             <Button
               bg="#2b8ab0"
               color="white"
@@ -351,11 +351,11 @@ const HomeDelivery = () => {
         selectedDate={selectedDate}
         handleDateChange={handleDateChange}
       />
-      <CounterComponent
+      {/* <CounterComponent
         isOpen={selectedItem === "Weight"}
         onClose={() => setSelectedItem("")}
         handleCountChange={handleWeightChange}
-      />
+      /> */}
     </Flex>
   );
 };

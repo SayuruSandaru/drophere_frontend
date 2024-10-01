@@ -167,7 +167,7 @@ const SearchDelivery = () => {
                         aria-label="Open Map"
                         icon={<FaMap />}
                         backgroundColor="gray.300"
-                        onClick={() => handleItemClick("DestinationMap")}  // Corrected to open DestinationMap modal
+                        onClick={() => handleItemClick("DestinationMap")}  
                       />
                     </InputRightElement>
                   </InputGroup>
@@ -184,7 +184,7 @@ const SearchDelivery = () => {
                   />
                 </FormControl>
 
-                <FormControl>
+                {/* <FormControl>
                   <FormLabel fontSize="sm" color={"gray.600"}>Weight</FormLabel>
                   <HStack>
                     <Input
@@ -195,7 +195,7 @@ const SearchDelivery = () => {
                     />
                     <Text pl={3} pr={3}>Kg</Text>
                   </HStack>
-                </FormControl>
+                </FormControl> */}
 
                 <Button
                   colorScheme="blue"

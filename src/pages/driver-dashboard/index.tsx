@@ -18,7 +18,8 @@ const DriverDashboard = () => {
                 if(User.getDriverDetails().status === "pending"){
                     navigate(-1);
                     toast({
-                        title: "Your driver account not approved yet",
+                        title: "Error",
+                        description: "Your account is still pending approval. Please wait for approval",
                         status: "error",
                         duration: 5000,
                         isClosable: true,

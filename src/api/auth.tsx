@@ -142,3 +142,18 @@ export const resetPassword = async (newPassword: string, confirmPassword: string
         throw error;
     }
 }
+
+export const getUser = async (): Promise<boolean> => {
+    try {
+        const response = await authService.getUser();
+        if (response.status !== "success") {
+            throw new Error('Failed to get user details');
+        }
+        const user = Convert.toUserModal(JSON.stringify(response));
+        User.setUserDetail(user);
+        return true;
+    } catch (error) {
+        console.error('Failed to get user details:', error);
+        throw error;
+    }
+}

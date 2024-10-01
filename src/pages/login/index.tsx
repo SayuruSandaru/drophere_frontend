@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { RouterPaths } from "router/routerConfig";
 import Footer from "pages/components/footer";
 import { colors } from "theme/colors";
-import { login } from "api/auth";
+import { getUser, login } from "api/auth";
 import { driverByUser } from "api/driver";
 import { useSetRecoilState } from "recoil";
 import { tokenState, userState } from '../../state';
@@ -43,18 +43,23 @@ const Login: React.FC = () => {
   };
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      setToken(token);
-      driverByUser().then((user: User) => {
-        setUser(user);
-        navigate(RouterPaths.SEARCHRIDE);
-      }).catch((error) => {
+    const fetchUserData = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        if (token) {
+          setToken(token); 
+          await getUser();  
+
+          const user = await driverByUser();  
+          setUser(user); 
+          navigate(RouterPaths.SEARCHRIDE);
+        }
+      } catch (error) {
         console.error("Error getting user: ", error);
-      });
-    }
-  }
-    , []);
+      }
+    };
+    fetchUserData();
+  }, [navigate]);
 
   const [isLargeScreen] = useMediaQuery('(min-width: 992px)');
 

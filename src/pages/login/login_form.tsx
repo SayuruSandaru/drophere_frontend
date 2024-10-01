@@ -18,6 +18,8 @@ import {
   Spinner,
 } from "@chakra-ui/react";
 import { PasswordField } from "./components/passwordField";
+import { useNavigate } from "react-router-dom";
+import { RouterPaths } from "router/routerConfig";
 
 interface LoginFormProps {
   email: string;
@@ -30,7 +32,8 @@ interface LoginFormProps {
 
 export const LoginForm: React.FC<LoginFormProps> = ({ email, password, setEmail, setPassword, onLogin, loading }) => {
   const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
-  const [rememberMe, setRememberMe] = useState(false); // Remember Me state
+  const [rememberMe, setRememberMe] = useState(false); 
+  const navigate = useNavigate();
 
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(e.target.value);
@@ -90,7 +93,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({ email, password, setEmail,
                   <Checkbox isChecked={rememberMe} onChange={(e) => setRememberMe(e.target.checked)}>
                     Remember me
                   </Checkbox>
-                  <Button variant="text" size="sm">
+                  <Button variant="text" size="sm" onClick={()=>navigate(RouterPaths.FORGOTPASSWORD)}>
                     Forgot password?
                   </Button>
                 </HStack>
