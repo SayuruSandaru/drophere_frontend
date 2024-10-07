@@ -27,6 +27,7 @@ import AdminUsers from 'pages/admin-dashboard/users';
 import AdminDispute from 'pages/admin-dashboard/dispute';
 import AdminDriverRegRequest from 'pages/admin-dashboard/registration-request'; 
 import AdminAnalytics from 'pages/admin-dashboard/analytics'; 
+import VehicleFees from 'pages/admin-dashboard/vehicle-fees';
 
 const RouterConfig: React.FC = () => {
     return (
@@ -57,6 +58,7 @@ const RouterConfig: React.FC = () => {
                 <Route path={RouterPaths.ADMINUSERS} element={<AdminUsers />} />
                 <Route path={RouterPaths.ADMINDISPUTE} element={<AdminDispute />} />
                 <Route path={RouterPaths.ADMINDRIVERREGREQUEST} element={<AdminDriverRegRequest />} />
+                <Route path={RouterPaths.ADMINVEHICLEFEES} element={<VehicleFees />} />
                 <Route path={RouterPaths.ADMINANALYTICS} element={<AdminAnalytics />} />
             </Route>
             

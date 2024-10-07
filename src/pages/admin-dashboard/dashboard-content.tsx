@@ -54,6 +54,7 @@ const LinkItems: Array<LinkItemProps> = [
     { name: 'Users', icon: FiUsers, path: RouterPaths.ADMINUSERS },
     { name: 'Dispute', icon: MdReportProblem, path: RouterPaths.ADMINDISPUTE },
     { name: 'Registration Request', icon: MdPersonAdd, path: RouterPaths.ADMINDRIVERREGREQUEST },
+    { name: 'Vehicle Fees', icon: FiTrendingUp, path: RouterPaths.ADMINVEHICLEFEES },
     { name: 'Analytics', icon: FiPieChart, path: RouterPaths.ADMINANALYTICS },
 ]
 
