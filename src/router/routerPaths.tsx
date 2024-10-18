@@ -92,6 +92,7 @@ const RouterConfig: React.FC = () => {
         path={RouterPaths.DRIVERDASHBOARD}
         element={<PrivateRoute element={<DriverDashboard />} />}
       >
+        *
         <Route
           path={RouterPaths.DASHBOARDHOME}
           element={<PrivateRoute element={<DashboardHome />} />}
