@@ -166,6 +166,12 @@ export const Sign_Up: React.FC<SignUpProps> = ({
       newErrors.email = "Email is invalid";
     }
 
+    if (!mobileNumber) {
+      newErrors.mobileNumber = "Mobile number is required";
+    }else if (!/^\+947[0-9]{8}$/.test(mobileNumber)) {
+      newErrors.mobileNumber = "Mobile number is invalid. It should be in the format +947XXXXXXXX";
+    }
+
     if (!password) newErrors.password = "Password is required";
 
     if (!profileImage) newErrors.profileImage = "Profile image is required";
@@ -267,6 +273,7 @@ export const Sign_Up: React.FC<SignUpProps> = ({
                   <Input
                     id="mobileNumber"
                     type="tel"
+                    placeholder="+94 XX XXX XXXX"
                     value={mobileNumber}
                     onChange={(e) => setMobileNumber(e.target.value)}
                   />

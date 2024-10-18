@@ -12,6 +12,7 @@ import { userState } from 'state';
 
 import AuthService from '../../api/services/authService';
 import { logout } from 'api/services/logOutService';
+import User from 'model/user';
 
 function NavbarHome() {
     const [isMenuDrawerOpen, setIsMenuDrawerOpen] = useState(false);
@@ -29,11 +30,11 @@ function NavbarHome() {
     console.log(user);
     console.log(user);
     const handleEarnWithUsClick = async () => {
-        if (user?.isDriver) {
+        if (user?.isDriver  && User.getDriverDetails().status === "accepted") {
             navigate(RouterPaths.DASHBOARDHOME);
-        } else {
+        } else if(User.getDriverDetails().status !== "accepted") {
             toast({
-                title: "Driver Registration Required",
+                title: "Error",
                 description: "You need to register as a driver to access this feature.",
                 status: "info",
                 duration: 5000,

@@ -37,7 +37,7 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
 
             <HStack spacing={{ base: '0', md: '6' }}>
                 <Flex alignItems={'center'}>
-                    <Box mr={'10'}>
+                    {/* <Box mr={'10'}>
                         <Menu>
                             <MenuButton fontSize="sm" fontWeight={"medium"} color="gray.600" as={Button} bgColor={"white"} rightIcon={<FiPlus />}>
                                 Add
@@ -47,7 +47,7 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
                                 <MenuItem>Add ride</MenuItem>
                             </MenuList>
                         </Menu>
-                    </Box>
+                    </Box> */}
                     <Menu>
                         <MenuButton py={2} transition="all 0.3s" _focus={{ boxShadow: 'none' }}>
                             <HStack>

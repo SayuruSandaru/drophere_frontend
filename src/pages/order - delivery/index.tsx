@@ -27,6 +27,8 @@ import rideService from "api/services/rideService";
 import { useShowErrorToast, useShowSuccessToast } from "pages/components/toast";
 import Modal from "./payment";
 import { RouterPaths } from "router/routerConfig";
+import { parsePhoneNumberFromString } from "libphonenumber-js";
+
 
 const OrderDelivery = () => {
   const location = useLocation();
@@ -72,6 +74,12 @@ const OrderDelivery = () => {
 
   const openModal = () => setHasOpen(true);
   const closeModal = () => setHasOpen(false);
+
+  const validatePhoneNumber = (phone: string) => {
+    const phoneNumber = parsePhoneNumberFromString(phone, 'LK'); 
+    return phoneNumber && phoneNumber.isValid();
+  };
+  
 
   useEffect(() => {
     const fetchRideDetails = async () => {
@@ -169,8 +177,15 @@ const OrderDelivery = () => {
       return;
     }
 
+    if (!validatePhoneNumber(recipientPhone)) {
+      showErrorToast("Invalid phone number. Please enter a valid phone number.");
+      return;
+    }
+
     openModal();
   };
+
+  
 
   return (
     <Box bg="gray.100" minH="100vh">

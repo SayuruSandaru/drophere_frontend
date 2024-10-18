@@ -226,7 +226,7 @@ const HomeDelivery = () => {
                 {formatDateWithoutYear(selectedDate)}
               </Text>
             </Flex>
-            <Flex
+            {/* <Flex
               flex={1}
               align="center"
               onClick={() => handleItemClick("Weight")}
@@ -239,7 +239,7 @@ const HomeDelivery = () => {
                 fontSize="md"
                 fontWeight={"medium"}
               >{`${selectedWeight} Kg`}</Text>
-            </Flex>
+            </Flex> */}
             <Button
               bg="#2b8ab0"
               color="white"
@@ -312,14 +312,14 @@ const HomeDelivery = () => {
                   key={ride.ride_id}
                   imageUrl={ride.vehicle_details.image_url}
                   altText={ride.vehicle_details.model}
-                  carName={`${ride.vehicle_details.type} ${ride.vehicle_details.model}`}
+                  carName={ride.vehicle_details.model}
                   date={new Date(ride.start_time).toLocaleDateString()}
                   from={ride.start_location}
                   to={ride.end_location}
                   name={ride.owner_details.city}
                   availability={ride.status}
                   seatsLeft={ride.passenger_count}
-                  price={`Rs ${ride.fee}`}
+                  price={`Rs ${ride.individualFee}`}
                   onClick={() => {
                     const points = decodePolyline(ride.route);
                     setPolylinePath(points);
@@ -351,11 +351,11 @@ const HomeDelivery = () => {
         selectedDate={selectedDate}
         handleDateChange={handleDateChange}
       />
-      <CounterComponent
+      {/* <CounterComponent
         isOpen={selectedItem === "Weight"}
         onClose={() => setSelectedItem("")}
         handleCountChange={handleWeightChange}
-      />
+      /> */}
     </Flex>
   );
 };

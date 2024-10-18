@@ -12,6 +12,8 @@ export enum RouterPaths {
     DRIVERPROFILE = "/profile/:driver_id",
     CREATERIDE = "/ride/create",
     CONTACT = "/contact",
+    FORGOTPASSWORD = "/forgot-password",
+    RESETPASSWORD = "/reset-password",
     DRIVERREGISTER = "/drive/register",
     DRIVERDASHBOARD = "/dashboard",
     DASHBOARDRIDES = "/dashboard/rides",
@@ -25,6 +27,7 @@ export enum RouterPaths {
     ADMINDISPUTE = "/admin-dashboard/dispute",
     ADMINDRIVERREGREQUEST = "/admin-dashboard/registration-request",
     ADMINANALYTICS = "/admin-dashboard/analytics",
+    ADMINLOGIN = "/admin/login",
     ADMINVEHICLEFEES = "/admin-dashboard/vehicle-fees",
 }
 
