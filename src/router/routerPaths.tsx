@@ -22,11 +22,12 @@ import Requests from "pages/driver-dashboard/requests";
 import DashboardHome from "pages/driver-dashboard/dashboard-home";
 import MyRide from "pages/myride";
 import AdminDashboard from "pages/admin-dashboard";
-import AdminHome from "pages/admin-dashboard/home";
-import AdminUsers from "pages/admin-dashboard/users";
-import AdminDispute from "pages/admin-dashboard/dispute";
-import AdminDriverRegRequest from "pages/admin-dashboard/registration-request";
-import AdminAnalytics from "pages/admin-dashboard/analytics";
+import AdminHome from 'pages/admin-dashboard/home'; 
+import AdminUsers from 'pages/admin-dashboard/users'; 
+import AdminDispute from 'pages/admin-dashboard/dispute';
+import AdminDriverRegRequest from 'pages/admin-dashboard/registration-request'; 
+import AdminAnalytics from 'pages/admin-dashboard/analytics'; 
+import VehicleFees from 'pages/admin-dashboard/vehicle-fees';
 import AdminLogin from "pages/login/adminlogin";
 import ForgotPassword from "pages/forgot-password";
 import ResetPassword from "pages/reset-password";
@@ -114,6 +115,7 @@ const RouterConfig: React.FC = () => {
         <Route path={RouterPaths.ADMINHOME} element={<AdminHome />} />
         <Route path={RouterPaths.ADMINUSERS} element={<AdminUsers />} />
         <Route path={RouterPaths.ADMINDISPUTE} element={<AdminDispute />} />
+        <Route path={RouterPaths.ADMINVEHICLEFEES} element={<VehicleFees />} />
         <Route
           path={RouterPaths.ADMINDRIVERREGREQUEST}
           element={<AdminDriverRegRequest />}
