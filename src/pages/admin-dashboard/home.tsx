@@ -73,7 +73,7 @@ const AdminHome = () => {
   const errorColor = 'red.500';
 
   if (isLoading) {
-    return <Box>Loading...</Box>;
+    return <Box></Box>;
   }
 
   if (error) {

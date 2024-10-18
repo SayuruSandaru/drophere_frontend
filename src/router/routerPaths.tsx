@@ -109,30 +109,15 @@ const RouterConfig: React.FC = () => {
         path={RouterPaths.MYRIDES}
         element={<PrivateRoute element={<MyRide />} />}
       />
-      <Route
-        path={RouterPaths.ADMINDASHBOARD}
-        element={<PrivateRoute element={<AdminDashboard />} />}
-      >
-        <Route
-          path={RouterPaths.ADMINHOME}
-          element={<PrivateRoute element={<AdminHome />} />}
-        />
-        <Route
-          path={RouterPaths.ADMINUSERS}
-          element={<PrivateRoute element={<AdminUsers />} />}
-        />
-        <Route
-          path={RouterPaths.ADMINDISPUTE}
-          element={<PrivateRoute element={<AdminDispute />} />}
-        />
+      <Route path={RouterPaths.ADMINDASHBOARD} element={<AdminDashboard />}>
+        <Route path={RouterPaths.ADMINHOME} element={<AdminHome />} />
+        <Route path={RouterPaths.ADMINUSERS} element={<AdminUsers />} />
+        <Route path={RouterPaths.ADMINDISPUTE} element={<AdminDispute />} />
         <Route
           path={RouterPaths.ADMINDRIVERREGREQUEST}
-          element={<PrivateRoute element={<AdminDriverRegRequest />} />}
+          element={<AdminDriverRegRequest />}
         />
-        <Route
-          path={RouterPaths.ADMINANALYTICS}
-          element={<PrivateRoute element={<AdminAnalytics />} />}
-        />
+        <Route path={RouterPaths.ADMINANALYTICS} element={<AdminAnalytics />} />
       </Route>
     </Routes>
   );
