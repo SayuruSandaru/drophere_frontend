@@ -43,6 +43,7 @@ interface Driver {
     street: string;
     city: string;
     province: string;
+    status: string;
 }
 
 const Users: React.FC = () => {
@@ -165,6 +166,22 @@ const Users: React.FC = () => {
         }
     };
 
+    const getStatusColorDriver = (status: string) => {
+        switch (status.toLowerCase()) {
+            case 'pending':
+                return 'yellow';   
+            case 'accepted':
+                return 'green';    
+            case 'rejected':
+                return 'red';      
+            case 'suspended':
+                return 'orange';   
+            default:
+                return 'gray';     
+        }
+    };
+    
+
     const renderContent = () => {
         if (loading) {
             return (
@@ -214,6 +231,10 @@ const Users: React.FC = () => {
                                 <Text><strong>Street:</strong> {driver.street}</Text>
                                 <Text><strong>City:</strong> {driver.city}</Text>
                                 <Text><strong>Province:</strong> {driver.province}</Text>
+                                <Flex alignItems="center" mt={2}>
+                                    <Text mr={2}><strong>Status:</strong></Text>
+                                    <Badge colorScheme={getStatusColorDriver(driver.status)}>{driver.status}</Badge>
+                                </Flex>
                             </Box>
                         ))
                     }
@@ -243,6 +264,7 @@ const Users: React.FC = () => {
                                     <Th width="20%">Street</Th>
                                     <Th width="20%">City</Th>
                                     <Th width="20%">Province</Th>
+                                    <Th width="20%">Status</Th>
                                 </>
                             )}
                         </Tr>
@@ -283,6 +305,7 @@ const Users: React.FC = () => {
                                     <Td width="20%">{driver.street}</Td>
                                     <Td width="20%">{driver.city}</Td>
                                     <Td width="20%">{driver.province}</Td>
+                                    <Td width="20%">{driver.status}</Td>
                                 </Tr>
                             ))
                         }
