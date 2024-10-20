@@ -21,7 +21,8 @@ import {
     Divider,
     useBreakpointValue,
 } from '@chakra-ui/react';
-import RideService from 'api/services/rideService';
+import RideService from 'api/services/rideService'; // Replace with the actual service path
+import ReservationModal from './reservation-modal'; // Import the reservation modal component
 
 interface Ride {
     ride_id: number;
@@ -42,6 +43,8 @@ const RidesPopup: React.FC<RidesPopupProps> = ({ isOpen, onClose, driverId }) =>
     const [rides, setRides] = useState<Ride[]>([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [selectedRideId, setSelectedRideId] = useState<number | null>(null); // To track the selected ride for reservations
+    const [isReservationModalOpen, setReservationModalOpen] = useState(false); // To control the reservation modal
 
     const modalSize = useBreakpointValue({ base: 'full', md: 'xl' }); // Responsive size for mobile and larger screens
 
@@ -76,75 +79,97 @@ const RidesPopup: React.FC<RidesPopupProps> = ({ isOpen, onClose, driverId }) =>
         return date.toISOString().split('T')[0];
     };
 
+    const openReservationModal = (rideId: number) => {
+        onClose();
+        setSelectedRideId(rideId); // Store the selected rideId
+        setReservationModalOpen(true); // Open the modal
+    };
+
+    const closeReservationModal = () => {
+        setReservationModalOpen(false); // Close the modal
+        setSelectedRideId(null); // Clear the rideId
+    };
+
     return (
-        <Modal isOpen={isOpen} onClose={onClose} size={modalSize}>
-            <ModalOverlay />
-            <ModalContent
-                maxWidth={{ base: '100%', md: '800px' }} // Responsive max width
-                mx="auto" // Center on the screen
-                maxHeight="90vh" // Prevent overflowing the viewport height
-                overflowY="auto" // Add scrolling if content exceeds max height
-            >
-                <ModalHeader>
-                    <Heading size="lg">Driver Rides</Heading>
-                    <Divider mt={2} />
-                </ModalHeader>
-                <ModalCloseButton />
-                <ModalBody>
-                    {loading ? (
-                        <Box textAlign="center">
-                            <Spinner size="xl" />
-                        </Box>
-                    ) : error ? (
-                        <Text color="red.500" textAlign="center">
-                            {error}
-                        </Text>
-                    ) : rides.length === 0 ? (
-                        <Box textAlign="center" p={4}>
-                            <Text fontSize="lg">No rides available for this driver.</Text>
-                        </Box>
-                    ) : (
-                        <Table variant="simple"  mt={4} size="sm">
-                            <Thead>
-                                <Tr>
-                                    <Th>From</Th>
-                                    <Th>To</Th>
-                                    <Th>Date</Th>
-                                    <Th>Status</Th>
-                                    <Th>Passengers</Th>
-                                    <Th>Action</Th>
-                                </Tr>
-                            </Thead>
-                            <Tbody>
-                                {rides.map((ride) => (
-                                    <Tr key={ride.ride_id}>
-                                        <Td>{ride.start_location}</Td>
-                                        <Td>{ride.end_location}</Td>
-                                        <Td>{formatDate(ride.start_time)}</Td>
-                                        <Td>{ride.status}</Td>
-                                        <Td>{ride.passenger_count}</Td>
-                                        <Td>
-                                            <Button
-                                                colorScheme="blue"
-                                                size="sm"
-                                                onClick={() => alert(`Viewing live location for ride ID: ${ride.ride_id}`)}
-                                            >
-                                                View Live Location
-                                            </Button>
-                                        </Td>
+        <>
+            <Modal isOpen={isOpen} onClose={onClose} size={modalSize}>
+                <ModalOverlay />
+                <ModalContent
+                    maxWidth={{ base: '100%', md: '800px' }} // Responsive max width
+                    mx="auto" // Center on the screen
+                    maxHeight="90vh" // Prevent overflowing the viewport height
+                    overflowY="auto" // Add scrolling if content exceeds max height
+                >
+                    <ModalHeader>
+                        <Heading size="lg">Driver Rides</Heading>
+                        <Divider mt={2} />
+                    </ModalHeader>
+                    <ModalCloseButton />
+                    <ModalBody>
+                        {loading ? (
+                            <Box textAlign="center">
+                                <Spinner size="xl" />
+                            </Box>
+                        ) : error ? (
+                            <Text color="red.500" textAlign="center">
+                                {error}
+                            </Text>
+                        ) : rides.length === 0 ? (
+                            <Box textAlign="center" p={4}>
+                                <Text fontSize="lg">No rides available for this driver.</Text>
+                            </Box>
+                        ) : (
+                            <Table variant="simple" mt={4} size="sm">
+                                <Thead>
+                                    <Tr>
+                                        <Th>From</Th>
+                                        <Th>To</Th>
+                                        <Th>Date</Th>
+                                        <Th>Status</Th>
+                                        <Th>Passengers</Th>
+                                        <Th>Action</Th>
                                     </Tr>
-                                ))}
-                            </Tbody>
-                        </Table>
-                    )}
-                </ModalBody>
-                <ModalFooter>
-                    <Button colorScheme="blue" mr={3} onClick={onClose}>
-                        Close
-                    </Button>
-                </ModalFooter>
-            </ModalContent>
-        </Modal>
+                                </Thead>
+                                <Tbody>
+                                    {rides.map((ride) => (
+                                        <Tr key={ride.ride_id}>
+                                            <Td>{ride.start_location}</Td>
+                                            <Td>{ride.end_location}</Td>
+                                            <Td>{formatDate(ride.start_time)}</Td>
+                                            <Td>{ride.status}</Td>
+                                            <Td>{ride.passenger_count}</Td>
+                                            <Td>
+                                                <Button
+                                                    colorScheme="blue"
+                                                    size="sm"
+                                                    onClick={() => openReservationModal(ride.ride_id)}
+                                                >
+                                                    View Reservations
+                                                </Button>
+                                            </Td>
+                                        </Tr>
+                                    ))}
+                                </Tbody>
+                            </Table>
+                        )}
+                    </ModalBody>
+                    <ModalFooter>
+                        <Button colorScheme="blue" mr={3} onClick={onClose}>
+                            Close
+                        </Button>
+                    </ModalFooter>
+                </ModalContent>
+            </Modal>
+
+            {/* Reservation Modal */}
+            {selectedRideId && (
+                <ReservationModal
+                    isOpen={isReservationModalOpen}
+                    onClose={closeReservationModal}
+                    rideId={selectedRideId} // Pass the selected rideId to the modal
+                />
+            )}
+        </>
     );
 };
 
