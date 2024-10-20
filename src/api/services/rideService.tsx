@@ -70,7 +70,9 @@ class RideService extends ApiService {
 
   public async getRideById(id: number): Promise<any> {
     try {
+      console.log("Sending request to /ride with id:", id);
       const response = await this.get(`/ride/${id}`);
+      console.log("Ride details ide:", response);
       return response;
     } catch (error) {
       console.error("Error getting ride by id: ", error);
@@ -80,9 +82,7 @@ class RideService extends ApiService {
 
   public async getRideByIdfor(id: string): Promise<any> {
     try {
-      console.log("Sending request to /rides with driver_id:", id);
       const response = await this.post("/rides", { driver_id: id });
-      console.log("Response from /rides:", response);
       return response;
     } catch (error) {
       console.error("Error in getRideByIdfor:", error);

@@ -57,7 +57,7 @@ class ReservationService extends ApiService {
     public async updateReservationStatus(reservationId: string, status: string): Promise<any> {
         try {
             const requestData = {
-                "reservation_id": reservationId,  // Ensure using "reservation_id"
+                "reservation_id": reservationId,
                 "status": status
             };
 
@@ -68,6 +68,18 @@ class ReservationService extends ApiService {
             return response;
         } catch (error) {
             console.error("Error updating reservation status: ", error);
+            throw error;
+        }
+    }
+
+    public async getReservationsByRideId(rideId: number): Promise<any> {
+        try {
+            console.log("Fetching reservations for ride ID: ", rideId);
+            const response = await this.get(`/reservation/ride/${rideId}`);
+            console.log("Reservations fetched:", response);
+            return response;
+        } catch (error) {
+            console.error("Error fetching reservations:", error);
             throw error;
         }
     }

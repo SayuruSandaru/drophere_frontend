@@ -51,6 +51,7 @@ const MapPopup: React.FC<MapPopupProps> = ({ isOpen, onClose, data, databasePath
             const locationRef = ref(database, `${databasePath}/currentLocation`);
             onValue(locationRef, (snapshot) => {
                 const locData = snapshot.val();
+                if(locData === null) return;
                 setLocation({
                     lat: locData.latitude,
                     lng: locData.longitude,
