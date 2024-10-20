@@ -30,7 +30,7 @@ function NavbarHome() {
     console.log(user);
     console.log(user);
     const handleEarnWithUsClick = async () => {
-        if (user?.isDriver  && User.getDriverDetails().status === "accepted") {
+        if (user?.isDriver() === true && User.getDriverDetails().status === "accepted") {
             navigate(RouterPaths.DASHBOARDHOME);
         } else if(User.getDriverDetails().status !== "accepted") {
             toast({

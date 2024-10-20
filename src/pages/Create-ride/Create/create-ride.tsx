@@ -255,7 +255,7 @@ const Cride = () => {
                   <Box mb={4}>
 
                     <FormControl>
-                      <FormLabel fontSize="sm" color={"gray.600"}>Pickup</FormLabel>
+                      <FormLabel fontSize="sm" color={"gray.600"}>Destination</FormLabel>
                       <InputGroup>
                         <Input
                           placeholder="Select Destination location"

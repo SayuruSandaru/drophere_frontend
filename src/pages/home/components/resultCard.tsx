@@ -84,10 +84,17 @@ const CarInfo: React.FC<CarInfoProps> = ({ imageUrl, altText, carName, date, fro
         </Box>
         <Spacer />
         <Flex direction={"column"}>
-          <Text fontSize="xl" fontWeight="bold" m={{ base: 4, md: 5 }}>{price}</Text>
-          <Spacer />
-          <Button bg="black" color={"white"} m={4} onClick={onBook} >Book</Button>
-        </Flex>
+  <Text fontSize="xl" fontWeight="bold" m={{ base: 4, md: 5 }}>
+    {price}{" "}
+    <Text as="span" fontSize="sm" fontWeight="normal">
+      per person
+    </Text>
+  </Text>
+  <Spacer />
+  <Button bg="black" color={"white"} m={4} onClick={onBook}>
+    Book
+  </Button>
+</Flex>
       </Flex>
     </Box>
   );
