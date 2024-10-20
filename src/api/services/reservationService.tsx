@@ -54,6 +54,24 @@ class ReservationService extends ApiService {
         }
     }
 
+    public async getReservationsByStatusDriverId(status: string, driverId: number): Promise<any> {
+        try {
+            console.log("Fetching reservations with status: ", status);
+            console.log("Driver ID: ", driverId);
+    
+            const response = await this.post("/reservation/available/d", {
+                "status": status,
+                "driver_id": driverId
+            });
+    
+            console.log("Reservations fetched:", response);
+            return response;
+        } catch (error) {
+            console.error("Error getting reservations by status: ", error);
+            throw error;
+        }
+    }
+
     public async updateReservationStatus(reservationId: string, status: string): Promise<any> {
         try {
             const requestData = {

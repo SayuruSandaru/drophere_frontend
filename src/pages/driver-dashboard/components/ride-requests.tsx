@@ -10,7 +10,7 @@ const RideReqTable = () => {
   const { isOpen: isOpenDecline, onOpen: onOpenDecline, onClose: onCloseDecline } = useDisclosure();
   const { isOpen: isOpenStart, onOpen: onOpenStart, onClose: onCloseStart } = useDisclosure();
   const headerOngoing = ["From", "To", "Price", "Type", "Actions"];
-  const headerOther = ["From", "To", "Price", "Type",];
+  const headerOther = ["From", "To", "Price", "Type"];
   const [data, setData] = useState([]);
   const color1 = useColorModeValue("gray.400", "gray.400");
   const color2 = useColorModeValue("gray.400", "gray.400");
@@ -18,37 +18,35 @@ const RideReqTable = () => {
   const [selectedReservation, setSelectedReservation] = useState(null);
   const [selectedStatus, setSelectedStatus] = useState("ongoing");
 
-
   useEffect(() => {
     fetchReservations("confirmed");
   }, []);
 
-
-  const fetchReservations = async (status) => {
+  const fetchReservations = async (status: string) => {
     try {
       setLoading(true);
       setData([]);
-      console.log("user id:", User.getUserId());
-      const result = await ReservationService.getReservationsByStatus(status, User.getUserId());
+      console.log("Driver ID:", User.getDriverDetails().driver_id); // Update to get the driver's ID
+      const result = await ReservationService.getReservationsByStatusDriverId(status, User.getDriverDetails().driver_id); // Use driver ID
       console.log("Fetched reservations:", result);
-      console.log("Raw fetched reservations:", result);
       const reservations = result.data || result;
 
+    if (reservations.length > 0) {
       const mappedData = reservations.map(reservation => ({
         ...reservation,
         id: reservation.id || reservation._id || reservation.reservation_id
       }));
-
-      console.log("Mapped reservations:", mappedData);
-
       setLoading(false);
       setData(mappedData);
+    }else{
+      setLoading(false);}
+
+
     } catch (error) {
       setLoading(false);
       console.error("Error fetching ride requests: ", error);
     }
   };
-
 
   const handleStart = async () => {
     console.log("handleStart called, selectedReservation:", selectedReservation);
@@ -113,7 +111,7 @@ const RideReqTable = () => {
   const handleCompletedSelect = async () => {
     setSelectedStatus("completed");
     await fetchReservations("completed");
-  }
+  };
 
   return (
     <Box>
@@ -152,13 +150,15 @@ const RideReqTable = () => {
                   <>
                     {headerOngoing.map((x) => (
                       <Th key={x}>{x}</Th>
-                    ))}</>
+                    ))}
+                  </>
                 )}
                 {selectedStatus !== "confirmed" && (
                   <>
                     {headerOther.map((x) => (
                       <Th key={x}>{x}</Th>
-                    ))}</>
+                    ))}
+                  </>
                 )}
               </Tr>
             </Thead>
@@ -262,17 +262,26 @@ const RideReqTable = () => {
                     {selectedStatus === "confirmed" && (
                       <>
                         <ButtonGroup variant="solid" size="sm" spacing={3}>
-                          <Button colorScheme="green" onClick={() => {
-                            console.log("Selected reservation for start:", token);
-                            setSelectedReservation(token);
-                            onOpenStart();
-                          }}>Start</Button>
-                          <Button colorScheme="red" onClick={() => {
-                            console.log("Selected reservation for decline:", token);
-                            setSelectedReservation(token);
-                            onOpenDecline();
-                          }}>Decline</Button>
-                        </ButtonGroup></>
+                          <Button
+                            colorScheme="green"
+                            onClick={() => {
+                              onOpenStart();
+                              setSelectedReservation(token);
+                            }}
+                          >
+                            Start
+                          </Button>
+                          <Button
+                            colorScheme="red"
+                            onClick={() => {
+                              onOpenDecline();
+                              setSelectedReservation(token);
+                            }}
+                          >
+                            Decline
+                          </Button>
+                        </ButtonGroup>
+                      </>
                     )}
                   </Td>
                 </Tr>
@@ -280,25 +289,25 @@ const RideReqTable = () => {
             </Tbody>
           </Table>
         )}
-      </Flex>
-      <CustomAlertDialog
-        mainBtnText={"Decline"}
-        primaryColor={"red"}
-        title={"Decline request"}
-        message={"Are you sure you want to decline this request"}
-        isOpen={isOpenDecline}
-        onClose={onCloseDecline}
-        onVerify={handleDecline}
-      />
-      <CustomAlertDialog
-        mainBtnText={"Start"}
+        <CustomAlertDialog
+          isOpen={isOpenDecline}
+          onClose={onCloseDecline}
+          onVerify={handleDecline}
+          title="Decline Ride"
+          message="Are you sure you want to decline this ride?"
+          mainBtnText={"Decline"}
+          primaryColor={"red"}
+        />
+        <CustomAlertDialog
+          isOpen={isOpenStart}
+          onClose={onCloseStart}
+          onVerify={handleStart}
+          title="Start Ride"
+          message="Are you sure you want to start this ride?"
+          mainBtnText={"Start"}
         primaryColor={"green"}
-        title={"Start ride"}
-        message={"Are you sure you want to start ride, You need to turn on tracking via app"}
-        isOpen={isOpenStart}
-        onClose={onCloseStart}
-        onVerify={handleStart}
-      />
+        />
+      </Flex>
     </Box>
   );
 };

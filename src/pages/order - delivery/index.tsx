@@ -54,7 +54,7 @@ const OrderDelivery = () => {
   const startTime = startDateTime ? startDateTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "N/A";
 
   const imageUrl =
-    rideDetails?.vehicle_details?.image_url ??
+    rideDetails?.vehicle_details?.image_url ?? 
     "https://via.placeholder.com/150";
 
   const [recipientName, setRecipientName] = useState("");
@@ -63,7 +63,7 @@ const OrderDelivery = () => {
 
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
-  const [price, setPrice] = useState(initialPrice || 0);
+  const [price, setPrice] = useState(initialPrice ? parseFloat(initialPrice).toFixed(2) : "0.00");
   const showSuccessToast = useShowSuccessToast();
   const showErrorToast = useShowErrorToast();
   const [loading, setLoading] = useState(false);
@@ -89,9 +89,9 @@ const OrderDelivery = () => {
           setRideDetails(response.ride);
           const storedPrice = getLocalStorage(id);
           if (storedPrice) {
-            setPrice(storedPrice);
+            setPrice(parseFloat(storedPrice).toFixed(2));
           } else if (response.ride.fee) {
-            setPrice(response.ride.fee);
+            setPrice(parseFloat(response.ride.fee).toFixed(2));
           }
           console.log(response);
         } else {
