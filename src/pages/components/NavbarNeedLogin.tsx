@@ -16,6 +16,8 @@ import {
 import { useNavigate } from "react-router-dom";
 import { RouterPaths } from "router/routerConfig";
 import { FaBicycle, FaBox, FaBars } from "react-icons/fa";
+
+import { MdBikeScooter, MdLocalShipping } from "react-icons/md";
 import user from "model/user";
 import { logout } from "../../api/services/logOutService";
 
@@ -87,6 +89,18 @@ function Navbar({ isDelivery = true }) {
             </Button>
             {/* <Button borderRadius={2} bgColor={"white"} size={"sm"} color={"black"} onClick={() => { navigate(RouterPaths.LOGIN) }}>Login</Button> */}
             {/* <Button borderRadius={5} bgColor={"#2b8ab0"} size={"sm"} color={"white"} onClick={() => { navigate(RouterPaths.REGISTER) }}>Register</Button> */}
+            <Button
+              borderRadius={3}
+              bgColor={"transparent"}
+              size={"sm"}
+              color={"black"}
+              onClick={() => {
+                navigate(RouterPaths.MYRIDES);
+              }}
+            >
+              <Icon as={MdBikeScooter} w={6} h={4} color={"gray.700"} mr={1} />
+              My rides
+            </Button>
             <Button
               borderRadius={5}
               bgColor={"#2b8ab0"}

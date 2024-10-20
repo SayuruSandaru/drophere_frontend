@@ -46,8 +46,8 @@ export default function OrderPageRide() {
         const response = await rideService.getRideById(parseInt(id));
         if (response.status === "success") {
           setRideDetails(response.ride);
-          const price = getLocalStorage(id);
-          setPrice(price);
+          const price = parseFloat(getLocalStorage(id));
+          setPrice(Number(price.toFixed(2)));
           const iduser = response.ride.owner_details.user_id;
           const userResponse = await getUserById(iduser);
           setUserId(iduser);

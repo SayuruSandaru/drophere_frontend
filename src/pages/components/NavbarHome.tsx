@@ -30,7 +30,7 @@ function NavbarHome() {
     console.log(user);
     console.log(user);
     const handleEarnWithUsClick = async () => {
-        if (user?.isDriver  && User.getDriverDetails().status === "accepted") {
+        if (user?.isDriver() === true && User.getDriverDetails().status === "accepted") {
             navigate(RouterPaths.DASHBOARDHOME);
         } else if(User.getDriverDetails().status !== "accepted") {
             toast({
@@ -108,10 +108,18 @@ function NavbarHome() {
                             <Icon as={MdLocalShipping} w={6} h={4} color={"gray.700"} mr={1} />
                             Deliver
                         </Button>
-                        <Button borderRadius={3} bgColor={"transparent"} size={"sm"} color={"black"} >
-                            <Icon as={MdBikeScooter} w={6} h={4} color={"gray.700"} mr={1} />
-                            My rides
-                        </Button>
+                        <Button
+              borderRadius={3}
+              bgColor={"transparent"}
+              size={"sm"}
+              color={"black"}
+              onClick={() => {
+                navigate(RouterPaths.MYRIDES);
+              }}
+            >
+                <Icon as={MdBikeScooter} w={6} h={4} color={"gray.700"} mr={1} />
+                My rides
+            </Button>
                         <Button borderRadius={5} bgColor={"blackAlpha.800"} size={"sm"} color={"white"} onClick={handleEarnWithUsClick}>Earn with us</Button>
                         <Button
               borderRadius={5}
