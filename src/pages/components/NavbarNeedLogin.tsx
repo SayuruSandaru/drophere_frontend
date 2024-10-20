@@ -33,7 +33,7 @@ function Navbar({ isDelivery = true }) {
   const [isLargeScreen] = useMediaQuery("(min-width: 992px)");
 
   const handleEarnWithUsClick = async () => {
-    if (user?.isDriver) {
+    if (user?.isDriver() === true) {
       navigate(RouterPaths.DASHBOARDHOME);
     } else {
       toast({
