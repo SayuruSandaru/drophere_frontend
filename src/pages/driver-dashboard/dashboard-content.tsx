@@ -54,8 +54,9 @@ interface SidebarProps extends BoxProps {
 const LinkItems: Array<LinkItemProps> = [
     { name: 'Home', icon: FiHome, path: RouterPaths.DASHBOARDHOME },
     { name: 'Requests', icon: FiTrendingUp, path: RouterPaths.DASHBOARDREQUESTS },
-    { name: 'Rides', icon: MdBikeScooter, path: RouterPaths.DASHBOARDRIDES },
     { name: 'Ride Create', icon: FiCompass, path: RouterPaths.CREATERIDE },
+    { name: 'Rides', icon: MdBikeScooter, path: RouterPaths.DASHBOARDRIDES },
+    
     // { name: 'Favourites', icon: FiStar },
     // { name: 'Settings', icon: FiSettings },
 ]
