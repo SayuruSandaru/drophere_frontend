@@ -7,6 +7,7 @@ class ApiService {
     protected baseUrl: string = "https://drophere-live-adda896544f2.herokuapp.com";
     // protected baseUrl: string = "http://localhost:5000";
 
+
     private mergeToken(headers: Headers) {
         const token = CookieManager.getCookie("token");
         if (!token) {
