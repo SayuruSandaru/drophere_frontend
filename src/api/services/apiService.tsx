@@ -3,8 +3,8 @@ import CookieManager from "api/cookieManager";
 
 class ApiService {
     // protected baseUrl: string = "https://drophere-staging-665f7065c9e0.herokuapp.com";
-    protected baseUrl: string = "https://drophere-restapi-c445f5ce82dc.herokuapp.com";
-    // protected baseUrl: string = "https://drophere-live-adda896544f2.herokuapp.com";
+    // protected baseUrl: string = "https://drophere-restapi-c445f5ce82dc.herokuapp.com";
+    protected baseUrl: string = "https://drophere-live-adda896544f2.herokuapp.com";
 
     private mergeToken(headers: Headers) {
         const token = CookieManager.getCookie("token");
