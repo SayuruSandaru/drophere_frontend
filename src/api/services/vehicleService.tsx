@@ -52,6 +52,27 @@ class VehicleService extends ApiService {
             throw error;
         }
     }
+
+
+    public async getVehicleFeeDetails(): Promise<any> {
+        try {
+            const response = await this.get("/vehicle-fees");
+            return response;
+        } catch (error) {
+            console.error("Error fetching vehicle fee details: ", error);
+            throw error;
+        }
+    }
+
+    public async updateVehicleFee(data: { vehicle_type: string, price_per_km: number }): Promise<any> {
+        try {
+            const response = await this.post("/vehicle-fee/update", data);
+            return response;
+        } catch (error) {
+            console.error("Error updating vehicle fee: ", error);
+            throw error;
+        }
+    }
 }
 
 export default new VehicleService();

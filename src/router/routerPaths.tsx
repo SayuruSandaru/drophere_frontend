@@ -22,11 +22,12 @@ import Requests from "pages/driver-dashboard/requests";
 import DashboardHome from "pages/driver-dashboard/dashboard-home";
 import MyRide from "pages/myride";
 import AdminDashboard from "pages/admin-dashboard";
-import AdminHome from "pages/admin-dashboard/home";
-import AdminUsers from "pages/admin-dashboard/users";
-import AdminDispute from "pages/admin-dashboard/dispute";
-import AdminDriverRegRequest from "pages/admin-dashboard/registration-request";
-import AdminAnalytics from "pages/admin-dashboard/analytics";
+import AdminHome from 'pages/admin-dashboard/home'; 
+import AdminUsers from 'pages/admin-dashboard/users'; 
+import AdminDispute from 'pages/admin-dashboard/dispute';
+import AdminDriverRegRequest from 'pages/admin-dashboard/registration-request'; 
+import AdminAnalytics from 'pages/admin-dashboard/analytics'; 
+import VehicleFees from 'pages/admin-dashboard/vehicle-fees';
 import AdminLogin from "pages/login/adminlogin";
 import ForgotPassword from "pages/forgot-password";
 import ResetPassword from "pages/reset-password";
@@ -92,6 +93,7 @@ const RouterConfig: React.FC = () => {
         path={RouterPaths.DRIVERDASHBOARD}
         element={<PrivateRoute element={<DriverDashboard />} />}
       >
+        *
         <Route
           path={RouterPaths.DASHBOARDHOME}
           element={<PrivateRoute element={<DashboardHome />} />}
@@ -109,30 +111,16 @@ const RouterConfig: React.FC = () => {
         path={RouterPaths.MYRIDES}
         element={<PrivateRoute element={<MyRide />} />}
       />
-      <Route
-        path={RouterPaths.ADMINDASHBOARD}
-        element={<PrivateRoute element={<AdminDashboard />} />}
-      >
-        <Route
-          path={RouterPaths.ADMINHOME}
-          element={<PrivateRoute element={<AdminHome />} />}
-        />
-        <Route
-          path={RouterPaths.ADMINUSERS}
-          element={<PrivateRoute element={<AdminUsers />} />}
-        />
-        <Route
-          path={RouterPaths.ADMINDISPUTE}
-          element={<PrivateRoute element={<AdminDispute />} />}
-        />
+      <Route path={RouterPaths.ADMINDASHBOARD} element={<AdminDashboard />}>
+        <Route path={RouterPaths.ADMINHOME} element={<AdminHome />} />
+        <Route path={RouterPaths.ADMINUSERS} element={<AdminUsers />} />
+        <Route path={RouterPaths.ADMINDISPUTE} element={<AdminDispute />} />
+        <Route path={RouterPaths.ADMINVEHICLEFEES} element={<VehicleFees />} />
         <Route
           path={RouterPaths.ADMINDRIVERREGREQUEST}
-          element={<PrivateRoute element={<AdminDriverRegRequest />} />}
+          element={<AdminDriverRegRequest />}
         />
-        <Route
-          path={RouterPaths.ADMINANALYTICS}
-          element={<PrivateRoute element={<AdminAnalytics />} />}
-        />
+        <Route path={RouterPaths.ADMINANALYTICS} element={<AdminAnalytics />} />
       </Route>
     </Routes>
   );

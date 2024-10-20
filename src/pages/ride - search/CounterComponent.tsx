@@ -32,8 +32,10 @@ const CounterComponent = ({ isOpen, onClose, handleCountChange }) => {
                         <Text m={6}>{count}</Text>
                         <Button
                             onClick={() => {
-                                setCount(count + 1);
-                                handleCountChange(count + 1);
+                                if(count < 50){
+                                    setCount(count + 1);
+                                    handleCountChange(count + 1);
+                                }
                             }}
                             variant="outline"
                             colorScheme="black"

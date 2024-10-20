@@ -21,3 +21,35 @@ export const createVehicle = async (vehicle: { type: string, capacity: number, l
         throw error;
     }
 };
+
+
+
+// Get vehicle fee details
+export const getVehicleFeeDetails = async (): Promise<any> => {
+    try {
+        const response = await vehicleService.getVehicleFeeDetails();
+        if (response.status === "error") {
+            throw new Error("Failed to fetch vehicle fee details");
+        }
+        return response;
+    } catch (error) {
+        console.error("Error fetching vehicle fee details: ", error);
+        throw error;
+    }
+};
+
+export const updateVehicleFee = async (vehicleType: string, newFee: number): Promise<any> => {
+    try {
+        const response = await vehicleService.updateVehicleFee({
+            vehicle_type: vehicleType,
+            price_per_km: newFee,
+        });
+        if (response.status === "error") {
+            throw new Error("Failed to update vehicle fee");
+        }
+        return response;
+    } catch (error) {
+        console.error("Error updating vehicle fee: ", error);
+        throw error;
+    }
+};

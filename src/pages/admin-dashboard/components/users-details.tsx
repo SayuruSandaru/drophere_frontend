@@ -26,6 +26,7 @@ import {
 } from "@chakra-ui/react";
 import { getUserDetails, updateUserStatus } from 'api/user';
 import driverService from 'api/services/driverService';
+import RidesPopup from './rides-popup';
 
 interface User {
     id: number;
@@ -43,6 +44,7 @@ interface Driver {
     street: string;
     city: string;
     province: string;
+    status: string;
 }
 
 const Users: React.FC = () => {
@@ -55,6 +57,8 @@ const Users: React.FC = () => {
     const [userIdToUpdate, setUserIdToUpdate] = useState<number | null>(null);
     const [newStatus, setNewStatus] = useState('');
     const [updatingUserId, setUpdatingUserId] = useState<number | null>(null);
+    const [selectedDriver, setSelectedDriver] = useState<Driver | null>(null);
+    const [isRidesPopupOpen, setIsRidesPopupOpen] = useState(false);
     const toast = useToast();
     const isMobile = useBreakpointValue({ base: true, md: false });
 
@@ -152,6 +156,16 @@ const Users: React.FC = () => {
         }
     };
 
+    const handleViewRides = (driver: Driver) => {
+        setSelectedDriver(driver);
+        setIsRidesPopupOpen(true);
+    };
+
+    const closeRidesPopup = () => {
+        setIsRidesPopupOpen(false);
+        setSelectedDriver(null);
+    };
+
     const getStatusColor = (status: string) => {
         switch (status.toLowerCase()) {
             case 'active':
@@ -162,6 +176,21 @@ const Users: React.FC = () => {
                 return 'red';
             default:
                 return 'gray';
+        }
+    };
+
+    const getStatusColorDriver = (status: string) => {
+        switch (status.toLowerCase()) {
+            case 'pending':
+                return 'yellow';   
+            case 'accepted':
+                return 'green';    
+            case 'rejected':
+                return 'red';      
+            case 'suspended':
+                return 'orange';   
+            default:
+                return 'gray';     
         }
     };
 
@@ -214,6 +243,18 @@ const Users: React.FC = () => {
                                 <Text><strong>Street:</strong> {driver.street}</Text>
                                 <Text><strong>City:</strong> {driver.city}</Text>
                                 <Text><strong>Province:</strong> {driver.province}</Text>
+                                <Flex alignItems="center" mt={2}>
+                                    <Text mr={2}><strong>Status:</strong></Text>
+                                    <Badge colorScheme={getStatusColorDriver(driver.status)}>{driver.status}</Badge>
+                                </Flex>
+                                <Button
+                                    mt={2}
+                                    size="sm"
+                                    colorScheme="blue"
+                                    onClick={() => handleViewRides(driver)}
+                                >
+                                    View Rides
+                                </Button>
                             </Box>
                         ))
                     }
@@ -221,7 +262,7 @@ const Users: React.FC = () => {
             );
         }
 
-         return (
+        return (
             <Box overflowX="auto">
                 <Table w="full" boxShadow="lg" borderRadius="md">
                     <Thead bg="gray.100">
@@ -238,11 +279,13 @@ const Users: React.FC = () => {
                                 </>
                             ) : (
                                 <>
-                                    <Th width="20%">Driver ID</Th>
-                                    <Th width="20%">User ID</Th>
-                                    <Th width="20%">Street</Th>
-                                    <Th width="20%">City</Th>
-                                    <Th width="20%">Province</Th>
+                                    <Th width="15%">Driver ID</Th>
+                                    <Th width="15%">User ID</Th>
+                                    <Th width="15%">Street</Th>
+                                    <Th width="15%">City</Th>
+                                    <Th width="15%">Province</Th>
+                                    <Th width="15%">Status</Th>
+                                    <Th width="10%">Action</Th>
                                 </>
                             )}
                         </Tr>
@@ -278,11 +321,23 @@ const Users: React.FC = () => {
                         : 
                             driversData.map((driver) => (
                                 <Tr key={driver.driver_id}>
-                                    <Td width="20%">{driver.driver_id}</Td>
-                                    <Td width="20%">{driver.user_id}</Td>
-                                    <Td width="20%">{driver.street}</Td>
-                                    <Td width="20%">{driver.city}</Td>
-                                    <Td width="20%">{driver.province}</Td>
+                                    <Td width="15%">{driver.driver_id}</Td>
+                                    <Td width="15%">{driver.user_id}</Td>
+                                    <Td width="15%">{driver.street}</Td>
+                                    <Td width="15%">{driver.city}</Td>
+                                    <Td width="15%">{driver.province}</Td>
+                                    <Td width="15%">
+                                        <Badge colorScheme={getStatusColorDriver(driver.status)}>{driver.status}</Badge>
+                                    </Td>
+                                    <Td width="10%">
+                                        <Button
+                                            size="sm"
+                                            colorScheme="blue"
+                                            onClick={() => handleViewRides(driver)}
+                                        >
+                                            View Rides
+                                        </Button>
+                                    </Td>
                                 </Tr>
                             ))
                         }
@@ -333,6 +388,12 @@ const Users: React.FC = () => {
                     </ModalFooter>
                 </ModalContent>
             </Modal>
+
+            <RidesPopup
+                isOpen={isRidesPopupOpen}
+                onClose={closeRidesPopup}
+                driverId={selectedDriver?.driver_id}
+            />
         </Box>
     );
 };

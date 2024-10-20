@@ -28,5 +28,6 @@ export enum RouterPaths {
     ADMINDRIVERREGREQUEST = "/admin-dashboard/registration-request",
     ADMINANALYTICS = "/admin-dashboard/analytics",
     ADMINLOGIN = "/admin/login",
+    ADMINVEHICLEFEES = "/admin-dashboard/vehicle-fees",
 }
 

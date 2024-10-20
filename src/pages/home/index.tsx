@@ -140,6 +140,7 @@ const Home = () => {
 
   const setdata = (id, prce) => {
     console.log(id, prce);
+    console.log(prce);
     setLocalStorage(id, prce);
 
     console.log("success");
