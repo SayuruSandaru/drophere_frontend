@@ -21,6 +21,23 @@ class DispatchService extends ApiService {
       throw error;
     }
   }
+
+  public async createDispute(dispute: any): Promise<boolean> {
+    try {
+      const response = await this.post(`/user/dispute/create`, dispute);
+      console.log("Create dispute response:", response);
+      if (response.status === 'success') {
+        console.log("Dispute created successfully");
+        return true; 
+      } else {
+        return false; 
+      }
+    } catch (error) {
+      console.error("Error creating dispute: ", error);
+      return false; 
+    }
+  }
+  
 }
 
 export default new DispatchService();

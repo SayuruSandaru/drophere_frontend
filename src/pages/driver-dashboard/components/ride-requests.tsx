@@ -1,5 +1,6 @@
-import { Box, Button, ButtonGroup, Flex, Spinner, useColorModeValue, useDisclosure } from "@chakra-ui/react";
+import { Box, IconButton, Flex, Spinner, useColorModeValue, useDisclosure, Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, Image, Button } from "@chakra-ui/react";
 import { Table, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/table";
+import { FaEye } from "react-icons/fa"; // Import the eye icon
 import React, { useEffect, useState } from "react";
 import CustomAlertDialog from "./alert-dialog";
 import ReservationService from "api/services/reservationService";
@@ -9,8 +10,14 @@ import User from "model/user";
 const RideReqTable = () => {
   const { isOpen: isOpenDecline, onOpen: onOpenDecline, onClose: onCloseDecline } = useDisclosure();
   const { isOpen: isOpenStart, onOpen: onOpenStart, onClose: onCloseStart } = useDisclosure();
+  
+  // Modal controls
+  const { isOpen: isOpenModal, onOpen: onOpenModal, onClose: onCloseModal } = useDisclosure();
+  const [selectedSignature, setSelectedSignature] = useState(null); // State to store selected signature
+
   const headerOngoing = ["From", "To", "Price", "Type", "Actions"];
-  const headerOther = ["From", "To", "Price", "Type"];
+  const headerOther = ["From", "To", "Price", "Type"]; // Default without Actions for other tabs
+  const headerCompleted = ["From", "To", "Price", "Type", "Actions"]; // Completed tab includes Actions
   const [data, setData] = useState([]);
   const color1 = useColorModeValue("gray.400", "gray.400");
   const color2 = useColorModeValue("gray.400", "gray.400");
@@ -113,6 +120,12 @@ const RideReqTable = () => {
     await fetchReservations("completed");
   };
 
+  // Handle opening modal for viewing signature
+  const handleViewSignature = (signatureUrl) => {
+    setSelectedSignature(signatureUrl);
+    onOpenModal();
+  };
+
   return (
     <Box>
       <Box mt={"20px"}>
@@ -146,6 +159,10 @@ const RideReqTable = () => {
               sx={{ "@media print": { display: "table-header-group" } }}
             >
               <Tr>
+                {selectedStatus === "completed" ? (
+                  headerCompleted.map((x) => <Th key={x}>{x}</Th>)
+                ) : (
+                  headerOther.map((x) => <Th key={x}>{x}</Th>)
                 {selectedStatus === "confirmed" && (
                   <>
                     {headerOngoing.map((x) => (
@@ -176,135 +193,71 @@ const RideReqTable = () => {
                     gridGap: "10px",
                   }}
                 >
-                  <Td
-                    display={{ base: "table-cell", md: "none" }}
-                    sx={{
-                      "@media print": { display: "none" },
-                      textTransform: "uppercase",
-                      color: color1,
-                      fontSize: "xs",
-                      fontWeight: "bold",
-                      letterSpacing: "wider",
-                      fontFamily: "heading",
-                    }}
-                  >
-                    From
-                  </Td>
                   <Td color={"gray.500"} fontSize="md" fontWeight="light">
                     {token.ride.start_location}
-                  </Td>
-                  <Td
-                    display={{ base: "table-cell", md: "none" }}
-                    sx={{
-                      "@media print": { display: "none" },
-                      textTransform: "uppercase",
-                      color: color1,
-                      fontSize: "xs",
-                      fontWeight: "bold",
-                      letterSpacing: "wider",
-                      fontFamily: "heading",
-                    }}
-                  >
-                    To
                   </Td>
                   <Td color={"gray.500"} fontSize="md" fontWeight="light">
                     {token.ride.end_location}
                   </Td>
-                  <Td
-                    display={{ base: "table-cell", md: "none" }}
-                    sx={{
-                      "@media print": { display: "none" },
-                      textTransform: "uppercase",
-                      color: color1,
-                      fontSize: "xs",
-                      fontWeight: "bold",
-                      letterSpacing: "wider",
-                      fontFamily: "heading",
-                    }}
-                  >
-                    Price
-                  </Td>
                   <Td color={"gray.500"} fontSize="md" fontWeight="light">
                     {token.price}
-                  </Td>
-                  <Td
-                    display={{ base: "table-cell", md: "none" }}
-                    sx={{
-                      "@media print": { display: "none" },
-                      textTransform: "uppercase",
-                      color: color1,
-                      fontSize: "xs",
-                      fontWeight: "bold",
-                      letterSpacing: "wider",
-                      fontFamily: "heading",
-                    }}
-                  >
-                    Type
                   </Td>
                   <Td color={"gray.500"} fontSize="md" fontWeight="light">
                     {token.type}
                   </Td>
-                  <Td
-                    display={{ base: "table-cell", md: "none" }}
-                    sx={{
-                      "@media print": { display: "none" },
-                      textTransform: "uppercase",
-                      color: color2,
-                      fontSize: "xs",
-                      fontWeight: "bold",
-                      letterSpacing: "wider",
-                      fontFamily: "heading",
-                    }}
-                  >
-                    Actions
-                  </Td>
-                  <Td>
-                    {selectedStatus === "confirmed" && (
-                      <>
-                        <ButtonGroup variant="solid" size="sm" spacing={3}>
-                          <Button
-                            colorScheme="green"
-                            onClick={() => {
-                              onOpenStart();
-                              setSelectedReservation(token);
-                            }}
-                          >
-                            Start
-                          </Button>
-                          <Button
-                            colorScheme="red"
-                            onClick={() => {
-                              onOpenDecline();
-                              setSelectedReservation(token);
-                            }}
-                          >
-                            Decline
-                          </Button>
-                        </ButtonGroup>
-                      </>
-                    )}
-                  </Td>
+
+                  {/* Actions column for Completed tab */}
+                  {selectedStatus === "completed" && (
+                    <Td>
+                      {token.type === "delivery" && (
+                        <IconButton
+                          colorScheme="blue"
+                          icon={<FaEye />}
+                          aria-label="View Signature"
+                          onClick={() => handleViewSignature(token.delivery_details.signature)} // Pass the signature URL
+                        />
+                      )}
+                    </Td>
+                  )}
                 </Tr>
               ))}
             </Tbody>
           </Table>
         )}
-        <CustomAlertDialog
-          isOpen={isOpenDecline}
-          onClose={onCloseDecline}
-          onVerify={handleDecline}
-          title="Decline Ride"
-          message="Are you sure you want to decline this ride?"
-          mainBtnText={"Decline"}
-          primaryColor={"red"}
-        />
-        <CustomAlertDialog
-          isOpen={isOpenStart}
-          onClose={onCloseStart}
-          onVerify={handleStart}
-          title="Start Ride"
-          message="Are you sure you want to start this ride?"
-          mainBtnText={"Start"}
+      </Flex>
+
+      {/* Modal for viewing signature */}
+      <Modal isOpen={isOpenModal} onClose={onCloseModal} size="lg">
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Signature</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            {selectedSignature ? (
+              <Image src={selectedSignature} alt="Signature" />
+            ) : (
+              <p>No signature available</p>
+            )}
+          </ModalBody>
+          <ModalFooter>
+            <Button colorScheme="blue" mr={3} onClick={onCloseModal}>
+              Close
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+
+      <CustomAlertDialog
+        mainBtnText={"Decline"}
+        primaryColor={"red"}
+        title={"Decline request"}
+        message={"Are you sure you want to decline this request"}
+        isOpen={isOpenDecline}
+        onClose={onCloseDecline}
+        onVerify={handleDecline}
+      />
+      <CustomAlertDialog
+        mainBtnText={"Start"}
         primaryColor={"green"}
         />
       </Flex>
