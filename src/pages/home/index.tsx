@@ -209,7 +209,7 @@ const Home = () => {
                 to={ride.end_location}
                 name={ride.owner_details.city}
                 availability={ride.status}
-                seatsLeft={ride.passenger_count}
+                seatsLeft={ride.booked_seat}
                 price={`Rs ${ride.individualFee}`}
                 onClick={() => {
                   const points = decodePolyline(ride.route)

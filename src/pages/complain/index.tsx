@@ -213,7 +213,6 @@ const Complain = () => {
                   />
                 </FormControl>
 
-                {/* Fake Last Name field */}
                 <FormControl>
                   <FormLabel htmlFor="lastName">Last Name</FormLabel>
                   <Input
