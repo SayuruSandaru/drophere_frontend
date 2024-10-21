@@ -211,7 +211,7 @@ const Home = () => {
                   to={ride.end_location}
                   name={ride.owner_details.city}
                   availability={ride.status}
-                  seatsLeft={ride.booked_seat}
+                  seatsLeft={ride.booked_seat === null ? ride.passenger_count : ride.passenger_count - ride.booked_seat}
                   price={`Rs ${ride.individualFee}`}
                   onClick={() => {
                     const points = decodePolyline(ride.route)
