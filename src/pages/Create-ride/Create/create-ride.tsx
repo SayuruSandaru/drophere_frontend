@@ -364,6 +364,13 @@ const Cride = () => {
           onClose={onPickupMapClose}
           onConfirmLocation={(location, placeName) => {
             console.log("Confirmed Pickup Location:", location);
+            console.log("Place Name:", placeName);
+            if(!placeName.includes("Sri Lanka")){
+              showErrorToast("Please select a location in Sri Lanka");
+              return;
+            }else{
+              
+            }
             setPickCordinate(location);
             setSelectedPickupLocation(placeName);
           }}
@@ -373,6 +380,10 @@ const Cride = () => {
           onClose={onDestinationMapClose}
           onConfirmLocation={(location, placeName) => {
             console.log("Confirmed Destination Location:", location);
+            if(!placeName.includes("Sri Lanka")){
+              showErrorToast("Please select a location in Sri Lanka");
+              return;
+            }
             setDestinationCordinate(location);
             setSelectedDestinationLocation(placeName);
           }}

@@ -73,6 +73,7 @@ const Ride: React.FC = () => {
   };
 
   const handleDestiantionSelect = (place) => {
+    console.log("Selected Destination:", place);
     setSelectedDestinationLocation(place.name);
     setDestinationCordinate({ lat: place.latitude, lng: place.longitude });
   };
@@ -295,6 +296,13 @@ const Ride: React.FC = () => {
         onClose={onPickupMapClose}
         onConfirmLocation={(location, placeName) => {
           console.log("Confirmed Pickup Location:", location);
+          console.log("Place Name:", placeName);
+          if(!placeName.includes("Sri Lanka")){
+            setErrorMessage("Please select a location within Sri Lanka");
+            return;
+          }else{
+            setErrorMessage("");
+          }
           setPickCordinate(location);
           setSelectedPickupLocation(placeName);
         }}
@@ -304,6 +312,13 @@ const Ride: React.FC = () => {
         onClose={onDestinationMapClose}
         onConfirmLocation={(location, placeName) => {
           console.log("Confirmed Destination Location:", location);
+          console.log("Place Name:", placeName);
+          if(!placeName.includes("Sri Lanka")){
+            setErrorMessage("Please select a location within Sri Lanka");
+            return;
+          }else{
+            setErrorMessage("");
+          }
           setDestinationCordinate(location);
           setSelectedDestinationLocation(placeName);
         }}

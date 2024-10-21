@@ -33,6 +33,7 @@ import React from "react";
 import { decodePolyline } from "util/map";
 import { encryptData, getLocalStorage, setLocalStorage } from "util/secure";
 import { format, setDate } from "date-fns";
+import { FaBoxOpen } from "react-icons/fa";
 
 const Home = () => {
   const rideSearchData = useRecoilValue(searchRideState);
@@ -198,30 +199,39 @@ const Home = () => {
         </Box>
         <Box flex={1.5} bg="white" borderRadius="md" boxShadow="sm" p={4}>
           <Stack spacing={4}>
-            {rideSearchData?.response?.map(ride => (
-              <CarInfo
-                key={ride.ride_id}
-                imageUrl={ride.vehicle_details.image_url}
-                altText={ride.vehicle_details.model}
-                carName={ride.vehicle_details.model}
-                date={new Date(ride.start_time).toLocaleDateString()}
-                from={ride.start_location}
-                to={ride.end_location}
-                name={ride.owner_details.city}
-                availability={ride.status}
-                seatsLeft={ride.booked_seat}
-                price={`Rs ${ride.individualFee}`}
-                onClick={() => {
-                  const points = decodePolyline(ride.route)
-                  setPolylinePath(points);
-                }}
-                onBook={() => {
-                  const rideId = ride.ride_id;
-                  setdata(rideId, ride.fee);
-                  navigate(`/order/${rideId}`);
-                }}
-              />
-            ))}
+          {rideSearchData?.response?.length > 0 ? (
+              rideSearchData?.response?.map(ride => (
+                <CarInfo
+                  key={ride.ride_id}
+                  imageUrl={ride.vehicle_details.image_url}
+                  altText={ride.vehicle_details.model}
+                  carName={ride.vehicle_details.model}
+                  date={new Date(ride.start_time).toLocaleDateString()}
+                  from={ride.start_location}
+                  to={ride.end_location}
+                  name={ride.owner_details.city}
+                  availability={ride.status}
+                  seatsLeft={ride.booked_seat}
+                  price={`Rs ${ride.individualFee}`}
+                  onClick={() => {
+                    const points = decodePolyline(ride.route)
+                    setPolylinePath(points);
+                  }}
+                  onBook={() => {
+                    const rideId = ride.ride_id;
+                    setdata(rideId, ride.fee);
+                    navigate(`/order/${rideId}`);
+                  }}
+                />
+              ))
+            ) : (
+              <Flex direction="column" align="center" justify="center" mt={40}>
+  <Icon as={FaBoxOpen} w={12} h={12} color="gray.500" />
+  <Text textAlign="center" color="gray.500" fontSize="lg" mt={4}>
+    No rides found
+  </Text>
+</Flex>
+            )}
           </Stack>
         </Box>
       </Flex>
