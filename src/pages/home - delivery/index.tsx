@@ -18,7 +18,7 @@ import {
   FaLocationArrow,
   FaLocationDot,
   FaCalendarDays,
-  FaBox,
+  FaBoxOpen,
   FaFilter,
 } from "react-icons/fa6";
 import PlaceAutocompleteModal from "../components/placeModalbox";
@@ -129,8 +129,8 @@ const HomeDelivery = () => {
   const searchDelivery = async () => {
     try {
       setLoading(true);
-      setErrorMessage('');
-      const formattedDate = format(selectedDate, 'yyyy-MM-dd');
+      setErrorMessage("");
+      const formattedDate = format(selectedDate, "yyyy-MM-dd");
       const res = await searchRides({
         pickup_lat: pickCordinate.lat,
         pickup_lng: pickCordinate.lng,
@@ -151,7 +151,6 @@ const HomeDelivery = () => {
         date: selectedDate,
         weight: selectedWeight,
         response: res.rides,
-
       };
       setSearchRideState(deliveryData);
       setLoading(false);
@@ -305,8 +304,7 @@ const HomeDelivery = () => {
         </Box>
         <Box flex={1.5} bg="white" borderRadius="md" boxShadow="sm" p={4}>
           <Stack spacing={4}>
-            {rideSearchData &&
-              rideSearchData.response &&
+            {rideSearchData?.response?.length > 0 ? (
               rideSearchData.response.map((ride) => (
                 <CarInfo
                   key={ride.ride_id}
@@ -331,7 +329,15 @@ const HomeDelivery = () => {
                     });
                   }}
                 />
-              ))}
+              ))
+            ) : (
+              <Flex direction="column" align="center" justify="center" mt={40}>
+                <Icon as={FaBoxOpen} w={12} h={12} color="gray.500" />
+                <Text textAlign="center" color="gray.500" fontSize="lg" mt={4}>
+                  No rides found
+                </Text>
+              </Flex>
+            )}
           </Stack>
         </Box>
       </Flex>
