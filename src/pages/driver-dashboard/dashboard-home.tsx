@@ -23,7 +23,8 @@ const DashboardHome = () => {
     const fetchReservations = async (status) => {
         try {
             setLoading(true);
-            const result = await ReservationService.getReservationsByStatus(status, User.getUserId());
+            // const result = await ReservationService.getReservationsByStatus(status, User.getUserId());
+            const result = await ReservationService.getReservationsByStatusDriverId(status, User.getDriverDetails().driver_id);
             const reservations = result.data || result;
 
             const reservationsWithVehicles = await Promise.all(
