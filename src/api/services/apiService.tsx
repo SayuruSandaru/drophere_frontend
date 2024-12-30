@@ -4,12 +4,13 @@ import CookieManager from "api/cookieManager";
 class ApiService {
     // protected baseUrl: string = "https://drophere-staging-665f7065c9e0.herokuapp.com";
     // protected baseUrl: string = "https://drophere-restapi-c445f5ce82dc.herokuapp.com";
-    protected baseUrl: string = "https://drophere-live-adda896544f2.herokuapp.com";
-    // protected baseUrl: string = "http://localhost:5000";
+    // protected baseUrl: string = "https://drophere-live-adda896544f2.herokuapp.com";
+    protected baseUrl: string = "http://localhost:8000";
 
 
     private mergeToken(headers: Headers) {
         const token = CookieManager.getCookie("token");
+        console.log(token)
         if (!token) {
             throw new Error("No token found");
         }
@@ -90,6 +91,8 @@ class ApiService {
 
             if (authorized) {
                 this.mergeToken(headers);
+                console.log('Authorization header:', headers.get('Authorization'));
+
             }
 
             const requestOptions: RequestInit = {
@@ -97,7 +100,10 @@ class ApiService {
                 headers: headers,
                 redirect: 'follow'
             };
-
+            console.log(this.baseUrl)
+            console.log(path)
+            console.log(requestOptions)
+            
             const response = await fetch(this.baseUrl + path, requestOptions);
 
             if (!response.ok) {
