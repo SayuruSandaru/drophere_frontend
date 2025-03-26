@@ -1,85 +1,102 @@
-# DropHere
+```markdown
+# 🚗 Drophere | Carpooling Application Frontend
 
-This project was generated with [superplate](https://github.com/pankod/superplate).
+**Drophere** is a comprehensive carpooling solution aimed at enhancing convenience, affordability, and safety in shared transportation. This repository contains the **frontend web application** built with **React** using **Superplate** as the starter boilerplate. The full project also includes a Flutter-based mobile app and a backend developed in PHP with Firebase and MySQL.
 
-## Getting Started
+---
 
-superplate is a Next.js all-in-one project generator. Create your project with the tools you need without spending hours on setting them up.
+## 🔍 Project Overview
 
-## Available Scripts
+For Project 01, our team developed **Drophere**, a platform that connects drivers and passengers for efficient carpooling. The web app serves as an intuitive interface for managing rides, tracking trips, and enhancing user collaboration.
 
-### Running the development server.
+### 🔑 Key Features
+
+- 📱 **Mobile-Friendly Interface**  
+  Responsive design ensuring clean, intuitive user experiences across devices.
+
+- 📍 **Live Location Tracking**  
+  Integration with Firebase Realtime Database enables real-time location sharing and trip visibility.
+
+- 🗓️ **Streamlined Trip Planning**  
+  Schedule, manage, and view upcoming trips directly from the platform.
+
+---
+
+## 🛠️ Tech Stack
+
+- **React** – Used for building the frontend user interface.
+- **Superplate** – A powerful Next.js boilerplate used to scaffold the project quickly.
+- **Chakra UI** – A modular and accessible component library for building clean UIs.
+- **Axios** – Handles HTTP requests to communicate with the backend services.
+- **MobX / MobX State Tree** – State managment
+- **Firebase Realtime Database** – Enables real-time location tracking and live data sync.
+- **CSS Modules / styled-jsx** – For styling components with scoped CSS and modular design.
+- **GitHub Actions** – Automates CI/CD workflows, including building, testing, and deployment.
+
+---
+
+## 🚀 Getting Started
+
+### Prerequisites
+
+Make sure you have the following installed:
+
+- [Node.js](https://nodejs.org/)
+- [npm](https://www.npmjs.com/)
+
+### Installation
+
+Clone the repository and install dependencies:
 
 ```bash
-    npm run dev
+git clone https://github.com/your-username/drophere-frontend.git
+cd drophere-frontend
+npm install
 ```
 
-### Building for production.
+### Run in Development Mode
 
 ```bash
-    npm run build
+npm run dev
 ```
 
-### Running the production server.
+### Build for Production
 
 ```bash
-    npm run start
+npm run build
 ```
 
-## Learn More
+### Start Production Server
 
-To learn more about **superplate**, please check out the [Documentation](https://github.com/pankod/superplate).
+```bash
+npm run start
+```
 
-### **Chakra UI**
+---
 
-Chakra UI is a simple, modular and accessible component library that gives you the building blocks you need to build your React applications.
+## 📁 Folder Structure
 
-[Go To Documentation](https://chakra-ui.com/docs/getting-started)
+```
+/components       -> Reusable UI components
+/pages            -> Application routes
+/store            -> MobX State Tree models and stores
+/styles           -> Global and modular styles
+/utils            -> Utility functions
+/public           -> Static assets
+```
 
-### **CSS / styled-jsx**
+---
 
-CRA comes with built-in support for CSS and CSS Modules.
+## 🙌 Acknowledgements
 
-[Go To Documentation](https://create-react-app.dev/docs/adding-a-stylesheets)
+Special thanks to all the team members who contributed to **Drophere**, and to the creators of **Superplate**, **Chakra UI**, and **Firebase** for their amazing tools.
 
-### **Axios**
+---
 
-Promise based HTTP client for the browser and node.js.
+## 🌐 Related Repositories
 
-[Go To Documentation](https://github.com/axios/axios)
+- [Drophere Mobile App (Flutter)](https://github.com/your-org/drophere-mobile)
+- [Drophere Backend (PHP + MySQL)](https://github.com/your-org/drophere-backend)
 
-### **react-use**
 
-A Collection of useful React hooks.
-
-[Go To Documentation](https://github.com/streamich/react-use)
-
-### **MobX**
-
-MobX is unopinionated and allows you to manage your application state outside of any UI framework.
-
-[Go To Documentation](https://mobx.js.org/README.html)
-
-### **MobX State Tree**
-
-MobX-State-Tree (also known as MST) is a state container system built on MobX, a functional reactive state library.
-
-[Go To Documentation](https://mobx-state-tree.js.org/intro/welcome)
-
-### **eslint**
-
-[Go To Documentation]()
-
-### **jest**
-
-[Go To Documentation]()
-
-### **Github Actions**
-
-GitHub Actions makes it easy to automate all your software workflows, now with world-class CI/CD. Build, test, and deploy your code right from GitHub.
-
-[Go To Documentation](https://docs.github.com/en/actions)
-
-## License
-
-MIT
+---
