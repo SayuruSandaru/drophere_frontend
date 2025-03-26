@@ -1,4 +1,3 @@
-```markdown
 # 🚗 Drophere | Carpooling Application Frontend
 
 **Drophere** is a comprehensive carpooling solution aimed at enhancing convenience, affordability, and safety in shared transportation. This repository contains the **frontend web application** built with **React** using **Superplate** as the starter boilerplate. The full project also includes a Flutter-based mobile app and a backend developed in PHP with Firebase and MySQL.
@@ -49,7 +48,7 @@ Make sure you have the following installed:
 Clone the repository and install dependencies:
 
 ```bash
-git clone https://github.com/your-username/drophere-frontend.git
+git clone https://github.com/SayuruSandaru/drophere_frontend
 cd drophere-frontend
 npm install
 ```
@@ -95,8 +94,8 @@ Special thanks to all the team members who contributed to **Drophere**, and to t
 
 ## 🌐 Related Repositories
 
-- [Drophere Mobile App (Flutter)](https://github.com/your-org/drophere-mobile)
-- [Drophere Backend (PHP + MySQL)](https://github.com/your-org/drophere-backend)
+- [Drophere Mobile App (Flutter)](https://github.com/SayuruSandaru/drophere_driver_app)
+- [Drophere Backend (PHP + MySQL)](https://github.com/SayuruSandaru/drophere-restapi)
 
 
 ---
